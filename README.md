@@ -5,4 +5,4 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram
 
 Powered by [Fortnite Tracker API](https://fortnitetracker.com/site-api)
 
-/info username for information on the player
+/user username for information on the player

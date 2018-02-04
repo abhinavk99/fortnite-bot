@@ -5,10 +5,10 @@ const fetch = require('node-fetch');
 const bot = new TeleBot(Config.telegramToken);
 
 bot.on('/start', (msg) => {
-  msg.reply.text('/info <username> for information on the player\n');
+  msg.reply.text('/user <username> for information on the player\n');
 });
 
-bot.on(/^\/info (.+)$/, (msg, props) => {
+bot.on(/^\/user (.+)$/, (msg, props) => {
   var user = props.match[1];
   _getUserInfo(user)
   .then((info) => {
@@ -18,7 +18,7 @@ bot.on(/^\/info (.+)$/, (msg, props) => {
     } else {
       var res = `User: ${info.epicUserHandle}\n`;
       res += `Matches played: ${info.lifeTimeStats[7].value}\n`;
-      res += `Time played: ${info.lifeTimeStats[12].value}\n`;
+      res += `Time played: ${info.lifeTimeStats[13].value}\n`;
       res += `Wins: ${info.lifeTimeStats[8].value}\n`;
       res += `Kills: ${info.lifeTimeStats[10].value}\n`;
       res += `K/D Ratio: ${info.lifeTimeStats[11].value}\n`;
