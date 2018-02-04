@@ -1,8 +1,9 @@
 const Config = require('./config.json');
 const TeleBot = require('telebot');
-const fetch = require('node-fetch');
+const fortnite = require('fortnite.js');
 
 const bot = new TeleBot(Config.telegramToken);
+const client = new fortnite(Config.fortniteKey);
 
 bot.on('/start', (msg) => {
   msg.reply.text('/user <username> for information on the player\n');
@@ -10,35 +11,26 @@ bot.on('/start', (msg) => {
 
 bot.on(/^\/user (.+)$/, (msg, props) => {
   var user = props.match[1];
-  _getUserInfo(user)
-  .then((info) => {
-    console.log(info);
-    if (info.error === 'Player Not Found') {
-      return msg.reply.text('User not found.', {asReply: true});
-    } else {
-      var res = `User: ${info.epicUserHandle}\n`;
-      res += `Matches played: ${info.lifeTimeStats[7].value}\n`;
-      res += `Time played: ${info.lifeTimeStats[13].value}\n`;
-      res += `Wins: ${info.lifeTimeStats[8].value}\n`;
-      res += `Kills: ${info.lifeTimeStats[10].value}\n`;
-      res += `K/D Ratio: ${info.lifeTimeStats[11].value}\n`;
-      res += `Kills/Min: ${info.lifeTimeStats[12].value}\n`;
+  client.get(user, fortnite.PC)
+    .then((info) => {
+      console.log(info);
+      
+      var res = `User: ${info.displayName}\n`;
+      res += `Matches played: ${info.stats.matches}\n`;
+      res += `Time played: ${info.stats.timePlayed}\n`;
+      res += `Wins: ${info.stats.top1}\n`;
+      var winRate = parseFloat(info.stats.top1) / parseFloat(info.stats.matches);
+      winRate = winRate.toFixed(5);
+      res += `Win Rate: ${winRate}\n`;
+      res += `Kills: ${info.stats.kills}\n`;
+      res += `K/D Ratio: ${info.stats.kd}\n`;
+      res += `Kills/Min: ${info.stats.kpm}\n`;
+
       return msg.reply.text(res, {asReply: true});
-    }
-  }).catch(console.error);
+    }).catch((err) => {
+      console.log(err);
+      return msg.reply.text('User not found.', {asReply: true});
+    });
 });
 
 bot.start();
-
-function _getUserInfo(user) {
-  return new Promise((resolve, reject) => {
-    fetch(`https://api.fortnitetracker.com/v1/profile/pc/${encodeURI(user)}`, {
-      method: 'GET',
-      headers: {
-        'TRN-Api-Key': Config.fortniteKey
-      }
-    }).then(res => res.json())
-    .then(info => resolve(info))
-    .catch(err => reject(err));
-  });
-}
