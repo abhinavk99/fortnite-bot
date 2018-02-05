@@ -33,8 +33,11 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 
       var modes = ['Solo', 'Duo', 'Squad'];
       modes.forEach((mode) => {
-        res += `\n${mode} matches played: ${info[mode.toLowerCase()].matches.value}\n`;
-        res += `${mode} time played: ${info[mode.toLowerCase()].minutesPlayed.displayValue}\n`;
+        if (info[mode.toLowerCase()].matches !== undefined
+            && info[mode.toLowerCase()].minutesPlayed !== undefined) {
+          res += `\n${mode} matches played: ${info[mode.toLowerCase()].matches.value}\n`;
+          res += `${mode} time played: ${info[mode.toLowerCase()].minutesPlayed.displayValue}\n`;
+        }
       });
 
       var date = new Date(info.recentMatches[1].dateCollected);
@@ -72,6 +75,9 @@ function formatInfo(user, mode) {
   return new Promise((resolve, reject) => {
     client.get(user, fortnite.PC)
       .then((info) => {
+        if (info[mode.toLowerCase()].matches === undefined)
+          return reject('User has never played ' + mode + '.');
+
         console.log(info[mode.toLowerCase()]);
         
         var res = `${mode} stats for ${info.displayName}:\n\n`;
@@ -94,7 +100,10 @@ function formatInfo(user, mode) {
         return resolve(res);
       }).catch((err) => {
         console.log(err);
-        return reject('User not found.');
+        if (err === 'HTTP Player Not Found')
+          return reject('User not found.');
+        else
+          return reject('Error found when getting user info.')
       });
   });
 }
