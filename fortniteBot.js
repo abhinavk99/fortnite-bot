@@ -1,9 +1,8 @@
-const Config = require('./config.json');
 const TeleBot = require('telebot');
 const fortnite = require('fortnite.js');
 
-const bot = new TeleBot(Config.telegramToken);
-const client = new fortnite(Config.fortniteKey);
+const bot = new TeleBot(process.env.telegramToken);
+const client = new fortnite(process.env.fortniteKey);
 
 const startMsg = '/user username for information on the player\n'
   + '/solo username for player\'s solo stats\n'
