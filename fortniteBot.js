@@ -104,44 +104,4 @@ function formatInfo(user, mode) {
   });
 }
 
-function lastOnline(date) {
-  var now = new Date();
-  var diffYears = now.getFullYear() - date.getFullYear();
-  if (diffYears > 1)
-    return `Last online ${diffYears} years ago.`;
-  else if (diffYears == 1)
-    return 'Last online 1 year ago.';
-  else {
-    var diffDate = now - date;
-    var diffMonths = Math.floor(diffDate / (1000 * 60 * 60 * 24 * 12));
-    var diffDays = Math.floor(diffDate / (1000 * 60 * 60 * 24));
-    var diffHours = Math.floor(diffDate / (1000 * 60 * 60));
-    var diffMin = Math.floor(diffDate / (1000 * 60));
-    var lastPlayed;
-    if (diffMonths > 1)
-      lastPlayed = diffMonths + ' months';
-    else if (diffMonths == 1)
-      lastPlayed = '1 month';
-    else if (diffDays > 1)
-      lastPlayed = diffDays + ' days';
-    else if (diffDays == 1)
-      lastPlayed = '1 day';
-    else if (diffHours > 1)
-      lastPlayed = diffHours + ' hours';
-    else if (diffHours == 1)
-      lastPlayed = '1 hour';
-    else if (diffMin > 1)
-      lastPlayed = diffMin + ' minutes';
-    else if (diffMin == 1)
-      lastPlayed = '1 minute';
-    else
-      lastPlayed = '';
-
-    if (lastPlayed !== '')
-      return `Last online ${lastPlayed} ago.`;
-    else
-      return 'Currently online.';
-  }
-}
-
 bot.start();
