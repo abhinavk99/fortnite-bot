@@ -40,9 +40,6 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
         }
       });
 
-      var date = new Date(info.recentMatches[1].dateCollected);
-      res += `\n${lastOnline(date)}`;
-
       return msg.reply.text(res, {asReply: true});
     }).catch((err) => {
       console.log(err);
