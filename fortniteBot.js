@@ -25,7 +25,11 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
       res += `Time played: ${info.stats.timePlayed}\n`;
       res += `Avg Survival Time: ${info.stats.avgTimePlayed}\n`;
       res += `Wins: ${info.stats.top1}\n`;
-      res += `Times in top 3: ${info.stats.top3}\n`;
+
+      sumPlaces = parseInt(info.stats.top3) + parseInt(info.stats.top5)
+        + parseInt(info.stats.top6) + parseInt(info.stats.top12);
+      res += `Times in top 3/5/6/12: ${sumPlaces}\n`;
+
       res += `Win Rate: ${info.stats.winPercent}\n`;
       res += `Kills: ${info.stats.kills}\n`;
       res += `K/D Ratio: ${info.stats.kd}\n`;
@@ -49,26 +53,26 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 
 bot.on(/^\/solo (.+)$/, (msg, props) => {
   var user = props.match[1];
-  formatInfo(user, 'Solo')
+  formatInfo(user, 'Solo', [10, 25])
     .then(res => msg.reply.text(res, {asReply: true}))
     .catch(err => msg.reply.text(err, {asReply: true}));
 });
 
 bot.on(/^\/duo (.+)$/, (msg, props) => {
   var user = props.match[1];
-  formatInfo(user, 'Duo')
+  formatInfo(user, 'Duo', [5, 12])
     .then(res => msg.reply.text(res, {asReply: true}))
     .catch(err => msg.reply.text(err, {asReply: true}));
 });
 
 bot.on(/^\/squad (.+)$/, (msg, props) => {
   var user = props.match[1];
-  formatInfo(user, 'Squad')
+  formatInfo(user, 'Squad', [3, 6])
     .then(res => msg.reply.text(res, {asReply: true}))
     .catch(err => msg.reply.text(err, {asReply: true}));
 });
 
-function formatInfo(user, mode) {
+function formatInfo(user, mode, nums) {
   return new Promise((resolve, reject) => {
     client.get(user, fortnite.PC)
       .then((info) => {
@@ -84,11 +88,16 @@ function formatInfo(user, mode) {
         res += `Time played: ${info[mode].minutesPlayed.displayValue}\n`;
         res += `Avg Survival Time: ${info[mode].avgTimePlayed.displayValue}\n`;
         res += `Wins: ${info[mode].top1.value}\n`;
-        res += `Times in top 3: ${info[mode].top3.value}\n`;
+
+        nums.forEach((num) => {
+          res += `Times in top ${num}: ${info[mode][`top${num}`].value}\n`;
+        });
+
         if (info[mode].winRatio !== undefined)
           res += `Win Rate: ${info[mode].winRatio.displayValue}%\n`;
         else
           res += `Win Rate: 0%\n`;
+          
         res += `Kills: ${info[mode].kills.value}\n`;
         res += `K/D Ratio: ${info[mode].kd.value}\n`;
         res += `Kills/Minute: ${info[mode].kpm.value}\n`;
