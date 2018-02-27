@@ -31,10 +31,10 @@ The bot is not running 24/7. Commands made throughout the night will likely get 
 ## Commands
 | Command | Description | Usage |
 | --- | --- | --- |
-| /user | Get global stats for a player | /user `\<username>\` |
-| /solo | Get solo stats for a player | /solo `\<username>\` |
-| /duo | Get duo stats for a player | /duo `\<username>\` |
-| /squad | Get squad stats for a player | /squad `\<username>\` |
+| /user | Get global stats for a player | /user `<username>` |
+| /solo | Get solo stats for a player | /solo `<username>` |
+| /duo | Get duo stats for a player | /duo `<username>` |
+| /squad | Get squad stats for a player | /squad `<username>` |
 
 ## Examples
 ![](examples/user.png)
