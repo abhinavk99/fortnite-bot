@@ -1,0 +1,27 @@
+{
+  "name": "fortnite-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot that gets information on Fortnite players",
+  "main": "fortniteBot.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "fortnite.js": "^1.3.0",
+    "telebot": "^1.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavk99/fortnite-bot.git"
+  },
+  "author": "Abhinav Kasamsetty <abhinavkasamsetty@gmail.com> (http://github.com/abhinavk99)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abhinavk99/fortnite-bot/issues"
+  },
+  "homepage": "https://github.com/abhinavk99/fortnite-bot#readme"
+}
