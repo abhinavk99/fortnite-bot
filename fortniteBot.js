@@ -14,6 +14,7 @@ bot.on('/start', (msg) => {
   msg.reply.text(startMsg);
 });
 
+// Get global stats on a user
 bot.on(/^\/user (.+)$/, (msg, props) => {
   var user = props.match[1];
   client.get(user, fortnite.PC)
@@ -51,6 +52,7 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
     });
 });
 
+// Get solo stats on a user
 bot.on(/^\/solo (.+)$/, (msg, props) => {
   var user = props.match[1];
   formatInfo(user, 'Solo', [10, 25])
@@ -58,6 +60,7 @@ bot.on(/^\/solo (.+)$/, (msg, props) => {
     .catch(err => msg.reply.text(err, {asReply: true}));
 });
 
+// Get duo stats on a user
 bot.on(/^\/duo (.+)$/, (msg, props) => {
   var user = props.match[1];
   formatInfo(user, 'Duo', [5, 12])
@@ -65,6 +68,7 @@ bot.on(/^\/duo (.+)$/, (msg, props) => {
     .catch(err => msg.reply.text(err, {asReply: true}));
 });
 
+// Get squad stats on a user
 bot.on(/^\/squad (.+)$/, (msg, props) => {
   var user = props.match[1];
   formatInfo(user, 'Squad', [3, 6])
