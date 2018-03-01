@@ -124,8 +124,8 @@ function formatInfo(user, mode, nums, platform) {
   return new Promise((resolve, reject) => {
     client.get(user, platform)
       .then(info => {
-        if (info[mode.toLowerCase()].matches === undefined)
-          return reject('User has never played ' + mode + '.');
+        if (!info[mode.toLowerCase()].matches)
+          return resolve('User has never played ' + mode + '.');
 
         console.log(info[mode.toLowerCase()]);
         
