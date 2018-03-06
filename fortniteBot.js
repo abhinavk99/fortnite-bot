@@ -42,9 +42,11 @@ function formatGlobal(user, platform) {
         res += `Avg Survival Time: ${info.stats.avgTimePlayed}\n`;
         res += `Wins: ${info.stats.top1}\n`;
 
-        sumPlaces = parseInt(info.stats.top3) + parseInt(info.stats.top5)
-          + parseInt(info.stats.top6) + parseInt(info.stats.top12);
-        res += `Times in top 3/5/6/12: ${sumPlaces}\n`;
+        var sumPlaces1 = parseInt(info.stats.top3) + parseInt(info.stats.top5);
+        var sumPlaces2 = parseInt(info.stats.top6) + parseInt(info.stats.top12)
+          + parseInt(info.stats.top25);
+        res += `Times in top 3/5: ${sumPlaces1}\n`;
+        res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
         res += `Win Rate: ${info.stats.winPercent}\n`;
         res += `Kills: ${info.stats.kills}\n`;
@@ -123,8 +125,8 @@ function formatInfo(user, mode, nums, platform) {
   return new Promise((resolve, reject) => {
     client.get(user, platform)
       .then(info => {
-        if (info[mode.toLowerCase()].matches === undefined)
-          return reject('User has never played ' + mode + '.');
+        if (!info[mode.toLowerCase()].matches)
+          return resolve('User has never played ' + mode + '.');
 
         console.log(info[mode.toLowerCase()]);
         
