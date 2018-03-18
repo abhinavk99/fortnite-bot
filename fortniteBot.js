@@ -56,10 +56,11 @@ function formatGlobal(user, platform) {
 
         var modes = ['Solo', 'Duo', 'Squad'];
         modes.forEach(mode => {
-          if (info[mode.toLowerCase()].matches !== undefined
-            && info[mode.toLowerCase()].minutesPlayed !== undefined) {
+          if (info[mode.toLowerCase()].matches !== undefined) {
             res += `\n${mode} matches played: ${info[mode.toLowerCase()].matches.value}\n`;
-            res += `${mode} time played: ${info[mode.toLowerCase()].minutesPlayed.displayValue}\n`;
+            var avgSeconds = parseFloat(info[mode.toLowerCase()].avgTimePlayed.value);
+            var seconds = info[mode.toLowerCase()].matches.valueInt * avgSeconds;
+            res += `${mode} time played:${formatSeconds(seconds)}\n`;
           }
         });
 
@@ -136,7 +137,11 @@ function formatInfo(user, mode, nums, platform) {
 
         res += `Platform: ${platform.toUpperCase()}\n\n`;
         res += `Matches played: ${info[mode].matches.value}\n`;
-        res += `Time played: ${info[mode].minutesPlayed.displayValue}\n`;
+
+        var avgSeconds = parseFloat(info[mode].avgTimePlayed.value);
+        var seconds = info[mode].matches.valueInt * avgSeconds;
+        res += `Time played:${formatSeconds(seconds)}\n`;
+
         res += `Avg Survival Time: ${info[mode].avgTimePlayed.displayValue}\n`;
         res += `Wins: ${info[mode].top1.value}\n`;
 
@@ -151,7 +156,6 @@ function formatInfo(user, mode, nums, platform) {
           
         res += `Kills: ${info[mode].kills.value}\n`;
         res += `K/D Ratio: ${info[mode].kd.value}\n`;
-        res += `Kills/Minute: ${info[mode].kpm.value}\n`;
         res += `Kills/Game: ${info[mode].kpg.value}\n`;
 
         return resolve(res);
@@ -163,6 +167,25 @@ function formatInfo(user, mode, nums, platform) {
           return reject('Error found when getting user info.');
       });
   });
+}
+
+// Convert seconds to days, hours, minutes, and seconds
+function formatSeconds(seconds) {
+  var days = Math.floor(seconds / (60 * 60 * 24));
+  seconds -= days * 60 * 60 * 24;
+  var hrs = Math.floor(seconds / (60 * 60));
+  seconds -= hrs * 60 * 60;
+  var mnts = Math.floor(seconds / 60);
+  seconds -= mnts * 60;
+
+  var res = '';
+  if (days > 0)
+    res += (' ' + days + 'd');
+  if (hrs > 0 || days > 0)
+    res += (' ' + hrs + 'h');
+  if (mnts > 0 || hrs > 0)
+    res += (' ' + mnts + 'm');
+  return res;
 }
 
 bot.start();
