@@ -32,37 +32,40 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 
 function formatGlobal(user, platform) {
   return new Promise((resolve, reject) => {
-    client.get(user, platform)
+    client.get(user, platform, true)
       .then((info) => {
         console.log(info);
+        stats = info.lifeTimeStats;
 
-        var res = `Lifetime stats for ${info.displayName}:\n`;
-        res += `Platform: ${platform.toUpperCase()}\n\n`;
-        res += `Matches played: ${info.stats.matches}\n`;
-        res += `Time played: ${info.stats.timePlayed}\n`;
-        res += `Avg Survival Time: ${info.stats.avgTimePlayed}\n`;
-        res += `Wins: ${info.stats.top1}\n`;
+        var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
+        res += `Platform: ${info.platformNameLong}\n\n`;
+        res += `Matches played: ${stats[7].value}\n`;
+        res += `Time played: ${stats[13].value}\n`;
+        res += `Avg Survival Time: ${stats[14].value}\n`;
+        res += `Wins: ${stats[8].value}\n`;
 
-        var sumPlaces1 = parseInt(info.stats.top3) + parseInt(info.stats.top5);
-        var sumPlaces2 = parseInt(info.stats.top6) + parseInt(info.stats.top12)
-          + parseInt(info.stats.top25);
-        res += `Times in top 3/5: ${sumPlaces1}\n`;
+        var sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
+          + parseInt(stats[2].value);
+        var sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+          + parseInt(stats[5].value);
+        res += `Times in top 3/5/10: ${sumPlaces1}\n`;
         res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
-        res += `Win Rate: ${info.stats.winPercent}\n`;
-        res += `Kills: ${info.stats.kills}\n`;
-        res += `K/D Ratio: ${info.stats.kd}\n`;
-        res += `Kills/Minute: ${info.stats.kpm}\n`;
+        res += `Win Rate: ${stats[9].value}\n`;
+        res += `Kills: ${stats[10].value}\n`;
+        res += `K/D Ratio: ${stats[11].value}\n`;
+        res += `Kills/Minute: ${stats[12].value}\n`;
 
-        var modes = ['Solo', 'Duo', 'Squad'];
-        modes.forEach(mode => {
-          if (info[mode.toLowerCase()].matches !== undefined) {
-            res += `\n${mode} matches played: ${info[mode.toLowerCase()].matches.value}\n`;
-            var avgSeconds = parseFloat(info[mode.toLowerCase()].avgTimePlayed.value);
-            var seconds = info[mode.toLowerCase()].matches.valueInt * avgSeconds;
+        var modes = {'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9'};
+        for (var mode in modes) {
+          modeStats = info.stats[modes[mode]]
+          if (modeStats.matches !== undefined) {
+            res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
+            var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
+            var seconds = modeStats.matches.valueInt * avgSeconds;
             res += `${mode} time played:${formatSeconds(seconds)}\n`;
           }
-        });
+        }
 
         return resolve(res);
       }).catch(err => {
