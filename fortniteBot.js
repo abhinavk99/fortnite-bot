@@ -5,9 +5,12 @@ const bot = new TeleBot(process.env.telegramToken);
 const client = new fortnite(process.env.fortniteKey);
 
 const startMsg = '/user username for information on the player\n'
-  + '/solo username for player\'s solo stats\n'
-  + '/duo username for player\'s duo stats\n'
-  + '/squad username for player\'s squad stats\n';
+  + '/solo username for player\'s lifetime solo stats\n'
+  + '/duo username for player\'s lifetime duo stats\n'
+  + '/squad username for player\'s lifetime squad stats\n'
+  + '/solos3 username for player\'s season 3 solo stats\n'
+  + '/duos3 username for player\'s season 3 duo stats\n'
+  + '/squads3 username for player\'s season 3 squad stats\n';
 
 bot.on('/start', msg => {
   msg.reply.text(startMsg);
@@ -29,39 +32,43 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
     });
 });
 
+// Format global stats for Telegram message
 function formatGlobal(user, platform) {
   return new Promise((resolve, reject) => {
-    client.get(user, platform)
+    client.get(user, platform, true)
       .then((info) => {
         console.log(info);
+        stats = info.lifeTimeStats;
 
-        var res = `Lifetime stats for ${info.displayName}:\n`;
-        res += `Platform: ${platform.toUpperCase()}\n\n`;
-        res += `Matches played: ${info.stats.matches}\n`;
-        res += `Time played: ${info.stats.timePlayed}\n`;
-        res += `Avg Survival Time: ${info.stats.avgTimePlayed}\n`;
-        res += `Wins: ${info.stats.top1}\n`;
+        var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
+        res += `Platform: ${info.platformNameLong}\n\n`;
+        res += `Matches played: ${stats[7].value}\n`;
+        res += `Time played: ${stats[13].value}\n`;
+        res += `Avg Survival Time: ${stats[14].value}\n`;
+        res += `Wins: ${stats[8].value}\n`;
 
-        var sumPlaces1 = parseInt(info.stats.top3) + parseInt(info.stats.top5);
-        var sumPlaces2 = parseInt(info.stats.top6) + parseInt(info.stats.top12)
-          + parseInt(info.stats.top25);
-        res += `Times in top 3/5: ${sumPlaces1}\n`;
+        var sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
+          + parseInt(stats[2].value);
+        var sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+          + parseInt(stats[5].value);
+        res += `Times in top 3/5/10: ${sumPlaces1}\n`;
         res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
-        res += `Win Rate: ${info.stats.winPercent}\n`;
-        res += `Kills: ${info.stats.kills}\n`;
-        res += `K/D Ratio: ${info.stats.kd}\n`;
-        res += `Kills/Minute: ${info.stats.kpm}\n`;
+        res += `Win Rate: ${stats[9].value}\n`;
+        res += `Kills: ${stats[10].value}\n`;
+        res += `K/D Ratio: ${stats[11].value}\n`;
+        res += `Kills/Minute: ${stats[12].value}\n`;
 
-        var modes = ['Solo', 'Duo', 'Squad'];
-        modes.forEach(mode => {
-          if (info[mode.toLowerCase()].matches !== undefined) {
-            res += `\n${mode} matches played: ${info[mode.toLowerCase()].matches.value}\n`;
-            var avgSeconds = parseFloat(info[mode.toLowerCase()].avgTimePlayed.value);
-            var seconds = info[mode.toLowerCase()].matches.valueInt * avgSeconds;
+        var modes = { 'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9' };
+        for (var mode in modes) {
+          modeStats = info.stats[modes[mode]]
+          if (modeStats.matches !== undefined) {
+            res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
+            var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
+            var seconds = modeStats.matches.valueInt * avgSeconds;
             res += `${mode} time played:${formatSeconds(seconds)}\n`;
           }
-        });
+        }
 
         return resolve(res);
       }).catch(err => {
@@ -74,88 +81,77 @@ function formatGlobal(user, platform) {
   });
 }
 
-// Get solo stats on a user
-bot.on(/^\/solo (.+)$/, (msg, props) => {
-  var user = props.match[1];
-  formatInfo(user, 'Solo', [10, 25], fortnite.PC)
-    .then(res => msg.reply.text(res, {asReply: true}))
-    .catch(err => {
-      formatInfo(user, 'Solo', [10, 25], fortnite.XBOX)
-        .then(resp => msg.reply.text(resp, {asReply: true}))
-        .catch(error => {
-          formatInfo(user, 'Solo', [10, 25], fortnite.PS4)
-            .then(response => msg.reply.text(response, { asReply: true }))
-            .catch(e => msg.reply.text(e, {asReply: true}));
-        });
-    });
-});
+// Get solo, duo, or squad stats for lifetime or season 3
+bot.on(/^\/(solo|duo|squad|solos3|duos3|squads3) (.+)$/, (msg, props) => {
+  var mode = props.match[1];
+  mode = mode[0].toUpperCase() + mode.substr(1);
+  var user = props.match[2];
 
-// Get duo stats on a user
-bot.on(/^\/duo (.+)$/, (msg, props) => {
-  var user = props.match[1];
-  formatInfo(user, 'Duo', [5, 12], fortnite.PC)
+  var modes = {
+    'Solo': [10, 25],
+    'Duo': [5, 12],
+    'Squad': [3, 6],
+    'Solos3': [10, 25],
+    'Duos3': [5, 12],
+    'Squads3': [3,6]
+  };
+  var currSeason = mode.endsWith('s3') ? true : false;
+  formatModes(user, mode, modes[mode], fortnite.PC, currSeason)
     .then(res => msg.reply.text(res, { asReply: true }))
     .catch(err => {
-      formatInfo(user, 'Duo', [5, 12], fortnite.XBOX)
+      formatModes(user, mode, modes[mode], fortnite.XBOX, currSeason)
         .then(resp => msg.reply.text(resp, { asReply: true }))
         .catch(error => {
-          formatInfo(user, 'Duo', [5, 12], fortnite.PS4)
+          formatModes(user, mode, modes[mode], fortnite.PS4, currSeason)
             .then(response => msg.reply.text(response, { asReply: true }))
             .catch(e => msg.reply.text(e, { asReply: true }));
         });
     });
 });
 
-// Get squad stats on a user
-bot.on(/^\/squad (.+)$/, (msg, props) => {
-  var user = props.match[1];
-  formatInfo(user, 'Squad', [3, 6], fortnite.PC)
-    .then(res => msg.reply.text(res, { asReply: true }))
-    .catch(err => {
-      formatInfo(user, 'Squad', [3, 6], fortnite.XBOX)
-        .then(resp => msg.reply.text(resp, { asReply: true }))
-        .catch(error => {
-          formatInfo(user, 'Squad', [3, 6], fortnite.PS4)
-            .then(response => msg.reply.text(response, { asReply: true }))
-            .catch(e => msg.reply.text(e, { asReply: true }));
-        });
-    });
-});
-
-function formatInfo(user, mode, nums, platform) {
+// Format solo/duo/squad lifetime/season3 stats for Telegram message
+function formatModes(user, mode, nums, platform, currSeason) {
   return new Promise((resolve, reject) => {
-    client.get(user, platform)
+    client.get(user, platform, true)
       .then(info => {
-        if (!info[mode.toLowerCase()].matches)
+        var modes = {
+          'Solo': 'p2',
+          'Duo': 'p10',
+          'Squad': 'p9',
+          'Solos3': 'curr_p2',
+          'Duos3': 'curr_p10',
+          'Squads3': 'curr_p9'
+        };
+        var stats = info.stats[modes[mode]];
+        if (!stats.matches)
           return resolve('User has never played ' + mode + '.');
-
-        console.log(info[mode.toLowerCase()]);
+        console.log(stats);
         
-        var res = `${mode} stats for ${info.displayName}:\n`;
-        mode = mode.toLowerCase();
+        var res = currSeason ? 'Season 3 ' : '';
+        res += `${mode.slice(0, -2)} stats for ${info.epicUserHandle}:\n`;
 
-        res += `Platform: ${platform.toUpperCase()}\n\n`;
-        res += `Matches played: ${info[mode].matches.value}\n`;
+        res += `Platform: ${info.platformNameLong}\n\n`;
+        res += `Matches played: ${stats.matches.value}\n`;
 
-        var avgSeconds = parseFloat(info[mode].avgTimePlayed.value);
-        var seconds = info[mode].matches.valueInt * avgSeconds;
+        var avgSeconds = parseFloat(stats.avgTimePlayed.value);
+        var seconds = stats.matches.valueInt * avgSeconds;
         res += `Time played:${formatSeconds(seconds)}\n`;
 
-        res += `Avg Survival Time: ${info[mode].avgTimePlayed.displayValue}\n`;
-        res += `Wins: ${info[mode].top1.value}\n`;
+        res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
+        res += `Wins: ${stats.top1.value}\n`;
 
         nums.forEach(num => {
-          res += `Times in top ${num}: ${info[mode][`top${num}`].value}\n`;
+          res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
         });
 
-        if (info[mode].winRatio !== undefined)
-          res += `Win Rate: ${info[mode].winRatio.displayValue}%\n`;
+        if (stats.winRatio !== undefined)
+          res += `Win Rate: ${stats.winRatio.displayValue}%\n`;
         else
           res += `Win Rate: 0%\n`;
           
-        res += `Kills: ${info[mode].kills.value}\n`;
-        res += `K/D Ratio: ${info[mode].kd.value}\n`;
-        res += `Kills/Game: ${info[mode].kpg.value}\n`;
+        res += `Kills: ${stats.kills.value}\n`;
+        res += `K/D Ratio: ${stats.kd.value}\n`;
+        res += `Kills/Game: ${stats.kpg.value}\n`;
 
         return resolve(res);
       }).catch(err => {
