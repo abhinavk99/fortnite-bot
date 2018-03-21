@@ -1,5 +1,6 @@
 const TeleBot = require('telebot');
 const fortnite = require('fortnite.js');
+const Config = require('./config.json');
 
 const bot = new TeleBot(process.env.telegramToken);
 const client = new fortnite(process.env.fortniteKey);
@@ -141,9 +142,12 @@ function formatModes(user, mode, nums, platform, currSeason) {
           res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         
 =======
 
+>>>>>>> master
+=======
 >>>>>>> master
         res += `Wins: ${stats.top1.value}\n`;
 
