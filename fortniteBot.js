@@ -40,9 +40,10 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 // Get global stats on a user specifying platform
 bot.on(/^\/(pc|xbox|ps4) (.+)$/, (msg, props) => {
   var user = props.match[2]; // Username
+  var platform = props.match[1]; // Platform
   // Map command names to the platform specifier in the API
   var platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
-  formatGlobal(user, platforms[1])
+  formatGlobal(user, platforms[platform])
     .then(res => msg.reply.text(res, { asReply: true }))
     .catch(err => msg.reply.text(err, { asReply: true }));
 });
