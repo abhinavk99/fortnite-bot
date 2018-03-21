@@ -16,12 +16,12 @@ const startMsg = '/user username for information on the player\n'
   + '/squads3 username for player\'s season 3 squad stats\n'
   + '/recent username for player\'s recent match information';
 
-bot.on('/start', msg => {
+bot.on(/^\/start$/i, msg => {
   msg.reply.text(startMsg);
 });
 
 // Get global stats on a user
-bot.on(/^\/user (.+)$/, (msg, props) => {
+bot.on(/^\/user (.+)$/i, (msg, props) => {
   var user = props.match[1]; // Username
   formatGlobal(user, fortnite.PC) // Tries to find user on PC
     .then(res => msg.reply.text(res, { asReply: true }))
@@ -37,7 +37,7 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 });
 
 // Get global stats on a user specifying platform
-bot.on(/^\/(pc|xbox|ps4) (.+)$/, (msg, props) => {
+bot.on(/^\/(pc|xbox|ps4) (.+)$/i, (msg, props) => {
   var user = props.match[2]; // Username
   var platform = props.match[1]; // Platform
   // Map command names to the platform specifier in the API
@@ -99,7 +99,7 @@ function formatGlobal(user, platform) {
 }
 
 // Get solo, duo, or squad stats for lifetime or season 3
-bot.on(/^\/(solo|duo|squad|solos3|duos3|squads3) (.+)$/, (msg, props) => {
+bot.on(/^\/(solo|duo|squad|solos3|duos3|squads3) (.+)$/i, (msg, props) => {
   // Regex matches all 6 commands because method works the same way for each
   var mode = props.match[1]; // Mode
   mode = mode[0].toUpperCase() + mode.substr(1); // Capitalize first letter
@@ -194,7 +194,7 @@ function formatModes(user, mode, nums, platform, currSeason) {
 }
 
 // Get recent matches on a user
-bot.on(/^\/recent (.+)$/, (msg, props) => {
+bot.on(/^\/recent (.+)$/i, (msg, props) => {
   var user = props.match[1]; // Username
   formatRecent(user, fortnite.PC)
     .then(res => msg.reply.text(res, { asReply: true }))
