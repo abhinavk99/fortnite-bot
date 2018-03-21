@@ -67,7 +67,7 @@ function formatGlobal(user, platform) {
             res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
             var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
             var seconds = modeStats.matches.valueInt * avgSeconds;
-            res += `${mode} time played:${formatSeconds(seconds)}\n`;
+            res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
           }
         }
 
@@ -137,7 +137,7 @@ function formatModes(user, mode, nums, platform, currSeason) {
         if (!currSeason) {
           var avgSeconds = parseFloat(stats.avgTimePlayed.value);
           var seconds = stats.matches.valueInt * avgSeconds;
-          res += `Time played:${formatSeconds(seconds)}\n`;
+          res += `Time played:${formatSeconds(seconds, false)}\n`;
           res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
         }
 
@@ -205,7 +205,7 @@ function formatRecent(user, platform) {
 
           var date = new Date(data.dateCollected);
           var diffSecs = (Date.now() - date.getTime()) / 1000;
-          res += `${formatSeconds(diffSecs)} ago\n`;
+          res += `${formatSeconds(diffSecs, true)} ago\n`;
         });
 
         return resolve(res);
@@ -220,7 +220,7 @@ function formatRecent(user, platform) {
 }
 
 // Convert seconds to days, hours, minutes, and seconds
-function formatSeconds(seconds) {
+function formatSeconds(seconds, recent) {
   var days = Math.floor(seconds / (60 * 60 * 24));
   seconds -= days * 60 * 60 * 24;
   var hrs = Math.floor(seconds / (60 * 60));
@@ -233,7 +233,7 @@ function formatSeconds(seconds) {
     res += (' ' + days + 'd');
   if (hrs > 0 || days > 0)
     res += (' ' + hrs + 'h');
-  if (mnts > 0 || hrs > 0)
+  if (!recent && (mnts > 0 || hrs > 0))
     res += (' ' + mnts + 'm');
   return res;
 }
