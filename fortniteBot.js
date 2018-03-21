@@ -134,11 +134,13 @@ function formatModes(user, mode, nums, platform, currSeason) {
         res += `Platform: ${info.platformNameLong}\n\n`;
         res += `Matches played: ${stats.matches.value}\n`;
 
-        var avgSeconds = parseFloat(stats.avgTimePlayed.value);
-        var seconds = stats.matches.valueInt * avgSeconds;
-        res += `Time played:${formatSeconds(seconds)}\n`;
+        if (!currSeason) {
+          var avgSeconds = parseFloat(stats.avgTimePlayed.value);
+          var seconds = stats.matches.valueInt * avgSeconds;
+          res += `Time played:${formatSeconds(seconds)}\n`;
+          res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
+        }
 
-        res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
         res += `Wins: ${stats.top1.value}\n`;
 
         nums.forEach(num => {
