@@ -40,7 +40,7 @@ bot.on(/^\/user (.+)$/i, (msg, props) => {
 // Get global stats on a user specifying platform
 bot.on(/^\/(pc|xbox|ps4) (.+)$/i, (msg, props) => {
   var user = props.match[2]; // Username
-  var platform = props.match[1]; // Platform
+  var platform = props.match[1].toLowerCase(); // Platform
   // Map command names to the platform specifier in the API
   var platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
   formatGlobal(user, platforms[platform])
@@ -103,7 +103,8 @@ function formatGlobal(user, platform) {
 bot.on(/^\/(solo|duo|squad|solos3|duos3|squads3) (.+)$/i, (msg, props) => {
   // Regex matches all 6 commands because method works the same way for each
   var mode = props.match[1]; // Mode
-  mode = mode[0].toUpperCase() + mode.substr(1); // Capitalize first letter
+  // Only capitalize first letter
+  mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
   var user = props.match[2]; // Username
 
   // Each mode has the data for top x wins differently
