@@ -11,7 +11,8 @@ const startMsg = '/user username for information on the player\n'
   + '/squad username for player\'s lifetime squad stats\n'
   + '/solos3 username for player\'s season 3 solo stats\n'
   + '/duos3 username for player\'s season 3 duo stats\n'
-  + '/squads3 username for player\'s season 3 squad stats\n';
+  + '/squads3 username for player\'s season 3 squad stats\n'
+  + '/recent username for player\'s recent match information';
 
 bot.on('/start', msg => {
   msg.reply.text(startMsg);
@@ -37,7 +38,7 @@ bot.on(/^\/user (.+)$/, (msg, props) => {
 function formatGlobal(user, platform) {
   return new Promise((resolve, reject) => {
     client.get(user, platform, true)
-      .then((info) => {
+      .then(info => {
         console.log(info);
         stats = info.lifeTimeStats;
 
@@ -63,7 +64,7 @@ function formatGlobal(user, platform) {
         var modes = { 'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9' };
         for (var mode in modes) {
           modeStats = info.stats[modes[mode]]
-          if (modeStats.matches !== undefined) {
+          if (modeStats !== undefined) {
             res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
             var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
             var seconds = modeStats.matches.valueInt * avgSeconds;
@@ -155,6 +156,58 @@ function formatModes(user, mode, nums, platform, currSeason) {
         res += `Kills: ${stats.kills.value}\n`;
         res += `K/D Ratio: ${stats.kd.value}\n`;
         res += `Kills/Game: ${stats.kpg.value}\n`;
+
+        return resolve(res);
+      }).catch(err => {
+        console.log(err);
+        if (err === 'HTTP Player Not Found')
+          return reject('User not found.');
+        else
+          return reject('Error found when getting user info.');
+      });
+  });
+}
+
+// Get recent matches on a user
+bot.on(/^\/recent (.+)$/, (msg, props) => {
+  var user = props.match[1];
+  formatRecent(user, fortnite.PC)
+    .then(res => msg.reply.text(res, { asReply: true }))
+    .catch(err => {
+      formatRecent(user, fortnite.XBOX)
+        .then(resp => msg.reply.text(resp, { asReply: true }))
+        .catch(error => {
+          formatRecent(user, fortnite.PS4)
+            .then(response => msg.reply.text(response, { asReply: true }))
+            .catch(e => msg.reply.text(e, { asReply: true }));
+        });
+    });
+});
+
+// Format recent matches stats for Telegram message
+function formatRecent(user, platform) {
+  return new Promise((resolve, reject) => {
+    client.get(user, platform, true)
+      .then(info => {
+        console.log(info);
+        var matches = info.recentMatches;
+        var modes = { 'p2': 'Solo', 'p10': 'Duo', 'p9': 'Squad' };
+
+        var res = `Recent matches for ${info.epicUserHandle}:\n`;
+        res += `Platform: ${info.platformNameLong}\n\n`;
+
+        matches.forEach(data => {
+          var m = data.matches == 1 ? 'match' : 'matches';
+          var w = data.top1 == 1 ? 'win' : 'wins';
+          var k = data.kills == 1 ? 'kill' : 'kills';
+
+          res += `${modes[data.playlist]} - ${data.matches} ${m} - `;
+          res += `${data.top1} ${w} - ${data.kills} ${k} -`;
+
+          var date = new Date(data.dateCollected);
+          var diffSecs = (Date.now() - date.getTime()) / 1000;
+          res += `${formatSeconds(diffSecs)} ago\n`;
+        });
 
         return resolve(res);
       }).catch(err => {

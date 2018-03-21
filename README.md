@@ -38,6 +38,7 @@ The bot is not running 24/7. Commands made throughout the night will likely get 
 | /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
 | /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
 | /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
+| /recent | Get recent match stats for a player | /recent `<username>` |
 
 ## Examples
 ![](examples/user.png)
