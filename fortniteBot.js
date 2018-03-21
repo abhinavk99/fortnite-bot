@@ -1,6 +1,5 @@
 const TeleBot = require('telebot');
 const fortnite = require('fortnite.js');
-const Config = require('./config.json');
 
 const bot = new TeleBot(process.env.telegramToken);
 const client = new fortnite(process.env.fortniteKey);
