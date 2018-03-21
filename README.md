@@ -29,15 +29,28 @@ The bot is not running 24/7. Commands made throughout the night will likely get 
     ```
 
 ## Commands
+
+### Global Commands
 | Command | Description | Usage |
 | --- | --- | --- |
 | /user | Get global stats for a player | /user `<username>` |
+| /pc | Get global stats for a PC player | /pc `<username>` |
+| /xbox | Get global stats for an XBOX player | /xbox `<username>` |
+| /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
+
+| Command | Description | Usage |
+| --- | --- | --- |
+### Modes Commands
 | /solo | Get lifetime solo stats for a player | /solo `<username>` |
 | /duo | Get lifetime duo stats for a player | /duo `<username>` |
 | /squad | Get lifetime squad stats for a player | /squad `<username>` |
 | /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
 | /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
 | /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
+
+### Other Commands
+| Command | Description | Usage |
+| --- | --- | --- |
 | /recent | Get recent match stats for a player | /recent `<username>` |
 
 ## Examples

@@ -6,6 +6,9 @@ const bot = new TeleBot(Config.telegramToken);
 const client = new fortnite(Config.fortniteKey);
 
 const startMsg = '/user username for information on the player\n'
+  + '/pc username for information on the player on PC platform\n'
+  + '/xbox username for information on the player on XBOX platform\n'
+  + '/ps4 username for information on the player on PS4 platform\n'  
   + '/solo username for player\'s lifetime solo stats\n'
   + '/duo username for player\'s lifetime duo stats\n'
   + '/squad username for player\'s lifetime squad stats\n'
@@ -22,16 +25,26 @@ bot.on('/start', msg => {
 bot.on(/^\/user (.+)$/, (msg, props) => {
   var user = props.match[1]; // Username
   formatGlobal(user, fortnite.PC) // Tries to find user on PC
-    .then(res => msg.reply.text(res, {asReply: true}))
+    .then(res => msg.reply.text(res, { asReply: true }))
     .catch(err => {
       formatGlobal(user, fortnite.XBOX) // Tries xbox if PC not found
-        .then(resp => msg.reply.text(resp, {asReply: true}))
+        .then(resp => msg.reply.text(resp, { asReply: true }))
         .catch(error => {
           formatGlobal(user, fortnite.PS4) // Tries ps4 if xbox not found
             .then(response => msg.reply.text(response, {asReply: true}))
-            .catch(e => msg.reply.text(e, {asReply: true}));
+            .catch(e => msg.reply.text(e, { asReply: true }));
         });
     });
+});
+
+// Get global stats on a user specifying platform
+bot.on(/^\/(pc|xbox|ps4) (.+)$/, (msg, props) => {
+  var user = props.match[2]; // Username
+  // Map command names to the platform specifier in the API
+  var platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
+  formatGlobal(user, platforms[1])
+    .then(res => msg.reply.text(res, { asReply: true }))
+    .catch(err => msg.reply.text(err, { asReply: true }));
 });
 
 // Format global stats for Telegram message
