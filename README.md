@@ -38,9 +38,10 @@ The bot is not running 24/7. Commands made throughout the night will likely get 
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
 
+
+### Modes Commands
 | Command | Description | Usage |
 | --- | --- | --- |
-### Modes Commands
 | /solo | Get lifetime solo stats for a player | /solo `<username>` |
 | /duo | Get lifetime duo stats for a player | /duo `<username>` |
 | /squad | Get lifetime squad stats for a player | /squad `<username>` |
