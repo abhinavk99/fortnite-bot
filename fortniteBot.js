@@ -141,14 +141,7 @@ function formatModes(user, mode, nums, platform, currSeason) {
           res += `Time played:${formatSeconds(seconds)}\n`;
           res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> master
-=======
->>>>>>> master
         res += `Wins: ${stats.top1.value}\n`;
 
         nums.forEach(num => {
