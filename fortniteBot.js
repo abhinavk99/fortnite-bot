@@ -260,6 +260,10 @@ function formatSeconds(seconds, recent) {
   seconds -= mnts * 60; // seconds
 
   var res = '';
+  if (days < 0)
+    days = 0;
+
+
   if (recent || days > 0) // Always shows days for current season, else if > 0
     res += (' ' + days + 'd');
   // Only shows hours and minutes if not for current season
