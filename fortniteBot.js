@@ -59,8 +59,8 @@ function formatGlobal(user, platform) {
         var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
         res += `Platform: ${info.platformNameLong}\n\n`;
         res += `Matches played: ${stats[7].value}\n`;
-        res += `Time played: ${stats[13].value}\n`;
-        res += `Avg Survival Time: ${stats[14].value}\n`;
+        // res += `Time played: ${stats[13].value}\n`;
+        // res += `Avg Survival Time: ${stats[14].value}\n`;
         res += `Wins: ${stats[8].value}\n`;
 
         var sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
@@ -73,7 +73,7 @@ function formatGlobal(user, platform) {
         res += `Win Rate: ${stats[9].value}\n`;
         res += `Kills: ${stats[10].value}\n`;
         res += `K/D Ratio: ${stats[11].value}\n`;
-        res += `Kills/Minute: ${stats[12].value}\n`;
+        // res += `Kills/Minute: ${stats[12].value}\n`;
 
         // Shows some limited data for the game modes
         var modes = { 'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9' };
@@ -81,10 +81,12 @@ function formatGlobal(user, platform) {
           modeStats = info.stats[modes[mode]]
           if (modeStats !== undefined) {
             res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
-            var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
-            // Gets time played by doing average time played * number of matches
-            var seconds = modeStats.matches.valueInt * avgSeconds;
-            res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
+            res += `${mode} wins: ${modeStats.top1.value}\n`;
+            res += `${mode} kills: ${modeStats.kills.value}\n`;
+            // var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
+            // // Gets time played by doing average time played * number of matches
+            // var seconds = modeStats.matches.valueInt * avgSeconds;
+            // res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
           }
         }
 
@@ -161,12 +163,12 @@ function formatModes(user, mode, nums, platform, currSeason) {
 
         // Only shows time played and average time if not current season
         // Current season shows average time played incorrectly (most likely)
-        if (!currSeason) {
-          var avgSeconds = parseFloat(stats.avgTimePlayed.value);
-          var seconds = stats.matches.valueInt * avgSeconds;
-          res += `Time played:${formatSeconds(seconds, false)}\n`;
-          res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
-        }
+        // if (!currSeason) {
+        //   var avgSeconds = parseFloat(stats.avgTimePlayed.value);
+        //   var seconds = stats.matches.valueInt * avgSeconds;
+        //   res += `Time played:${formatSeconds(seconds, false)}\n`;
+        //   res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
+        // }
 
         res += `Wins: ${stats.top1.value}\n`;
 
