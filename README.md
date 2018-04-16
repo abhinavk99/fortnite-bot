@@ -1,9 +1,9 @@
 # fortnite-bot
-Telegram bot that gets information on Fortnite players
+Telegram and Discord bot that gets information on Fortnite players
 
-Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram! 
+Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 
-The bot is not running 24/7. Commands made throughout the night will likely get responses the next morning.
+[Add the bot](https://discordapp.com/oauth2/authorize?client_id=435307828891090944&scope=bot) to your Discord server!
 
 ## Installation
 1. Clone the repo to your computer and install the required dependencies.
@@ -13,19 +13,21 @@ The bot is not running 24/7. Commands made throughout the night will likely get 
     npm install
     ```
 2. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
-3. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-4. Make a file called `config.json` in the repo directory.
-5. Copy/paste the below into the file.
+3. Get a Discord bot token from making a Bot User.
+4. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
+5. Make a file called `config.json` in the repo directory.
+6. Copy/paste the below into the file.
     ```javascript
     {
         "telegramToken": "Telegram token here",
-        "fortniteKey": "Fortnite Tracker API key here"
+        "fortniteKey": "Fortnite Tracker API key here",
+        "discordToken": "Discord token here"
     }
     ```
-6. Put your Telegram token and Fortnite Tracker key where it says to in the config.
-7. Run the bot.
+7. Put your tokens and key where it says to in the config.
+8. Run the bot.
     ```console
-    node fortniteBot.js
+    node src/fortniteBot.js
     ```
 
 ## Commands
