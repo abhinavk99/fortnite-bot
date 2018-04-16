@@ -1,5 +1,5 @@
 const fortnite = require('fortnite.js');
-const Config = require('./config.json');
+const Config = require('../config');
 
 const client = new fortnite(Config.fortniteKey);
 
