@@ -113,7 +113,7 @@ function sendMessage(msg, content, isTelegram = true) {
           name: discBot.user.username,
           icon_url: discBot.user.avatarURL
         },
-        title: "Fortnite Statistics",
+        title: `<@${msg.author.id}>`,
         description: content,
         timestamp: new Date(),
         footer: {
@@ -180,3 +180,4 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 
 teleBot.start();
 discBot.connect();
+discBot.editStatus( {game: { name: '/info' } } );
