@@ -70,7 +70,13 @@ teleBot.on(/^\/recent (.+)$/i, (msg, props) => {
   sendRecentCalls(user, msg);
 });
 
-// Discord bot
+// Discord bot sets game to /info when it's ready
+discBot.on('ready', () => {
+  console.log('Fortnite Bot is ready!');
+  discBot.editStatus('online', { name: '/info' });
+});
+
+// Discord bot responding to messages
 discBot.on('messageCreate', msg => {
   var text = msg.content.toLowerCase();
   if (text === '/info') {
@@ -112,8 +118,8 @@ function sendMessage(msg, content, isTelegram = true) {
           name: discBot.user.username,
           icon_url: discBot.user.avatarURL
         },
-        title: `<@${msg.author.id}>`,
-        description: content,
+        title: 'Fortnite Statistics',
+        description: `<@${msg.author.id}>\n\n${content}`,
         timestamp: new Date(),
         footer: {
           icon_url: discBot.user.avatarURL,
@@ -179,4 +185,3 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 
 teleBot.start();
 discBot.connect();
-discBot.editStatus( {game: { name: '/info' } } );
