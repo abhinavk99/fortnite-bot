@@ -1,1 +1,1 @@
-worker: node fortniteBot.js
+worker: node src/fortniteBot.js
