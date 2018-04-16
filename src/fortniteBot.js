@@ -106,8 +106,21 @@ function sendMessage(msg, content, isTelegram = true) {
   if (isTelegram) {
     return msg.reply.text(content, { asReply: true })
   } else {
-    var name = `<@${msg.author.id}>`; // Username to mention Discord user with
-    return discBot.createMessage(msg.channel.id, `${name}\n\n${content}`);
+    return discBot.createMessage(msg.channel.id, {
+      embed: {
+        color: 0x761FA1,
+        author: {
+          name: discBot.user.username,
+          icon_url: discBot.user.avatarURL
+        },
+        title: "Fortnite Statistics",
+        description: content,
+        timestamp: new Date(),
+        footer: {
+          icon_url: discBot.user.avatarURL,
+        }
+      }
+    });
   }
 }
 
