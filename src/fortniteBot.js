@@ -148,7 +148,7 @@ function sendGlobalCalls(user, msg, isTelegram = true) {
 function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
   formatGlobal(user, platforms[platform])
     .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => sendMessage(msg, e, isTelegram));
+    .catch(err => sendMessage(msg, err, isTelegram));
 }
 
 // Gets the Fortnite data for modes (checks all platforms)
