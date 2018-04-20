@@ -1,11 +1,11 @@
+require('dotenv').config()
 const TeleBot = require('telebot');
 const Eris = require('eris');
-const Config = require('../config');
 const fortnite = require('fortnite.js');
 const fortniteData = require('./fortniteData');
 
-const teleBot = new TeleBot(Config.telegramToken); // Telegram bot
-const discBot = new Eris(Config.discordToken); // Discord bot
+const teleBot = new TeleBot(process.env.TELEGRAM_TOKEN); // Telegram bot
+const discBot = new Eris(process.env.DISCORD_TOKEN); // Discord bot
 
 // Methods for actually getting Fortnite data are in fortniteData.js
 const formatGlobal = fortniteData.formatGlobal;

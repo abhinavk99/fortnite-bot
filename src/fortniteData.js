@@ -1,7 +1,7 @@
+require('dotenv').config()
 const fortnite = require('fortnite.js');
-const Config = require('../config');
 
-const client = new fortnite(Config.fortniteKey);
+const client = new fortnite(process.env.FORTNITE_KEY);
 
 // Format global stats for message
 function formatGlobal(user, platform) {
