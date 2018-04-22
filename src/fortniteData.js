@@ -4,7 +4,7 @@ const fortnite = require('fortnite.js');
 const client = new fortnite(process.env.FORTNITE_KEY);
 
 // Format global stats for message
-function formatGlobal(user, platform) {
+module.exports.formatGlobal = function formatGlobal(user, platform) {
   return new Promise((resolve, reject) => {
     client.get(user, platform, true)
       .then(info => {
@@ -28,12 +28,15 @@ function formatGlobal(user, platform) {
         res += `Win Rate: ${stats[9].value}\n`;
         res += `Kills: ${stats[10].value}\n`;
         res += `K/D Ratio: ${stats[11].value}\n`;
+
+        var kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
+        res += `Kills/Game: ${kg}\n`;
         // res += `Kills/Minute: ${stats[12].value}\n`;
 
         // Shows some limited data for the game modes
         var modes = { 'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9' };
         for (var mode in modes) {
-          modeStats = info.stats[modes[mode]]
+          modeStats = info.stats[modes[mode]];
           if (modeStats !== undefined) {
             res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
             res += `${mode} wins: ${modeStats.top1.value}\n`;
@@ -57,7 +60,7 @@ function formatGlobal(user, platform) {
 }
 
 // Format solo/duo/squad lifetime/season3 stats for message
-function formatModes(user, mode, nums, platform, currSeason) {
+module.exports.formatModes = function formatModes(user, mode, nums, platform, currSeason) {
   return new Promise((resolve, reject) => {
     client.get(user, platform, true)
       .then(info => {
@@ -105,8 +108,8 @@ function formatModes(user, mode, nums, platform, currSeason) {
           res += `Win Rate: 0%\n`;
 
         res += `Kills: ${stats.kills.value}\n`;
-        res += `K/D Ratio: ${stats.kd.value}\n`;
-        res += `Kills/Game: ${stats.kpg.value}\n`;
+        res += `K/D Ratio: ${stats.kd.displayValue}\n`;
+        res += `Kills/Game: ${stats.kpg.displayValue}\n`;
 
         return resolve(res);
       }).catch(err => {
@@ -120,7 +123,7 @@ function formatModes(user, mode, nums, platform, currSeason) {
 }
 
 // Format recent matches stats for message
-function formatRecent(user, platform) {
+module.exports.formatRecent = function formatRecent(user, platform) {
   return new Promise((resolve, reject) => {
     client.get(user, platform, true)
       .then(info => {
@@ -158,8 +161,69 @@ function formatRecent(user, platform) {
   });
 }
 
+// Format all season 3 stats for message
+module.exports.formatSeason = function formatSeason(user, platform) {
+  return new Promise((resolve, reject) => {
+    client.get(user, platform, true)
+      .then(info => {
+        console.log(info);
+        stats = info.lifeTimeStats;
+
+        var modes = { 'Solo': 'curr_p2', 'Duo': 'curr_p10', 'Squad': 'curr_p9' };
+
+        var matches = 0;
+        var wins = 0;
+        var sumPlaces1 = 0;
+        var sumPlaces2 = 0;
+        var kills = 0;
+        var deaths = 0;
+
+        var modeRes = '';
+
+        for (var mode in modes) {
+          modeStats = info.stats[modes[mode]];
+          if (modeStats !== undefined) {
+            // Sums up the values needed to show all season 3 stats
+            matches += modeStats.matches.valueInt;
+            wins += modeStats.top1.valueInt;
+            sumPlaces1 += (modeStats.top3.valueInt + modeStats.top5.valueInt
+              + modeStats.top10.valueInt);
+            sumPlaces1 += (modeStats.top6.valueInt + modeStats.top12.valueInt
+              + modeStats.top25.valueInt);
+            kills += modeStats.kills.valueInt;
+            deaths += (modeStats.kills.valueInt / modeStats.kd.valueDec);
+
+            // Gets some mode data to display
+            modeRes += `\n${mode} matches played: ${modeStats.matches.value}\n`;
+            modeRes += `${mode} wins: ${modeStats.top1.value}\n`;
+            modeRes += `${mode} kills: ${modeStats.kills.value}\n`;
+          }
+        }
+
+        var res = `Season 3 stats for ${info.epicUserHandle}:\n`;
+        res += `Platform: ${info.platformNameLong}\n\n`;
+        res += `Matches played: ${matches}\n`;
+        res += `Wins: ${wins}\n`;
+        res += `Times in top 3/5/10: ${sumPlaces1}\n`;
+        res += `Times in top 6/12/25: ${sumPlaces2}\n`;
+        res += `Win Rate: ${(wins / matches * 100).toFixed(2)}%\n`;
+        res += `Kills: ${kills}\n`;
+        res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
+        res += `Kills/Game: ${(kills / matches).toFixed(2)}\n`;
+
+        return resolve(res + modeRes);
+      }).catch(err => {
+        console.log(err);
+        if (err === 'HTTP Player Not Found')
+          return reject('User not found.');
+        else
+          return reject('Error found when getting user info.');
+      });
+  });
+}
+
 // Convert seconds to days, hours, minutes, and seconds
-function formatSeconds(seconds, recent) {
+module.exports.formatSeconds = function formatSeconds(seconds, recent) {
   var days = Math.floor(seconds / (60 * 60 * 24)); // days
   seconds -= days * 60 * 60 * 24;
   var hrs = Math.floor(seconds / (60 * 60)); // hours
@@ -181,8 +245,3 @@ function formatSeconds(seconds, recent) {
     res += (' ' + mnts + 'm');
   return res;
 }
-
-module.exports.formatGlobal = formatGlobal;
-module.exports.formatModes = formatModes;
-module.exports.formatRecent = formatRecent;
-module.exports.formatSeconds = formatSeconds;

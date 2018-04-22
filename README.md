@@ -39,6 +39,7 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 | /pc | Get global stats for a PC player | /pc `<username>` |
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
+| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
 
 
 ### Modes Commands

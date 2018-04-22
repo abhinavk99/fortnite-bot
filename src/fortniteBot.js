@@ -12,6 +12,7 @@ const formatGlobal = fortniteData.formatGlobal;
 const formatModes = fortniteData.formatModes;
 const formatRecent = fortniteData.formatRecent;
 const formatSeconds = fortniteData.formatSeconds;
+const formatSeason = fortniteData.formatSeason;
 
 // Map command names to the platform specifier in the API
 const platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
@@ -29,7 +30,8 @@ const modes = {
 const startMsg = '/user username for information on the player\n'
   + '/pc username for information on the player on PC platform\n'
   + '/xbox username for information on the player on XBOX platform\n'
-  + '/ps4 username for information on the player on PS4 platform\n'  
+  + '/ps4 username for information on the player on PS4 platform\n'
+  + '/season3 username for all season 3 information on the player\n'
   + '/solo username for player\'s lifetime solo stats\n'
   + '/duo username for player\'s lifetime duo stats\n'
   + '/squad username for player\'s lifetime squad stats\n'
@@ -71,6 +73,12 @@ teleBot.on(/^\/recent (.+)$/i, (msg, props) => {
   sendRecentCalls(user, msg);
 });
 
+// Get all season 3 stats on a user
+teleBot.on(/^\/season3 (.+)$/i, (msg, props) => {
+  var user = props.match[1]; // Username
+  sendSeasonCalls(user, msg);
+});
+
 // Discord bot sets game to /info when it's ready
 discBot.on('ready', () => {
   console.log('Fortnite Bot is ready!');
@@ -104,6 +112,10 @@ discBot.on('messageCreate', msg => {
     // Get recent matches on a user - Discord
     var user = text.substring(8); // Username
     sendRecentCalls(user, msg, false);
+  } else if (text.startsWith('/season3 ')) {
+    // Get all season 3 stats on a user
+    var user = text.substring(9); // USername
+    sendSeasonCalls(user, msg, false);
   }
 });
 
@@ -178,6 +190,21 @@ function sendRecentCalls(user, msg, isTelegram = true) {
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
           formatRecent(user, fortnite.PS4)
+            .then(response => sendMessage(msg, response, isTelegram))
+            .catch(e => sendMessage(msg, e, isTelegram));
+        });
+    });
+}
+
+// Gets the Fortnite data for Season 3 (checks all platforms)
+function sendSeasonCalls(user, msg, isTelegram = true) {
+  formatSeason(user, fortnite.PC)
+    .then(res => sendMessage(msg, res, isTelegram))
+    .catch(err => {
+      formatSeason(user, fortnite.XBOX)
+        .then(resp => sendMessage(msg, resp, isTelegram))
+        .catch(error => {
+          formatSeason(user, fortnite.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
