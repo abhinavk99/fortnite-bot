@@ -188,7 +188,7 @@ module.exports.formatSeason = function formatSeason(user, platform) {
             wins += modeStats.top1.valueInt;
             sumPlaces1 += (modeStats.top3.valueInt + modeStats.top5.valueInt
               + modeStats.top10.valueInt);
-            sumPlaces1 += (modeStats.top6.valueInt + modeStats.top12.valueInt
+            sumPlaces2 += (modeStats.top6.valueInt + modeStats.top12.valueInt
               + modeStats.top25.valueInt);
             kills += modeStats.kills.valueInt;
             deaths += (modeStats.kills.valueInt / modeStats.kd.valueDec);
