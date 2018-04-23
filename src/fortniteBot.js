@@ -11,7 +11,6 @@ const discBot = new Eris(process.env.DISCORD_TOKEN); // Discord bot
 const formatGlobal = fortniteData.formatGlobal;
 const formatModes = fortniteData.formatModes;
 const formatRecent = fortniteData.formatRecent;
-const formatSeconds = fortniteData.formatSeconds;
 const formatSeason = fortniteData.formatSeason;
 
 // Map command names to the platform specifier in the API

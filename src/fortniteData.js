@@ -223,7 +223,7 @@ module.exports.formatSeason = function formatSeason(user, platform) {
 }
 
 // Convert seconds to days, hours, minutes, and seconds
-module.exports.formatSeconds = function formatSeconds(seconds, recent) {
+function formatSeconds(seconds, recent) {
   var days = Math.floor(seconds / (60 * 60 * 24)); // days
   seconds -= days * 60 * 60 * 24;
   var hrs = Math.floor(seconds / (60 * 60)); // hours
