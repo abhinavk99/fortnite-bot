@@ -29,7 +29,10 @@ module.exports.formatGlobal = function formatGlobal(user, platform) {
         res += `Kills: ${stats[10].value}\n`;
         res += `K/D Ratio: ${stats[11].value}\n`;
 
-        var kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
+        if (parseInt(stats[7].value) == 0)
+          var kg = 0;
+        else
+          var kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
         res += `Kills/Game: ${kg}\n`;
         // res += `Kills/Minute: ${stats[12].value}\n`;
 
@@ -209,7 +212,9 @@ module.exports.formatSeason = function formatSeason(user, platform) {
         res += `Win Rate: ${(wins / matches * 100).toFixed(2)}%\n`;
         res += `Kills: ${kills}\n`;
         res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
-        res += `Kills/Game: ${(kills / matches).toFixed(2)}\n`;
+
+        var kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
+        res += `Kills/Game: ${kg}\n`;
 
         return resolve(res + modeRes);
       }).catch(err => {
