@@ -63,3 +63,6 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 
 ## Dependencies
 Powered by [Fortnite Tracker API](https://fortnitetracker.com/site-api) and [fortnite.js](https://github.com/ickerio/fortnite.js)
+
+## Releases
+Releases start at v2.0.1 because I didn't know how to use git tags before then and manually changed the versions in package.json
