@@ -1,5 +1,16 @@
 require('dotenv').config()
 const fortnite = require('fortnite.js');
+var firebase = require('firebase/app');
+require('firebase/database');
+
+var app = firebase.initializeApp({
+  apiKey: process.env.FIREBASE_KEY,
+  authDomain: process.env.FIREBASE_DOMAIN,
+  databaseURL: process.env.FIREBASE_URL,
+  projectId: process.env.FIREBASE_ID,
+  storageBucket: process.env.FIREBASE_BUCKET
+});
+var database = firebase.database();
 
 const client = new fortnite(process.env.FORTNITE_KEY);
 
@@ -9,6 +20,7 @@ module.exports.formatGlobal = function formatGlobal(user, platform) {
     client.get(user, platform, true)
       .then(info => {
         console.log(info);
+        cacheS3data(user, info);
         stats = info.lifeTimeStats;
 
         var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
@@ -67,6 +79,7 @@ module.exports.formatModes = function formatModes(user, mode, nums, platform, cu
   return new Promise((resolve, reject) => {
     client.get(user, platform, true)
       .then(info => {
+        cacheS3data(user, info);
         // The API data stores data for each of the modes with the mapped names
         var modes = {
           'Solo': 'p2',
@@ -131,6 +144,7 @@ module.exports.formatRecent = function formatRecent(user, platform) {
     client.get(user, platform, true)
       .then(info => {
         console.log(info);
+        cacheS3data(user, info);
         var matches = info.recentMatches;
         // Convert the API naming of modes to the actual name of the modes
         var modes = { 'p2': 'Solo', 'p10': 'Duo', 'p9': 'Squad' };
@@ -170,6 +184,7 @@ module.exports.formatSeason = function formatSeason(user, platform) {
     client.get(user, platform, true)
       .then(info => {
         console.log(info);
+        cacheS3data(user, info);
         stats = info.lifeTimeStats;
 
         var modes = { 'Solo': 'curr_p2', 'Duo': 'curr_p10', 'Squad': 'curr_p9' };
@@ -249,4 +264,19 @@ function formatSeconds(seconds, recent) {
   if (!recent && (mnts > 0 || hrs > 0)) // Shows min if exists or hours exists
     res += (' ' + mnts + 'm');
   return res;
+}
+
+// Debug logs for Firebase
+firebase.database.enableLogging(message => {
+  console.log("[FIREBASE]", message);
+});
+
+// Caches the user data before end of Season 3
+function cacheS3data(user, info) {
+  var now = new Date();
+  var end = new Date('2018-04-30');
+  if (now < end) {
+    user = user.toLowerCase();
+    database.ref('users/' + user).set(info);
+  }
 }
