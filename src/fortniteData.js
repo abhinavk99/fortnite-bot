@@ -277,6 +277,22 @@ function cacheS3data(user, info) {
   var end = new Date('2018-04-30');
   if (now < end) {
     user = user.toLowerCase();
-    database.ref('users/' + user).set(info);
+    userCode = user.hashCode();
+    database.ref('users/' + userCode).set(info);
   }
+}
+
+// Hashcode for strings, used for caching data
+// stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
+String.prototype.hashCode = function () {
+  var hash = 0;
+  if (this.length == 0) {
+    return hash;
+  }
+  for (var i = 0; i < this.length; i++) {
+    var char = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash;
 }
