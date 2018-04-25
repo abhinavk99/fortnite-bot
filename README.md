@@ -15,16 +15,14 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 2. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
 3. Get a Discord bot token from making a Bot User.
 4. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-5. Make a file called `config.json` in the repo directory.
+5. Make a file called `.env` in the repo directory.
 6. Copy/paste the below into the file.
-    ```javascript
-    {
-        "telegramToken": "Telegram token here",
-        "fortniteKey": "Fortnite Tracker API key here",
-        "discordToken": "Discord token here"
-    }
     ```
-7. Put your tokens and key where it says to in the config.
+    TELEGRAM_TOKEN=Token here
+    FORTNITE_KEY=Key here
+    DISCORD_TOKEN=Token here
+    ```
+7. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
 8. Run the bot.
     ```console
     node src/fortniteBot.js
