@@ -49,7 +49,7 @@ teleBot.on(/^\/start$/i, msg => {
 
 // Telegram bot responding to messages
 teleBot.on(['text', 'forward'], msg => {
-  var text = msg.content.toLowerCase();
+  var text = msg.text.toLowerCase();
   parseCommand(text, msg);
 });
 
