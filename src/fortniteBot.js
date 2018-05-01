@@ -42,48 +42,15 @@ const startMsg = '/user username for information on the player\n'
   + '/squads4 username for player\'s season 3 squad stats\n'
   + '/recent username for player\'s recent match information';
 
+// Telegram start message
 teleBot.on(/^\/start$/i, msg => {
   sendMessage(msg, startMsg);
 });
 
-// Get global stats on a user - Telegram
-teleBot.on(/^\/user (.+)$/i, (msg, props) => {
-  var user = props.match[1]; // Username
-  sendGlobalCalls(user, msg);
-});
-
-// Get global stats on a user specifying platform - Telegram
-teleBot.on(/^\/(pc|xbox|ps4) (.+)$/i, (msg, props) => {
-  var user = props.match[2]; // Username
-  var platform = props.match[1].toLowerCase(); // Platform
-  sendPlatformsCalls(user, platform, msg);
-});
-
-// Get solo, duo, or squad stats for lifetime or season - Telegram
-teleBot.on(/^\/(solo|duo|squad)(s3|s4)? (.+)$/i, (msg, props) => {
-  // Regex matches all 6 commands because method works the same way for each
-  var mode = props.match[1]; // Mode
-  // Add s3 or s4 quantifier based on whether regex has parsed it
-  if (props.match[2] != null) {
-    mode += props.match[2];
-  }
-  // Only capitalize first letter
-  mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
-  var user = props.match[3]; // Username
-  sendModesCalls(user, mode, msg);
-});
-
-// Get recent matches on a user - Telegram
-teleBot.on(/^\/recent (.+)$/i, (msg, props) => {
-  var user = props.match[1]; // Username
-  sendRecentCalls(user, msg);
-});
-
-// Get all season stats on a user - Telegram
-teleBot.on(/^\/(season|s)(3|4) (.+)$/i, (msg, props) => {
-  var season = props.match[2]; // Season
-  var user = props.match[3]; // Username
-  sendSeasonCalls(user, season, msg);
+// Telegram bot responding to messages
+teleBot.on(['text', 'forward'], msg => {
+  var text = msg.content.toLowerCase();
+  parseCommand(text, msg);
 });
 
 // Discord bot sets game to /info when it's ready
@@ -95,38 +62,43 @@ discBot.on('ready', () => {
 // Discord bot responding to messages
 discBot.on('messageCreate', msg => {
   var text = msg.content.toLowerCase();
+  parseCommand(text, msg, false);
+});
+
+// Calls the right method based on the command
+function parseCommand(text, msg, isTelegram = true) {
   if (text === '/info') {
-    sendMessage(msg, startMsg, false);
+    sendMessage(msg, startMsg, isTelegram);
   } else if (text.startsWith('/user ')) {
-    // Get global stats on a user - Discord
+    // Get global stats on a user
     var user = text.substring(6);
-    sendGlobalCalls(user, msg, false);
+    sendGlobalCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(pc|xbox|ps4) (.+)$/i)) {
-    // Get global stats on a user specifying platform - Discord
+    // Get global stats on a user specifying platform
     var arr = text.split(' ');
     var user = arr[1]; // Username
     var platform = arr[0].substring(1); // Platform
-    sendPlatformsCalls(user, platform, msg, false);
+    sendPlatformsCalls(user, platform, msg, isTelegram);
   } else if (text.match(/^\/(solo|duo|squad)(s3|s4)? (.+)$/i)) {
-    // Get solo, duo, or squad stats for lifetime or season - Discord
+    // Get solo, duo, or squad stats for lifetime or season
     var arr = text.split(' ');
     var mode = arr[0].substring(1); // Mode
     // Only capitalize first letter
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
     var user = arr[1]; // Username
-    sendModesCalls(user, mode, msg, false);
+    sendModesCalls(user, mode, msg, isTelegram);
   } else if (text.startsWith('/recent ')) {
-    // Get recent matches on a user - Discord
+    // Get recent matches on a user
     var user = text.substring(8); // Username
-    sendRecentCalls(user, msg, false);
+    sendRecentCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(season|s)(3|4) (.+)$/i)) {
-    // Get all season stats on a user - Discord
+    // Get all season stats on a user
     var arr = text.split(' ');
     var season = arr[0].substr(-1);
     var user = arr[1]; // Username
-    sendSeasonCalls(user, season, msg, false);
+    sendSeasonCalls(user, season, msg, isTelegram);
   }
-});
+}
 
 // Sends message a different way based on whether it's for Discord or Telegram
 function sendMessage(msg, content, isTelegram = true) {
@@ -142,10 +114,7 @@ function sendMessage(msg, content, isTelegram = true) {
         },
         title: 'Fortnite Statistics',
         description: `<@${msg.author.id}>\n\n${content}`,
-        timestamp: new Date(),
-        footer: {
-          icon_url: discBot.user.avatarURL,
-        }
+        timestamp: new Date()
       }
     });
   }
