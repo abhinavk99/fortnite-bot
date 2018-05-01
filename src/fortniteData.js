@@ -149,12 +149,12 @@ module.exports.formatSeason = function formatSeason(user, season, platform) {
       database.ref('users/' + userCode).once('value').then(snapshot => {
         if (snapshot.val() == null)
           return resolve('Deprecated command.');
-        return resolve(writeSeasonMsg(snapshot.val()));
+        return resolve(writeSeasonMsg(snapshot.val(), season));
       });
     } else {
       client.get(user, platform, true)
         .then(info => {
-          return resolve(writeSeasonMsg(info));
+          return resolve(writeSeasonMsg(info, season));
         }).catch(err => {
           console.log(err);
           if (err === 'HTTP Player Not Found')
@@ -184,7 +184,7 @@ function writeModesMsg(info, season, mode, nums) {
     return 'User has never played ' + mode + '.';
   console.log(stats);
 
-  var res = season != '' ? `Season ${season}` : '';
+  var res = season != '' ? `Season ${season} ` : '';
   // Cuts off the 's3' at the end for current season
   mode = season != '' ? mode.slice(0, -2) : mode;
   res += `${mode} stats for ${info.epicUserHandle}:\n`;
@@ -221,7 +221,7 @@ function writeModesMsg(info, season, mode, nums) {
 }
 
 // Creates the actual message using the data
-function writeSeasonMsg(info) {
+function writeSeasonMsg(info, season) {
   console.log(info);
   stats = info.lifeTimeStats;
 
@@ -256,7 +256,7 @@ function writeSeasonMsg(info) {
     }
   }
 
-  var res = `Season 3 stats for ${info.epicUserHandle}:\n`;
+  var res = `Season ${season} stats for ${info.epicUserHandle}:\n`;
   res += `Platform: ${info.platformNameLong}\n\n`;
   res += `Matches played: ${matches}\n`;
   res += `Wins: ${wins}\n`;
