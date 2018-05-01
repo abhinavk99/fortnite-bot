@@ -274,7 +274,7 @@ firebase.database.enableLogging(message => {
 // Caches the user data before end of Season 3
 function cacheS3data(user, info) {
   var now = new Date();
-  var end = new Date('2018-04-30');
+  var end = new Date('2018-05-01');
   if (now < end) {
     user = user.toLowerCase();
     userCode = user.hashCode();
