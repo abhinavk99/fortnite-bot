@@ -76,7 +76,7 @@ function parseCommand(text, msg, isTelegram = true) {
   } else if (text.match(/^\/(pc|xbox|ps4) (.+)$/i)) {
     // Get global stats on a user specifying platform
     var arr = text.split(' ');
-    var user = arr[1]; // Username
+    var user = arr.slice(1).join(' '); // Username
     var platform = arr[0].substring(1); // Platform
     sendPlatformsCalls(user, platform, msg, isTelegram);
   } else if (text.match(/^\/(solo|duo|squad)(s3|s4)? (.+)$/i)) {
@@ -85,7 +85,7 @@ function parseCommand(text, msg, isTelegram = true) {
     var mode = arr[0].substring(1); // Mode
     // Only capitalize first letter
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
-    var user = arr[1]; // Username
+    var user = arr.slice(1).join(' '); // Username
     sendModesCalls(user, mode, msg, isTelegram);
   } else if (text.startsWith('/recent ')) {
     // Get recent matches on a user
@@ -95,7 +95,7 @@ function parseCommand(text, msg, isTelegram = true) {
     // Get all season stats on a user
     var arr = text.split(' ');
     var season = arr[0].substr(-1);
-    var user = arr[1]; // Username
+    var user = arr.slice(1).join(' '); // Username
     sendSeasonCalls(user, season, msg, isTelegram);
   }
 }
