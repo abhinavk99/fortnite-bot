@@ -20,7 +20,6 @@ module.exports.formatGlobal = function formatGlobal(user, platform) {
     client.get(user, platform, true)
       .then(info => {
         console.log(info);
-        cacheS3data(user, info);
         stats = info.lifeTimeStats;
 
         var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
@@ -75,66 +74,29 @@ module.exports.formatGlobal = function formatGlobal(user, platform) {
 }
 
 // Format solo/duo/squad lifetime/season3 stats for message
-module.exports.formatModes = function formatModes(user, mode, nums, platform, currSeason) {
+module.exports.formatModes = function formatModes(user, mode, nums, platform, season) {
   return new Promise((resolve, reject) => {
-    client.get(user, platform, true)
-      .then(info => {
-        cacheS3data(user, info);
-        // The API data stores data for each of the modes with the mapped names
-        var modes = {
-          'Solo': 'p2',
-          'Duo': 'p10',
-          'Squad': 'p9',
-          'Solos3': 'curr_p2',
-          'Duos3': 'curr_p10',
-          'Squads3': 'curr_p9'
-        };
-        var stats = info.stats[modes[mode]]; // Data for the mode
-        if (!stats.matches) // No matches exist for the mode
-          return resolve('User has never played ' + mode + '.');
-        console.log(stats);
-
-        var res = currSeason ? 'Season 3 ' : '';
-        // Cuts off the 's3' at the end for current season
-        mode = currSeason ? mode.slice(0, -2) : mode;
-        res += `${mode} stats for ${info.epicUserHandle}:\n`;
-
-        res += `Platform: ${info.platformNameLong}\n\n`;
-        res += `Matches played: ${stats.matches.value}\n`;
-
-        // Only shows time played and average time if not current season
-        // Current season shows average time played incorrectly (most likely)
-        // if (!currSeason) {
-        //   var avgSeconds = parseFloat(stats.avgTimePlayed.value);
-        //   var seconds = stats.matches.valueInt * avgSeconds;
-        //   res += `Time played:${formatSeconds(seconds, false)}\n`;
-        //   res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
-        // }
-
-        res += `Wins: ${stats.top1.value}\n`;
-
-        // Gets times in top x for the 2 numbers passed in the array
-        nums.forEach(num => {
-          res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
-        });
-
-        if (stats.winRatio !== undefined)
-          res += `Win Rate: ${stats.winRatio.displayValue}%\n`;
-        else
-          res += `Win Rate: 0%\n`;
-
-        res += `Kills: ${stats.kills.value}\n`;
-        res += `K/D Ratio: ${stats.kd.displayValue}\n`;
-        res += `Kills/Game: ${stats.kpg.displayValue}\n`;
-
-        return resolve(res);
-      }).catch(err => {
-        console.log(err);
-        if (err === 'HTTP Player Not Found')
-          return reject('User not found.');
-        else
-          return reject('Error found when getting user info.');
+    if (season == '3') {
+      // Gets data from Firebase cache if looking for season 3 data
+      user = user.toLowerCase();
+      userCode = user.hashCode();
+      database.ref('users/' + userCode).once('value').then(snapshot => {
+        if (snapshot.val() == null)
+          return resolve('Deprecated command.');
+        return resolve(writeModesMsg(snapshot.val(), season, mode, nums));
       });
+    } else {
+      client.get(user, platform, true)
+        .then(info => {
+          return resolve(writeModesMsg(info, season, mode, nums));
+        }).catch(err => {
+          console.log(err);
+          if (err === 'HTTP Player Not Found')
+            return reject('User not found.');
+          else
+            return reject('Error found when getting user info.');
+        });
+    }
   });
 }
 
@@ -144,7 +106,6 @@ module.exports.formatRecent = function formatRecent(user, platform) {
     client.get(user, platform, true)
       .then(info => {
         console.log(info);
-        cacheS3data(user, info);
         var matches = info.recentMatches;
         // Convert the API naming of modes to the actual name of the modes
         var modes = { 'p2': 'Solo', 'p10': 'Duo', 'p9': 'Squad' };
@@ -179,67 +140,142 @@ module.exports.formatRecent = function formatRecent(user, platform) {
 }
 
 // Format all season 3 stats for message
-module.exports.formatSeason = function formatSeason(user, platform) {
+module.exports.formatSeason = function formatSeason(user, season, platform) {
   return new Promise((resolve, reject) => {
-    client.get(user, platform, true)
-      .then(info => {
-        console.log(info);
-        cacheS3data(user, info);
-        stats = info.lifeTimeStats;
-
-        var modes = { 'Solo': 'curr_p2', 'Duo': 'curr_p10', 'Squad': 'curr_p9' };
-
-        var matches = 0;
-        var wins = 0;
-        var sumPlaces1 = 0;
-        var sumPlaces2 = 0;
-        var kills = 0;
-        var deaths = 0;
-
-        var modeRes = '';
-
-        for (var mode in modes) {
-          modeStats = info.stats[modes[mode]];
-          if (modeStats !== undefined) {
-            // Sums up the values needed to show all season 3 stats
-            matches += modeStats.matches.valueInt;
-            wins += modeStats.top1.valueInt;
-            sumPlaces1 += (modeStats.top3.valueInt + modeStats.top5.valueInt
-              + modeStats.top10.valueInt);
-            sumPlaces2 += (modeStats.top6.valueInt + modeStats.top12.valueInt
-              + modeStats.top25.valueInt);
-            kills += modeStats.kills.valueInt;
-            deaths += (modeStats.kills.valueInt / modeStats.kd.valueDec);
-
-            // Gets some mode data to display
-            modeRes += `\n${mode} matches played: ${modeStats.matches.value}\n`;
-            modeRes += `${mode} wins: ${modeStats.top1.value}\n`;
-            modeRes += `${mode} kills: ${modeStats.kills.value}\n`;
-          }
-        }
-
-        var res = `Season 3 stats for ${info.epicUserHandle}:\n`;
-        res += `Platform: ${info.platformNameLong}\n\n`;
-        res += `Matches played: ${matches}\n`;
-        res += `Wins: ${wins}\n`;
-        res += `Times in top 3/5/10: ${sumPlaces1}\n`;
-        res += `Times in top 6/12/25: ${sumPlaces2}\n`;
-        res += `Win Rate: ${(wins / matches * 100).toFixed(2)}%\n`;
-        res += `Kills: ${kills}\n`;
-        res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
-
-        var kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
-        res += `Kills/Game: ${kg}\n`;
-
-        return resolve(res + modeRes);
-      }).catch(err => {
-        console.log(err);
-        if (err === 'HTTP Player Not Found')
-          return reject('User not found.');
-        else
-          return reject('Error found when getting user info.');
+    if (season == '3') {
+      // Gets data from Firebase cache if looking for season 3 data
+      user = user.toLowerCase();
+      userCode = user.hashCode();
+      database.ref('users/' + userCode).once('value').then(snapshot => {
+        if (snapshot.val() == null)
+          return resolve('Deprecated command.');
+        return resolve(writeSeasonMsg(snapshot.val()));
       });
+    } else {
+      client.get(user, platform, true)
+        .then(info => {
+          return resolve(writeSeasonMsg(info));
+        }).catch(err => {
+          console.log(err);
+          if (err === 'HTTP Player Not Found')
+            return reject('User not found.');
+          else
+            return reject('Error found when getting user info.');
+        });
+    }
   });
+}
+
+function writeModesMsg(info, season, mode, nums) {
+  // The API data stores data for each of the modes with the mapped names
+  var modes = {
+    'Solo': 'p2',
+    'Duo': 'p10',
+    'Squad': 'p9',
+    'Solos3': 'curr_p2',
+    'Duos3': 'curr_p10',
+    'Squads3': 'curr_p9',
+    'Solos4': 'curr_p2',
+    'Duos4': 'curr_p10',
+    'Squads4': 'curr_p9'
+  };
+  var stats = info.stats[modes[mode]]; // Data for the mode
+  if (stats == null || stats.matches == null) // No matches exist for the mode
+    return 'User has never played ' + mode + '.';
+  console.log(stats);
+
+  var res = season != '' ? `Season ${season}` : '';
+  // Cuts off the 's3' at the end for current season
+  mode = season != '' ? mode.slice(0, -2) : mode;
+  res += `${mode} stats for ${info.epicUserHandle}:\n`;
+
+  res += `Platform: ${info.platformNameLong}\n\n`;
+  res += `Matches played: ${stats.matches.value}\n`;
+
+  // Only shows time played and average time if not current season
+  // Current season shows average time played incorrectly (most likely)
+  // if (!season) {
+  //   var avgSeconds = parseFloat(stats.avgTimePlayed.value);
+  //   var seconds = stats.matches.valueInt * avgSeconds;
+  //   res += `Time played:${formatSeconds(seconds, false)}\n`;
+  //   res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
+  // }
+
+  res += `Wins: ${stats.top1.value}\n`;
+
+  // Gets times in top x for the 2 numbers passed in the array
+  nums.forEach(num => {
+    res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
+  });
+
+  if (stats.winRatio !== undefined)
+    res += `Win Rate: ${stats.winRatio.displayValue}%\n`;
+  else
+    res += `Win Rate: 0%\n`;
+
+  res += `Kills: ${stats.kills.value}\n`;
+  res += `K/D Ratio: ${stats.kd.displayValue}\n`;
+  res += `Kills/Game: ${stats.kpg.displayValue}\n`;
+
+  return res;
+}
+
+// Creates the actual message using the data
+function writeSeasonMsg(info) {
+  console.log(info);
+  stats = info.lifeTimeStats;
+
+  var modes = { 'Solo': 'curr_p2', 'Duo': 'curr_p10', 'Squad': 'curr_p9' };
+
+  var matches = 0;
+  var wins = 0;
+  var sumPlaces1 = 0;
+  var sumPlaces2 = 0;
+  var kills = 0;
+  var deaths = 0;
+
+  var modeRes = '';
+
+  for (var mode in modes) {
+    modeStats = info.stats[modes[mode]];
+    if (modeStats !== undefined) {
+      // Sums up the values needed to show all season stats
+      matches += modeStats.matches.valueInt;
+      wins += modeStats.top1.valueInt;
+      sumPlaces1 += (modeStats.top3.valueInt + modeStats.top5.valueInt
+        + modeStats.top10.valueInt);
+      sumPlaces2 += (modeStats.top6.valueInt + modeStats.top12.valueInt
+        + modeStats.top25.valueInt);
+      kills += modeStats.kills.valueInt;
+      deaths += (modeStats.kills.valueInt / modeStats.kd.valueDec);
+
+      // Gets some mode data to display
+      modeRes += `\n${mode} matches played: ${modeStats.matches.value}\n`;
+      modeRes += `${mode} wins: ${modeStats.top1.value}\n`;
+      modeRes += `${mode} kills: ${modeStats.kills.value}\n`;
+    }
+  }
+
+  var res = `Season 3 stats for ${info.epicUserHandle}:\n`;
+  res += `Platform: ${info.platformNameLong}\n\n`;
+  res += `Matches played: ${matches}\n`;
+  res += `Wins: ${wins}\n`;
+  res += `Times in top 3/5/10: ${sumPlaces1}\n`;
+  res += `Times in top 6/12/25: ${sumPlaces2}\n`;
+
+  var wr = (matches == 0) ? 0 : (wins / matches * 100).toFixed(2);
+  res += `Win Rate: ${wr}%\n`;
+
+  res += `Kills: ${kills}\n`;
+
+  if (deaths == 0)
+    deaths++;
+  res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
+
+  var kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
+  res += `Kills/Game: ${kg}\n`;
+
+  return res + modeRes;
 }
 
 // Convert seconds to days, hours, minutes, and seconds
@@ -270,17 +306,6 @@ function formatSeconds(seconds, recent) {
 firebase.database.enableLogging(message => {
   console.log("[FIREBASE]", message);
 });
-
-// Caches the user data before end of Season 3
-function cacheS3data(user, info) {
-  var now = new Date();
-  var end = new Date('2018-05-01');
-  if (now < end) {
-    user = user.toLowerCase();
-    userCode = user.hashCode();
-    database.ref('users/' + userCode).set(info);
-  }
-}
 
 // Hashcode for strings, used for caching data
 // stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript

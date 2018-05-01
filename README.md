@@ -15,15 +15,22 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 2. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
 3. Get a Discord bot token from making a Bot User.
 4. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-5. Make a file called `.env` in the repo directory.
-6. Copy/paste the below into the file.
+5. Create a Firebase project for retrieving cached data from Season 3. If you have nothing
+in your personal cache for season 3 data, the season 3 commands will not work.
+6. Make a file called `.env` in the repo directory.
+7. Copy/paste the below into the file.
     ```
     TELEGRAM_TOKEN=Token here
     FORTNITE_KEY=Key here
     DISCORD_TOKEN=Token here
+    FIREBASE_KEY=Key here
+    FIREBASE_DOMAIN=your-project-id.firebaseapp.com
+    FIREBASE_URL=https://your-project-id.firebaseio.com
+    FIREBASE_ID=your-project-id
+    FIREBASE_BUCKET=your-project-id.appspot.com
     ```
-7. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
-8. Run the bot.
+8. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
+9. Run the bot.
     ```console
     node src/fortniteBot.js
     ```
@@ -37,8 +44,8 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 | /pc | Get global stats for a PC player | /pc `<username>` |
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
-| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
-
+| /season4 | Get all season 4 stats for a player | /season3 `<username>` |
+| /s4 | Get all season 4 stats for a player | /s4 `<username>` |
 
 ### Modes Commands
 | Command | Description | Usage |
@@ -46,14 +53,23 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 | /solo | Get lifetime solo stats for a player | /solo `<username>` |
 | /duo | Get lifetime duo stats for a player | /duo `<username>` |
 | /squad | Get lifetime squad stats for a player | /squad `<username>` |
-| /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
-| /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
-| /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
+| /solos4 | Get season 4 solo stats for a player | /solos3 `<username>` |
+| /duos4 | Get season 4 duo stats for a player | /duos3 `<username>` |
+| /squads4 | Get season 4 squad stats for a player | /squads3 `<username>` |
 
 ### Other Commands
 | Command | Description | Usage |
 | --- | --- | --- |
 | /recent | Get recent match stats for a player | /recent `<username>` |
+
+### Deprecated Commands
+| Command | Description | Usage |
+| --- | --- | --- |
+| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
+| /s3 | Get all season 3 stats for a player | /s3 `<username>` |
+| /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
+| /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
+| /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
 
 ## Examples
 ![](examples/user.png)
