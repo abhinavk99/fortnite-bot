@@ -1,17 +1,18 @@
 require('dotenv').config()
+
+const fortnite = require('fortnite.js');
+
 const TeleBot = require('telebot');
 const Eris = require('eris');
-const fortnite = require('fortnite.js');
-const fortniteData = require('./fortniteData');
-
 const teleBot = new TeleBot(process.env.TELEGRAM_TOKEN); // Telegram bot
 const discBot = new Eris(process.env.DISCORD_TOKEN); // Discord bot
 
 // Methods for actually getting Fortnite data are in fortniteData.js
-const formatGlobal = fortniteData.formatGlobal;
-const formatModes = fortniteData.formatModes;
-const formatRecent = fortniteData.formatRecent;
-const formatSeason = fortniteData.formatSeason;
+const fortniteData = require('./fortniteData');
+const getGlobalData = fortniteData.getGlobalData;
+const getModesData = fortniteData.getModesData;
+const getRecentData = fortniteData.getRecentData;
+const getSeasonData = fortniteData.getSeasonData;
 
 // Map command names to the platform specifier in the API
 const platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
@@ -122,13 +123,13 @@ function sendMessage(msg, content, isTelegram = true) {
 
 // Gets the Fortnite data for global (checks all platforms)
 function sendGlobalCalls(user, msg, isTelegram = true) {
-  formatGlobal(user, fortnite.PC) // Tries to find user on PC
+  getGlobalData(user, fortnite.PC) // Tries to find user on PC
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      formatGlobal(user, fortnite.XBOX) // Tries xbox if PC not found
+      getGlobalData(user, fortnite.XBOX) // Tries xbox if PC not found
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          formatGlobal(user, fortnite.PS4) // Tries ps4 if xbox not found
+          getGlobalData(user, fortnite.PS4) // Tries ps4 if xbox not found
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -137,7 +138,7 @@ function sendGlobalCalls(user, msg, isTelegram = true) {
 
 // Gets the Fortnite data for platforms
 function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
-  formatGlobal(user, platforms[platform])
+  getGlobalData(user, platforms[platform])
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => sendMessage(msg, err, isTelegram));
 }
@@ -152,13 +153,13 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
     season = '4';
   else
     season = '';
-  formatModes(user, mode, modes[mode], fortnite.PC, season)
+  getModesData(user, mode, modes[mode], fortnite.PC, season)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      formatModes(user, mode, modes[mode], fortnite.XBOX, season)
+      getModesData(user, mode, modes[mode], fortnite.XBOX, season)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          formatModes(user, mode, modes[mode], fortnite.PS4, season)
+          getModesData(user, mode, modes[mode], fortnite.PS4, season)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -167,13 +168,13 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
 
 // Gets the Fortnite data for recent (checks all platforms)
 function sendRecentCalls(user, msg, isTelegram = true) {
-  formatRecent(user, fortnite.PC)
+  getRecentData(user, fortnite.PC)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      formatRecent(user, fortnite.XBOX)
+      getRecentData(user, fortnite.XBOX)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          formatRecent(user, fortnite.PS4)
+          getRecentData(user, fortnite.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -182,13 +183,13 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 
 // Gets the Fortnite data for Season (checks all platforms)
 function sendSeasonCalls(user, season, msg, isTelegram = true) {
-  formatSeason(user, season, fortnite.PC)
+  getSeasonData(user, season, fortnite.PC)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      formatSeason(user, season, fortnite.XBOX)
+      getSeasonData(user, season, fortnite.XBOX)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          formatSeason(user, season, fortnite.PS4)
+          getSeasonData(user, season, fortnite.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
