@@ -61,6 +61,7 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | Command | Description | Usage |
 | --- | --- | --- |
 | /recent | Get recent match stats for a player | /recent `<username>` |
+| /rold | Get recent match stats for a player (old format) | /rold `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 
 ### Deprecated Commands

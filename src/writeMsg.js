@@ -136,6 +136,37 @@ module.exports = {
     return [res, table];
   },
 
+  // Writes the message for recent stats
+  writeRoldMsg: info => {
+    console.log(info);
+    let matches = info.recentMatches;
+
+    let res = `Recent matches for ${info.epicUserHandle}:\n`;
+    res += `Platform: ${info.platformNameLong}\n\n`;
+
+    let m, w, k, mode, date, diffSecs;
+    matches.forEach(data => {
+      // Make it plural if not 1
+      m = data.matches == 1 ? 'match' : 'matches';
+      w = data.top1 == 1 ? 'win' : 'wins';
+      k = data.kills == 1 ? 'kill' : 'kills';
+    
+      mode = ['Solo', 'Duo', 'Squad'].find(mode =>
+        constants[mode.toUpperCase()].id == data.playlist
+      );
+      res += `${mode} - ${data.matches} ${m} - `;
+
+      res += `${data.top1} ${w} - ${data.kills} ${k} -`;
+    
+      // Get time difference from match time and now
+      date = new Date(data.dateCollected);
+      diffSecs = (Date.now() - date.getTime()) / 1000;
+      res += `${formatSeconds(diffSecs, true)} ago\n`;
+    });
+    
+    return res;
+  },
+
   // Writes the message for season stats
   writeSeasonMsg: (info, season) => {
     console.log(info);
