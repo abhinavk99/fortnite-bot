@@ -102,14 +102,15 @@ module.exports = {
     return res;
   },
 
-  // Writes the message for recent stats
+  // Creates a table for recent stats
   writeRecentMsg: info => {
     console.log(info);
     let matches = info.recentMatches;
 
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
-    res += `Platform: ${info.platformNameLong}\n\n`;
+    res += `Platform: ${info.platformNameLong}`;
 
+    let table = [[], [], [], [], []];
     let m, w, k, mode, date, diffSecs;
     matches.forEach(data => {
       // Make it plural if not 1
@@ -121,17 +122,18 @@ module.exports = {
       mode = ['Solo', 'Duo', 'Squad'].find(mode =>
         constants[mode.toUpperCase()].id == data.playlist
       );
-      res += `${mode} - ${data.matches} ${m} - `;
-
-      res += `${data.top1} ${w} - ${data.kills} ${k} -`;
+      table[0].push(mode);
+      table[1].push(`${data.matches} ${m}`);
+      table[2].push(`${data.top1} ${w}`);
+      table[3].push(`${data.kills} ${k}`);
 
       // Get time difference from match time and now
       date = new Date(data.dateCollected);
       diffSecs = (Date.now() - date.getTime()) / 1000;
-      res += `${formatSeconds(diffSecs, true)} ago\n`;
+      table[4].push(`${formatSeconds(diffSecs, true)} ago`);
     });
 
-    return res;
+    return [res, table];
   },
 
   // Writes the message for season stats

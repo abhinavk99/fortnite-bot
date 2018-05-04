@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const fortnite = require('fortnite.js');
+const table = require('markdown-table');
 
 const TeleBot = require('telebot');
 const Eris = require('eris');
@@ -95,6 +95,39 @@ function sendMessage(msg, content, isTelegram = true) {
   }
 }
 
+// Sends message specially for /recent to show the table
+function sendRecentMessage(msg, response, isTelegram = true) {
+  let introMsg = response[0];
+  let matrix = response[1];
+
+  // Transpose the table, taken from link below
+  // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
+  matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
+  matrix.unshift(['Mode', 'Matches', 'Wins', 'Kills', 'Time']);
+  let mdTable = table(matrix, { align: Array(5).fill('c') });
+  let output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
+  
+  if (isTelegram) {
+    return teleBot.sendMessage(msg.chat.id, output, {
+      replyToMessage: msg.message_id,
+      parseMode: 'Markdown'
+    });
+  } else {
+    return discBot.createMessage(msg.channel.id, {
+      embed: {
+        color: constants.DISCORD_COLOR,
+        author: {
+          name: discBot.user.username,
+          icon_url: discBot.user.avatarURL
+        },
+        title: 'Fortnite Statistics',
+        description: `<@${msg.author.id}>\n\n${output}`,
+        timestamp: new Date()
+      }
+    });
+  }
+}
+
 // Gets the Fortnite data for global (checks all platforms)
 function sendGlobalCalls(user, msg, isTelegram = true) {
   getGlobalData(user, constants.PC) // Tries to find user on PC
@@ -145,13 +178,13 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
 // Gets the Fortnite data for recent (checks all platforms)
 function sendRecentCalls(user, msg, isTelegram = true) {
   getRecentData(user, constants.PC)
-    .then(res => sendMessage(msg, res, isTelegram))
+    .then(res => sendRecentMessage(msg, res, isTelegram))
     .catch(err => {
       getRecentData(user, constants.XBOX)
-        .then(resp => sendMessage(msg, resp, isTelegram))
+        .then(resp => sendRecentMessage(msg, resp, isTelegram))
         .catch(error => {
           getRecentData(user, constants.PS4)
-            .then(response => sendMessage(msg, response, isTelegram))
+            .then(response => sendRecentMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
     });
