@@ -105,6 +105,11 @@ function sendRecentMessage(msg, response, isTelegram = true) {
   matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
   matrix.unshift(['Mode', 'Matches', 'Wins', 'Kills', 'Time']);
   let mdTable = table(matrix, { align: Array(5).fill('c') });
+  let mdRows = mdTable.split('\n');
+  // Remove the 2nd row separating titles and values
+  mdTable = mdRows[0] + '\n' + mdRows.slice(2).join('\n');
+  // Replace the pipe separators between columns with spaces
+  mdTable = mdTable.replace(/\|/g, ' ');
   let output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
   
   if (isTelegram) {
