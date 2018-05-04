@@ -2,6 +2,8 @@
  * Methods to write messages given the data
  */
 
+const constants = require('./constants');
+
 module.exports = {
   // Writes the message for global stats
   writeGlobalMsg: info => {
@@ -34,9 +36,8 @@ module.exports = {
     // res += `Kills/Minute: ${stats[12].value}\n`;
 
     // Shows some limited data for the game modes
-    var modes = { 'Solo': 'p2', 'Duo': 'p10', 'Squad': 'p9' };
-    for (var mode in modes) {
-      modeStats = info.stats[modes[mode]];
+    ['Solo', 'Duo', 'Squad'].forEach(mode => {
+      modeStats = info.stats[constants[mode.toUpperCase()].id];
       if (modeStats) {
         res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
         res += `${mode} wins: ${modeStats.top1.value}\n`;
@@ -46,7 +47,7 @@ module.exports = {
         // var seconds = modeStats.matches.valueInt * avgSeconds;
         // res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
       }
-    }
+    });
 
     return res;
   },
@@ -54,18 +55,12 @@ module.exports = {
   // Writes the message for modes stats
   writeModesMsg: (info, season, mode, nums) => {
     // The API data stores data for each of the modes with the mapped names
-    var modes = {
-      'Solo': 'p2',
-      'Duo': 'p10',
-      'Squad': 'p9',
-      'Solos3': 'curr_p2',
-      'Duos3': 'curr_p10',
-      'Squads3': 'curr_p9',
-      'Solos4': 'curr_p2',
-      'Duos4': 'curr_p10',
-      'Squads4': 'curr_p9'
-    };
-    var stats = info.stats[modes[mode]]; // Data for the mode
+    var formattedMode;
+    if (mode.endsWith('s3') || mode.endsWith('s4'))
+      formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
+    else
+      formattedMode = mode.toUpperCase();
+    var stats = info.stats[constants[formattedMode].id]; // Data for the mode
     if (!(stats && stats.matches)) // No matches exist for the mode
       return 'User has never played ' + mode + '.';
     console.log(stats);
@@ -110,8 +105,6 @@ module.exports = {
   writeRecentMsg: info => {
     console.log(info);
     var matches = info.recentMatches;
-    // Convert the API naming of modes to the actual name of the modes
-    var modes = { 'p2': 'Solo', 'p10': 'Duo', 'p9': 'Squad' };
 
     var res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
@@ -122,7 +115,12 @@ module.exports = {
       var w = data.top1 == 1 ? 'win' : 'wins';
       var k = data.kills == 1 ? 'kill' : 'kills';
 
-      res += `${modes[data.playlist]} - ${data.matches} ${m} - `;
+      // Get mode from the ID (p2, p10, p9)
+      var mode = ['Solo', 'Duo', 'Squad'].find(mode =>
+        constants[mode.toUpperCase()].id == data.playlist
+      );
+      res += `${mode} - ${data.matches} ${m} - `;
+
       res += `${data.top1} ${w} - ${data.kills} ${k} -`;
 
       // Get time difference from match time and now
@@ -139,8 +137,6 @@ module.exports = {
     console.log(info);
     stats = info.lifeTimeStats;
 
-    var modes = { 'Solo': 'curr_p2', 'Duo': 'curr_p10', 'Squad': 'curr_p9' };
-
     var matches = 0;
     var wins = 0;
     var sumPlaces1 = 0;
@@ -150,8 +146,8 @@ module.exports = {
 
     var modeRes = '';
 
-    for (var mode in modes) {
-      modeStats = info.stats[modes[mode]];
+    ['Solo', 'Duo', 'Squad'].forEach(mode => {
+      modeStats = info.stats[constants[`${mode.toUpperCase()}_S`].id];
       if (modeStats) {
         // Sums up the values needed to show all season stats
         matches += modeStats.matches.valueInt;
@@ -168,7 +164,7 @@ module.exports = {
         modeRes += `${mode} wins: ${modeStats.top1.value}\n`;
         modeRes += `${mode} kills: ${modeStats.kills.value}\n`;
       }
-    }
+    });
 
     var res = `Season ${season} stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;

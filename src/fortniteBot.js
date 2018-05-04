@@ -14,34 +14,7 @@ const getModesData = fortniteData.getModesData;
 const getRecentData = fortniteData.getRecentData;
 const getSeasonData = fortniteData.getSeasonData;
 
-// Map command names to the platform specifier in the API
-const platforms = { 'pc': 'pc', 'xbox': 'xbl', 'ps4': 'psn' };
-// Each mode has the data for top x wins differently
-// Solo stores times in top 10 and 25, duo top 5 and 12, squads top 3 and 6
-const modes = {
-  'Solo': [10, 25],
-  'Duo': [5, 12],
-  'Squad': [3, 6],
-  'Solos3': [10, 25],
-  'Duos3': [5, 12],
-  'Squads3': [3, 6],
-  'Solos4': [10, 25],
-  'Duos4': [5, 12],
-  'Squads4': [3, 6],
-};
-
-const startMsg = '/user username for information on the player\n'
-  + '/pc username for information on the player on PC platform\n'
-  + '/xbox username for information on the player on XBOX platform\n'
-  + '/ps4 username for information on the player on PS4 platform\n'
-  + '/season4 or /s4 username for all season 3 information on the player\n'
-  + '/solo username for player\'s lifetime solo stats\n'
-  + '/duo username for player\'s lifetime duo stats\n'
-  + '/squad username for player\'s lifetime squad stats\n'
-  + '/solos4 username for player\'s season 3 solo stats\n'
-  + '/duos4 username for player\'s season 3 duo stats\n'
-  + '/squads4 username for player\'s season 3 squad stats\n'
-  + '/recent username for player\'s recent match information';
+const constants = require('./constants');
 
 // Telegram start message
 teleBot.on(/^\/start$/i, msg => {
@@ -108,7 +81,7 @@ function sendMessage(msg, content, isTelegram = true) {
   } else {
     return discBot.createMessage(msg.channel.id, {
       embed: {
-        color: 0x761FA1,
+        color: constants.DISCORD_COLOR,
         author: {
           name: discBot.user.username,
           icon_url: discBot.user.avatarURL
@@ -123,13 +96,13 @@ function sendMessage(msg, content, isTelegram = true) {
 
 // Gets the Fortnite data for global (checks all platforms)
 function sendGlobalCalls(user, msg, isTelegram = true) {
-  getGlobalData(user, fortnite.PC) // Tries to find user on PC
+  getGlobalData(user, constants.PC) // Tries to find user on PC
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      getGlobalData(user, fortnite.XBOX) // Tries xbox if PC not found
+      getGlobalData(user, constants.XBOX) // Tries xbox if PC not found
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          getGlobalData(user, fortnite.PS4) // Tries ps4 if xbox not found
+          getGlobalData(user, constants.PS4) // Tries ps4 if xbox not found
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -138,7 +111,7 @@ function sendGlobalCalls(user, msg, isTelegram = true) {
 
 // Gets the Fortnite data for platforms
 function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
-  getGlobalData(user, platforms[platform])
+  getGlobalData(user, constants[platform.toUpperCase()])
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => sendMessage(msg, err, isTelegram));
 }
@@ -147,19 +120,22 @@ function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
   var season;
-  if (mode.endsWith('s3'))
-    season = '3';
-  else if (mode.endsWith('s4'))
-    season = '4';
-  else
+  var formattedMode;
+  if (mode.endsWith('s3') || mode.endsWith('s4')) {
+    season = mode.substr(-1);
+    formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
+  } else {
     season = '';
-  getModesData(user, mode, modes[mode], fortnite.PC, season)
+    formattedMode = mode.toUpperCase();
+  }
+  var top = constants[formattedMode].top;
+  getModesData(user, mode, top, constants.PC, season)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      getModesData(user, mode, modes[mode], fortnite.XBOX, season)
+      getModesData(user, mode, top, constants.XBOX, season)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          getModesData(user, mode, modes[mode], fortnite.PS4, season)
+          getModesData(user, mode, top, constants.PS4, season)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -168,13 +144,13 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
 
 // Gets the Fortnite data for recent (checks all platforms)
 function sendRecentCalls(user, msg, isTelegram = true) {
-  getRecentData(user, fortnite.PC)
+  getRecentData(user, constants.PC)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      getRecentData(user, fortnite.XBOX)
+      getRecentData(user, constants.XBOX)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          getRecentData(user, fortnite.PS4)
+          getRecentData(user, constants.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
@@ -183,13 +159,13 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 
 // Gets the Fortnite data for Season (checks all platforms)
 function sendSeasonCalls(user, season, msg, isTelegram = true) {
-  getSeasonData(user, season, fortnite.PC)
+  getSeasonData(user, season, constants.PC)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      getSeasonData(user, season, fortnite.XBOX)
+      getSeasonData(user, season, constants.XBOX)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          getSeasonData(user, season, fortnite.PS4)
+          getSeasonData(user, season, constants.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
