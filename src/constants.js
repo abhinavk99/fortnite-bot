@@ -1,5 +1,3 @@
-const fortnite = require('fortnite.js');
-
 module.exports = Object.freeze({
   PC: 'pc',
   XBOX: 'xbl',
