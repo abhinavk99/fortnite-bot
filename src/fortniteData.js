@@ -2,18 +2,18 @@
  * Methods to get Fortnite data from fortnite.js and Firebase cache
  */
 
-require('dotenv').config()
+require('dotenv').config();
 
-var firebase = require('firebase/app');
+const firebase = require('firebase/app');
 require('firebase/database');
-var app = firebase.initializeApp({
+const app = firebase.initializeApp({
   apiKey: process.env.FIREBASE_KEY,
   authDomain: process.env.FIREBASE_DOMAIN,
   databaseURL: process.env.FIREBASE_URL,
   projectId: process.env.FIREBASE_ID,
   storageBucket: process.env.FIREBASE_BUCKET
 });
-var database = firebase.database();
+const database = firebase.database();
 
 const fortnite = require('fortnite.js');
 const client = new fortnite(process.env.FORTNITE_KEY);
@@ -114,12 +114,12 @@ firebase.database.enableLogging(message => {
 // Hashcode for strings, used for caching data, taken from answer in link below
 // stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
 String.prototype.hashCode = function () {
-  var hash = 0;
+  let hash = 0;
   if (this.length == 0) {
     return hash;
   }
-  for (var i = 0; i < this.length; i++) {
-    var char = this.charCodeAt(i);
+  for (let i = 0; i < this.length; i++) {
+    let char = this.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash; // Convert to 32bit integer
   }

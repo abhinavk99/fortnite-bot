@@ -10,16 +10,16 @@ module.exports = {
     console.log(info);
     stats = info.lifeTimeStats;
 
-    var res = `Lifetime stats for ${info.epicUserHandle}:\n`;
+    let res = `Lifetime stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
     res += `Matches played: ${stats[7].value}\n`;
     // res += `Time played: ${stats[13].value}\n`;
     // res += `Avg Survival Time: ${stats[14].value}\n`;
     res += `Wins: ${stats[8].value}\n`;
 
-    var sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
+    let sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
       + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
-    var sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+    let sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
       + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
     res += `Times in top 3/5/10: ${sumPlaces1}\n`;
     res += `Times in top 6/12/25: ${sumPlaces2}\n`;
@@ -28,10 +28,11 @@ module.exports = {
     res += `Kills: ${stats[10].value}\n`;
     res += `K/D Ratio: ${stats[11].value}\n`;
 
+    let kg;
     if (parseInt(stats[7].value) == 0)
-      var kg = 0;
+      kg = 0;
     else
-      var kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
+      kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
     res += `Kills/Game: ${kg}\n`;
     // res += `Kills/Minute: ${stats[12].value}\n`;
 
@@ -42,9 +43,9 @@ module.exports = {
         res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
         res += `${mode} wins: ${modeStats.top1.value}\n`;
         res += `${mode} kills: ${modeStats.kills.value}\n`;
-        // var avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
+        // let avgSeconds = parseFloat(modeStats.avgTimePlayed.value);
         // // Gets time played by doing average time played * number of matches
-        // var seconds = modeStats.matches.valueInt * avgSeconds;
+        // let seconds = modeStats.matches.valueInt * avgSeconds;
         // res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
       }
     });
@@ -55,17 +56,17 @@ module.exports = {
   // Writes the message for modes stats
   writeModesMsg: (info, season, mode, nums) => {
     // The API data stores data for each of the modes with the mapped names
-    var formattedMode;
+    let formattedMode;
     if (mode.endsWith('s3') || mode.endsWith('s4'))
       formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
     else
       formattedMode = mode.toUpperCase();
-    var stats = info.stats[constants[formattedMode].id]; // Data for the mode
+    let stats = info.stats[constants[formattedMode].id]; // Data for the mode
     if (!(stats && stats.matches)) // No matches exist for the mode
       return 'User has never played ' + mode + '.';
     console.log(stats);
 
-    var res = season != '' ? `Season ${season} ` : '';
+    let res = season != '' ? `Season ${season} ` : '';
     // Cuts off the 's3' at the end for current season
     mode = season != '' ? mode.slice(0, -2) : mode;
     res += `${mode} stats for ${info.epicUserHandle}:\n`;
@@ -76,8 +77,8 @@ module.exports = {
     // Only shows time played and average time if not current season
     // Current season shows average time played incorrectly (most likely)
     // if (!season) {
-    //   var avgSeconds = parseFloat(stats.avgTimePlayed.value);
-    //   var seconds = stats.matches.valueInt * avgSeconds;
+    //   let avgSeconds = parseFloat(stats.avgTimePlayed.value);
+    //   let seconds = stats.matches.valueInt * avgSeconds;
     //   res += `Time played:${formatSeconds(seconds, false)}\n`;
     //   res += `Avg Survival Time: ${stats.avgTimePlayed.displayValue}\n`;
     // }
@@ -104,19 +105,20 @@ module.exports = {
   // Writes the message for recent stats
   writeRecentMsg: info => {
     console.log(info);
-    var matches = info.recentMatches;
+    let matches = info.recentMatches;
 
-    var res = `Recent matches for ${info.epicUserHandle}:\n`;
+    let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
+    let m, w, k, mode, date, diffSecs;
     matches.forEach(data => {
       // Make it plural if not 1
-      var m = data.matches == 1 ? 'match' : 'matches';
-      var w = data.top1 == 1 ? 'win' : 'wins';
-      var k = data.kills == 1 ? 'kill' : 'kills';
+      m = data.matches == 1 ? 'match' : 'matches';
+      w = data.top1 == 1 ? 'win' : 'wins';
+      k = data.kills == 1 ? 'kill' : 'kills';
 
       // Get mode from the ID (p2, p10, p9)
-      var mode = ['Solo', 'Duo', 'Squad'].find(mode =>
+      mode = ['Solo', 'Duo', 'Squad'].find(mode =>
         constants[mode.toUpperCase()].id == data.playlist
       );
       res += `${mode} - ${data.matches} ${m} - `;
@@ -124,8 +126,8 @@ module.exports = {
       res += `${data.top1} ${w} - ${data.kills} ${k} -`;
 
       // Get time difference from match time and now
-      var date = new Date(data.dateCollected);
-      var diffSecs = (Date.now() - date.getTime()) / 1000;
+      date = new Date(data.dateCollected);
+      diffSecs = (Date.now() - date.getTime()) / 1000;
       res += `${formatSeconds(diffSecs, true)} ago\n`;
     });
 
@@ -137,14 +139,9 @@ module.exports = {
     console.log(info);
     stats = info.lifeTimeStats;
 
-    var matches = 0;
-    var wins = 0;
-    var sumPlaces1 = 0;
-    var sumPlaces2 = 0;
-    var kills = 0;
-    var deaths = 0;
-
-    var modeRes = '';
+    let matches, wins, sumPlaces1, sumPlaces2, kills, deaths;
+    matches = wins = sumPlaces1 = sumPlaces2 = kills = deaths = 0;
+    let modeRes = '';
 
     ['Solo', 'Duo', 'Squad'].forEach(mode => {
       modeStats = info.stats[constants[`${mode.toUpperCase()}_S`].id];
@@ -166,14 +163,14 @@ module.exports = {
       }
     });
 
-    var res = `Season ${season} stats for ${info.epicUserHandle}:\n`;
+    let res = `Season ${season} stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
     res += `Matches played: ${matches}\n`;
     res += `Wins: ${wins}\n`;
     res += `Times in top 3/5/10: ${sumPlaces1}\n`;
     res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
-    var wr = (matches == 0) ? 0 : (wins / matches * 100).toFixed(2);
+    let wr = (matches == 0) ? 0 : (wins / matches * 100).toFixed(2);
     res += `Win Rate: ${wr}%\n`;
 
     res += `Kills: ${kills}\n`;
@@ -182,7 +179,7 @@ module.exports = {
       deaths++;
     res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
 
-    var kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
+    let kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
     res += `Kills/Game: ${kg}\n`;
 
     return res + modeRes;
@@ -191,14 +188,14 @@ module.exports = {
 
 // Convert seconds to days, hours, minutes, and seconds
 function formatSeconds(seconds, recent) {
-  var days = Math.floor(seconds / (60 * 60 * 24)); // days
+  let days = Math.floor(seconds / (60 * 60 * 24)); // days
   seconds -= days * 60 * 60 * 24;
-  var hrs = Math.floor(seconds / (60 * 60)); // hours
+  let hrs = Math.floor(seconds / (60 * 60)); // hours
   seconds -= hrs * 60 * 60;
-  var mnts = Math.floor(seconds / 60); // minutes
+  let mnts = Math.floor(seconds / 60); // minutes
   seconds -= mnts * 60; // seconds
 
-  var res = '';
+  let res = '';
   if (days < 0)
     days = 0;
 

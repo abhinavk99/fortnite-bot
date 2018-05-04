@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 
 const fortnite = require('fortnite.js');
 
@@ -23,7 +23,7 @@ teleBot.on(/^\/start$/i, msg => {
 
 // Telegram bot responding to messages
 teleBot.on(['text', 'forward'], msg => {
-  var text = msg.text.toLowerCase();
+  let text = msg.text.toLowerCase();
   parseCommand(text, msg);
 });
 
@@ -35,41 +35,42 @@ discBot.on('ready', () => {
 
 // Discord bot responding to messages
 discBot.on('messageCreate', msg => {
-  var text = msg.content.toLowerCase();
+  let text = msg.content.toLowerCase();
   parseCommand(text, msg, false);
 });
 
 // Calls the right method based on the command
 function parseCommand(text, msg, isTelegram = true) {
+  let user, arr;
   if (text === '/info') {
     sendMessage(msg, startMsg, isTelegram);
   } else if (text.startsWith('/user ')) {
     // Get global stats on a user
-    var user = text.substring(6);
+    user = text.substring(6);
     sendGlobalCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(pc|xbox|ps4) (.+)$/i)) {
     // Get global stats on a user specifying platform
-    var arr = text.split(' ');
-    var user = arr.slice(1).join(' '); // Username
-    var platform = arr[0].substring(1); // Platform
+    arr = text.split(' ');
+    user = arr.slice(1).join(' '); // Username
+    let platform = arr[0].substring(1); // Platform
     sendPlatformsCalls(user, platform, msg, isTelegram);
   } else if (text.match(/^\/(solo|duo|squad)(s3|s4)? (.+)$/i)) {
     // Get solo, duo, or squad stats for lifetime or season
-    var arr = text.split(' ');
-    var mode = arr[0].substring(1); // Mode
+    arr = text.split(' ');
+    let mode = arr[0].substring(1); // Mode
     // Only capitalize first letter
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
-    var user = arr.slice(1).join(' '); // Username
+    user = arr.slice(1).join(' '); // Username
     sendModesCalls(user, mode, msg, isTelegram);
   } else if (text.startsWith('/recent ')) {
     // Get recent matches on a user
-    var user = text.substring(8); // Username
+    user = text.substring(8); // Username
     sendRecentCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(season|s)(3|4) (.+)$/i)) {
     // Get all season stats on a user
-    var arr = text.split(' ');
-    var season = arr[0].substr(-1);
-    var user = arr.slice(1).join(' '); // Username
+    arr = text.split(' ');
+    let season = arr[0].substr(-1);
+    user = arr.slice(1).join(' '); // Username
     sendSeasonCalls(user, season, msg, isTelegram);
   }
 }
@@ -77,7 +78,7 @@ function parseCommand(text, msg, isTelegram = true) {
 // Sends message a different way based on whether it's for Discord or Telegram
 function sendMessage(msg, content, isTelegram = true) {
   if (isTelegram) {
-    return msg.reply.text(content, { asReply: true })
+    return msg.reply.text(content, { asReply: true });
   } else {
     return discBot.createMessage(msg.channel.id, {
       embed: {
@@ -119,8 +120,7 @@ function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
 // Gets the Fortnite data for modes (checks all platforms)
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
-  var season;
-  var formattedMode;
+  let season, formattedMode;
   if (mode.endsWith('s3') || mode.endsWith('s4')) {
     season = mode.substr(-1);
     formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
@@ -128,7 +128,7 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
     season = '';
     formattedMode = mode.toUpperCase();
   }
-  var top = constants[formattedMode].top;
+  let top = constants[formattedMode].top;
   getModesData(user, mode, top, constants.PC, season)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
