@@ -23,6 +23,7 @@ const writeMsg = require('./writeMsg');
 const writeGlobalMsg = writeMsg.writeGlobalMsg;
 const writeModesMsg = writeMsg.writeModesMsg;
 const writeRecentMsg = writeMsg.writeRecentMsg;
+const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
 
 module.exports = {
@@ -73,6 +74,18 @@ module.exports = {
     });
   },
 
+  // Get recent matches stats (old format)
+  getRoldData: (user, platform) => {
+    return new Promise((resolve, reject) => {
+      client.get(user, platform, true)
+        .then(info => {
+          return resolve(writeRoldMsg(info));
+        }).catch(err => {
+          return reject(handleError(err));
+        });
+    });
+  },
+
   // Get all season stats
   getSeasonData: (user, season, platform) => {
     return new Promise((resolve, reject) => {
@@ -93,6 +106,24 @@ module.exports = {
             return reject(handleError(err));
           });
       }
+    });
+  },
+
+  // Map Telegram or Discord user ID to Fortnite username
+  setIdCache: (user, id, isTelegram = true) => {
+    let path = isTelegram ? 'telegram/' : 'discord/';
+    database.ref(path + id).set({ username: user });
+  },
+
+  // Get username from user ID
+  getIdCache: (id, isTelegram = true) => {
+    return new Promise((resolve, reject) => {
+      let path = isTelegram ? 'telegram/' : 'discord/';
+      database.ref(path + id).once('value').then(snapshot => {
+        if (snapshot.val() == null)
+          return reject('User not found.');
+        return resolve(snapshot.val().username);
+      });
     });
   }
 };

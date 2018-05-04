@@ -61,6 +61,7 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | Command | Description | Usage |
 | --- | --- | --- |
 | /recent | Get recent match stats for a player | /recent `<username>` |
+| /set | Set username to your messaging account | /set `<username>` |
 
 ### Deprecated Commands
 | Command | Description | Usage |
@@ -70,6 +71,23 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
 | /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
 | /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
+
+### Instructions for special /set command
+1. Message the bot `/set yourusername`.
+    ```
+    Example:
+
+    /set ninja
+    ```
+2. Use any of the above commands (except `/set`) without a username.
+    ```
+    Example:
+
+    /user
+    /squads3
+    /recent
+    ```
+3. The bot will use the username that you set with `/set yourusername` for your stats.
 
 ## Examples
 ![](examples/user.png)
