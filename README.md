@@ -6,19 +6,26 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 [Add the bot](https://discordapp.com/oauth2/authorize?client_id=435307828891090944&scope=bot) to your Discord server!
 
 ## Installation
-1. Clone the repo to your computer and install the required dependencies.
+1. Clone the repo to your computer.
     ```console
     git clone https://github.com/abhinavk99/fortnite-bot.git
     cd fortnite-bot
+    ```
+2. Install the required dependencies with yarn or npm.
+    ```console
+    yarn install
+    ```
+    OR
+    ```console
     npm install
     ```
-2. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
-3. Get a Discord bot token from making a Bot User.
-4. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-5. Create a Firebase project for retrieving cached data from Season 3. If you have nothing
+3. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
+4. Get a Discord bot token from making a Bot User.
+5. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
+6. Create a Firebase project for retrieving cached data from Season 3. If you have nothing
 in your personal cache for season 3 data, the season 3 commands will not work.
-6. Make a file called `.env` in the repo directory.
-7. Copy/paste the below into the file.
+7. Make a file called `.env` in the repo directory.
+8. Copy/paste the below into the file.
     ```
     TELEGRAM_TOKEN=Token here
     FORTNITE_KEY=Key here
@@ -29,10 +36,10 @@ in your personal cache for season 3 data, the season 3 commands will not work.
     FIREBASE_ID=your-project-id
     FIREBASE_BUCKET=your-project-id.appspot.com
     ```
-8. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
-9. Run the bot.
+9. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
+10. Run the bot.
     ```console
-    node src/fortniteBot.js
+    npm start
     ```
 
 ## Commands
