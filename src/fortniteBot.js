@@ -21,7 +21,7 @@ const constants = require('./constants');
 
 // Telegram start message
 teleBot.on(/^\/start$/i, msg => {
-  sendMessage(msg, startMsg);
+  sendMessage(msg, constants.START_MSG);
 });
 
 // Telegram bot responding to messages
@@ -47,7 +47,7 @@ async function parseCommand(text, msg, isTelegram = true) {
   let user, arr, id;
   id = isTelegram ? msg.from.id : msg.author.id; // User ID on platform
   if (text === '/info') {
-    sendMessage(msg, startMsg, isTelegram);
+    sendMessage(msg, constants.START_MSG, isTelegram);
   } else if (text.startsWith('/user')) {
     // Get global stats on a user
     if (text == '/user') {
