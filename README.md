@@ -97,6 +97,9 @@ in your personal cache for season 3 data, the season 3 commands will not work.
     ```
 3. The bot will use the username that you set with `/set yourusername` for your stats.
 
+## Demo of /set
+![](examples/SetDemo.gif)
+
 ## Examples
 ![](examples/user.png)
 ![](examples/solo.png)
