@@ -53,6 +53,8 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
 | /season4 | Get all season 4 stats for a player | /season3 `<username>` |
 | /s4 | Get all season 4 stats for a player | /s4 `<username>` |
+| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
+| /s3 | Get all season 3 stats for a player | /s3 `<username>` |
 
 ### Modes Commands
 | Command | Description | Usage |
@@ -60,6 +62,9 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | /solo | Get lifetime solo stats for a player | /solo `<username>` |
 | /duo | Get lifetime duo stats for a player | /duo `<username>` |
 | /squad | Get lifetime squad stats for a player | /squad `<username>` |
+| /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
+| /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
+| /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
 | /solos4 | Get season 4 solo stats for a player | /solos3 `<username>` |
 | /duos4 | Get season 4 duo stats for a player | /duos3 `<username>` |
 | /squads4 | Get season 4 squad stats for a player | /squads3 `<username>` |
@@ -70,15 +75,6 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | /recent | Get recent match stats for a player | /recent `<username>` |
 | /rold | Get recent match stats for a player (old format) | /rold `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
-
-### Deprecated Commands
-| Command | Description | Usage |
-| --- | --- | --- |
-| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
-| /s3 | Get all season 3 stats for a player | /s3 `<username>` |
-| /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
-| /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
-| /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
 
 ### Instructions for special /set command
 1. Message the bot `/set yourusername`.
