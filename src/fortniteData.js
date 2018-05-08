@@ -42,23 +42,12 @@ module.exports = {
   // Get solo/duo/squad lifetime/season3 stats
   getModesData: (user, mode, nums, platform, season) => {
     return new Promise((resolve, reject) => {
-      if (season == '3') {
-        // Gets data from Firebase cache if looking for season 3 data
-        user = user.toLowerCase();
-        userCode = user.hashCode();
-        database.ref('users/' + userCode).once('value').then(snapshot => {
-          if (snapshot.val() == null)
-            return resolve('Deprecated command.');
-          return resolve(writeModesMsg(snapshot.val(), season, mode, nums));
+      client.get(user, platform, true)
+        .then(info => {
+          return resolve(writeModesMsg(info, season, mode, nums));
+        }).catch(err => {
+          return reject(handleError(err));
         });
-      } else {
-        client.get(user, platform, true)
-          .then(info => {
-            return resolve(writeModesMsg(info, season, mode, nums));
-          }).catch(err => {
-            return reject(handleError(err));
-          });
-      }
     });
   },
 
@@ -89,23 +78,12 @@ module.exports = {
   // Get all season stats
   getSeasonData: (user, season, platform) => {
     return new Promise((resolve, reject) => {
-      if (season == '3') {
-        // Gets data from Firebase cache if looking for season 3 data
-        user = user.toLowerCase();
-        userCode = user.hashCode();
-        database.ref('users/' + userCode).once('value').then(snapshot => {
-          if (snapshot.val() == null)
-            return resolve('Deprecated command.');
-          return resolve(writeSeasonMsg(snapshot.val(), season));
+      client.get(user, platform, true)
+        .then(info => {
+          return resolve(writeSeasonMsg(info, season));
+        }).catch(err => {
+          return reject(handleError(err));
         });
-      } else {
-        client.get(user, platform, true)
-          .then(info => {
-            return resolve(writeSeasonMsg(info, season));
-          }).catch(err => {
-            return reject(handleError(err));
-          });
-      }
     });
   },
 

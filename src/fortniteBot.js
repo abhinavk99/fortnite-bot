@@ -218,15 +218,12 @@ function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
 // Gets the Fortnite data for modes (checks all platforms)
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
-  let season, formattedMode;
-  if (mode.endsWith('s3') || mode.endsWith('s4')) {
+  let season;
+  if (mode.endsWith('s3') || mode.endsWith('s4'))
     season = mode.substr(-1);
-    formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
-  } else {
+  else
     season = '';
-    formattedMode = mode.toUpperCase();
-  }
-  let top = constants[formattedMode].top;
+  let top = constants[mode.toUpperCase()].top;
   getModesData(user, mode, top, constants.PC, season)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {

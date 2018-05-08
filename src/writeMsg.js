@@ -35,6 +35,7 @@ module.exports = {
       kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
     res += `Kills/Game: ${kg}\n`;
     // res += `Kills/Minute: ${stats[12].value}\n`;
+    res += `Score: ${stats[6].value}\n`;
 
     // Shows some limited data for the game modes
     ['Solo', 'Duo', 'Squad'].forEach(mode => {
@@ -56,12 +57,7 @@ module.exports = {
   // Writes the message for modes stats
   writeModesMsg: (info, season, mode, nums) => {
     // The API data stores data for each of the modes with the mapped names
-    let formattedMode;
-    if (mode.endsWith('s3') || mode.endsWith('s4'))
-      formattedMode = `${mode.substring(0, mode.length - 2)}_S`.toUpperCase();
-    else
-      formattedMode = mode.toUpperCase();
-    let stats = info.stats[constants[formattedMode].id]; // Data for the mode
+    let stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
     if (!(stats && stats.matches)) // No matches exist for the mode
       return 'User has never played ' + mode + '.';
     console.log(stats);
@@ -98,6 +94,9 @@ module.exports = {
     res += `Kills: ${stats.kills.value}\n`;
     res += `K/D Ratio: ${stats.kd.displayValue}\n`;
     res += `Kills/Game: ${stats.kpg.displayValue}\n`;
+    res += `TRN Rating: ${stats.trnRating.displayValue}\n`;
+    res += `Score: ${stats.score.displayValue}\n`;
+    res += `Score/Match: ${stats.scorePerMatch.displayValue}\n`;
 
     return res;
   },
@@ -177,7 +176,7 @@ module.exports = {
     let modeRes = '';
 
     ['Solo', 'Duo', 'Squad'].forEach(mode => {
-      modeStats = info.stats[constants[`${mode.toUpperCase()}_S`].id];
+      modeStats = info.stats[constants[`${mode.toUpperCase()}S${season}`].id];
       if (modeStats) {
         // Sums up the values needed to show all season stats
         matches += modeStats.matches.valueInt;

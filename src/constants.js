@@ -14,15 +14,27 @@ module.exports = Object.freeze({
     top: [3, 6],
     id: 'p9'
   },
-  SOLO_S: {
+  SOLOS3: {
+    top: [10, 25],
+    id: 'prior_p2'
+  },
+  DUOS3: {
+    top: [5, 12],
+    id: 'prior_p10'
+  },
+  SQUADS3: {
+    top: [3, 6],
+    id: 'prior_p9'
+  },
+  SOLOS4: {
     top: [10, 25],
     id: 'curr_p2'
   },
-  DUO_S: {
+  DUOS4: {
     top: [5, 12],
     id: 'curr_p10'
   },
-  SQUAD_S: {
+  SQUADS4: {
     top: [3, 6],
     id: 'curr_p9'
   },
