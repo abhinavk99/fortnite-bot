@@ -43,12 +43,15 @@ module.exports = Object.freeze({
 /pc username for information on the player on PC platform
 /xbox username for information on the player on XBOX platform
 /ps4 username for information on the player on PS4 platform
-/season4 or /s4 username for all season 3 information on the player
+/season3 or /s3 username for all season 3 information on the player
+/season4 or /s4 username for all season 4 information on the player
 /solo username for player's lifetime solo stats
 /duo username for player's lifetime duo stats
 /squad username for player's lifetime squad stats
-/solos4 username for player's season 3 solo stats
-/duos4 username for player's season 3 duo stats
-/squads4 username for player's season 3 squad stats
-/recent username for player's recent match information`
+/solos3 or /solos4 username for player's season 4 solo stats
+/duos3 or /duos4 username for player's season 4 duo stats
+/squads3 or /squads4 username for player's season 4 squad stats
+/recent username for player's recent match information
+
+You can end any command (except /set, /pc, /xbox, /ps4) with pc, xbox, or ps4 to specify the platform to search for the user.`
 });

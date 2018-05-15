@@ -124,7 +124,7 @@ firebase.database.enableLogging(message => {
 // stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
 String.prototype.hashCode = function () {
   let hash = 0;
-  if (this.length == 0) {
+  if (this.length === 0) {
     return hash;
   }
   for (let i = 0; i < this.length; i++) {

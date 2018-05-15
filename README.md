@@ -76,7 +76,19 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 | /rold | Get recent match stats for a player (old format) | /rold `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 
-### Instructions for special /set command
+#### Optional Platform Flags
+
+You can end any command (except /set, /pc, /xbox, /ps4) with pc, xbox, or ps4 to specify the platform
+to search for the user.
+
+```
+Example:
+
+/duopc ninja
+/squads4ps4 AlexRamiGaming
+```
+
+#### Instructions for special /set command
 1. Message the bot `/set yourusername`.
     ```
     Example:
@@ -93,7 +105,7 @@ in your personal cache for season 3 data, the season 3 commands will not work.
     ```
 3. The bot will use the username that you set with `/set yourusername` for your stats.
 
-## Demo of /set
+#### Demo of /set
 ![](examples/SetDemo.gif)
 
 ## Examples

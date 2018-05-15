@@ -29,7 +29,7 @@ module.exports = {
     res += `K/D Ratio: ${stats[11].value}\n`;
 
     let kg;
-    if (parseInt(stats[7].value) == 0)
+    if (parseInt(stats[7].value) === 0)
       kg = 0;
     else
       kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
@@ -113,13 +113,13 @@ module.exports = {
     let m, w, k, mode, date, diffSecs;
     matches.forEach(data => {
       // Make it plural if not 1
-      m = data.matches == 1 ? 'match' : 'matches';
-      w = data.top1 == 1 ? 'win' : 'wins';
-      k = data.kills == 1 ? 'kill' : 'kills';
+      m = data.matches === 1 ? 'match' : 'matches';
+      w = data.top1 === 1 ? 'win' : 'wins';
+      k = data.kills === 1 ? 'kill' : 'kills';
 
       // Get mode from the ID (p2, p10, p9)
       mode = ['Solo', 'Duo', 'Squad'].find(mode =>
-        constants[mode.toUpperCase()].id == data.playlist
+        constants[mode.toUpperCase()].id === data.playlist
       );
       table[0].push(mode);
       table[1].push(`${data.matches} ${m}`);
@@ -146,12 +146,12 @@ module.exports = {
     let m, w, k, mode, date, diffSecs;
     matches.forEach(data => {
       // Make it plural if not 1
-      m = data.matches == 1 ? 'match' : 'matches';
-      w = data.top1 == 1 ? 'win' : 'wins';
-      k = data.kills == 1 ? 'kill' : 'kills';
+      m = data.matches === 1 ? 'match' : 'matches';
+      w = data.top1 === 1 ? 'win' : 'wins';
+      k = data.kills === 1 ? 'kill' : 'kills';
     
       mode = ['Solo', 'Duo', 'Squad'].find(mode =>
-        constants[mode.toUpperCase()].id == data.playlist
+        constants[mode.toUpperCase()].id === data.playlist
       );
       res += `${mode} - ${data.matches} ${m} - `;
 
@@ -202,16 +202,16 @@ module.exports = {
     res += `Times in top 3/5/10: ${sumPlaces1}\n`;
     res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
-    let wr = (matches == 0) ? 0 : (wins / matches * 100).toFixed(2);
+    let wr = (matches === 0) ? 0 : (wins / matches * 100).toFixed(2);
     res += `Win Rate: ${wr}%\n`;
 
     res += `Kills: ${kills}\n`;
 
-    if (deaths == 0)
+    if (deaths === 0)
       deaths++;
     res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
 
-    let kg = (matches == 0) ? 0 : (kills / matches).toFixed(2);
+    let kg = (matches === 0) ? 0 : (kills / matches).toFixed(2);
     res += `Kills/Game: ${kg}\n`;
 
     return res + modeRes;

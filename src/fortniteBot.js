@@ -44,29 +44,32 @@ discBot.on('messageCreate', msg => {
 
 // Calls the right method based on the command
 async function parseCommand(text, msg, isTelegram = true) {
-  let user, arr, id;
+  let user, tokens, id, platform;
   id = isTelegram ? msg.from.id : msg.author.id; // User ID on platform
+  tokens = text.split(' ');
   if (text === '/info') {
     sendMessage(msg, constants.START_MSG, isTelegram);
   } else if (text.startsWith('/user')) {
     // Get global stats on a user
-    if (text == '/user') {
+    if (tokens.length === 1) {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
         return;
       }
     } else {
-      user = text.substring(6);
+      user = tokens.slice(1).join(' ');
     }
-    sendGlobalCalls(user, msg, isTelegram);
-  } else if (text.match(/^\/(pc|xbox|ps4) (.+)$/i)
-          || text.match(/^\/(pc|xbox|ps4)$/i)) {
+    platform = tokens[0].substring(5);
+    if (platform)
+      sendPlatformsCalls(user, platform, msg, isTelegram);
+    else
+      sendGlobalCalls(user, msg, isTelegram);
+  } else if (text.match(/^\/(pc|xbox|ps4)(.+)?$/i)) {
     // Get global stats on a user specifying platform
-    arr = text.split(' ');
-    user = arr.slice(1).join(' '); // Username
-    let platform = arr[0].substring(1); // Platform
-    if (user == '') {
+    user = tokens.slice(1).join(' '); // Username
+    let platform = tokens[0].substring(1); // Platform
+    if (user === '') {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
@@ -74,60 +77,94 @@ async function parseCommand(text, msg, isTelegram = true) {
       }
     }
     sendPlatformsCalls(user, platform, msg, isTelegram);
-  } else if (text.match(/^\/(solo|duo|squad)(s3|s4)? (.+)$/i)
-          || text.match(/^\/(solo|duo|squad)(s3|s4)?$/i)) {
+  } else if (text.match(/^\/(solo|duo|squad)(s3|s4)?(pc|xbox|ps4)?(.+)?$/i)) {
     // Get solo, duo, or squad stats for lifetime or season
-    arr = text.split(' ');
-    let mode = arr[0].substring(1); // Mode
+    let mode = tokens[0].substring(1); // Mode
     // Only capitalize first letter
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
-    user = arr.slice(1).join(' '); // Username
-    if (user == '') {
+    // Get platform by stripping the mode of the mode info
+    platform = mode.replace(/(solo|duo|squad)/i, '');
+    platform = platform.replace(/(s3|s4)/i, '');
+    // Strip mode of the platform info
+    mode = mode.replace(/(pc|xbox|ps4)/i, '');
+    user = tokens.slice(1).join(' '); // Username
+    if (user === '') {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
         return;
       }
     }
-    sendModesCalls(user, mode, msg, isTelegram);
+    if (platform.length === 0) {
+      sendModesCalls(user, mode, msg, isTelegram);
+    } else {
+      let [season, top] = getModeInfo(mode);
+      getModesData(user, mode, top, constants[platform.toUpperCase()], season)
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(err => sendMessage(msg, err, isTelegram));
+    }
   } else if (text.startsWith('/recent')) {
     // Get recent matches on a user
-    if (text == '/recent') {
+    if (tokens.length === 1) {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
         return;
       }
     } else {
-      user = text.substring(8);
+      user = tokens.slice(1).join(' ');
     }
-    sendRecentCalls(user, msg, isTelegram);
+    platform = tokens[0].substring(7);
+    if (platform) {
+      getRecentData(user, constants[platform.toUpperCase()])
+        .then(res => sendRecentMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    } else {
+      sendRecentCalls(user, msg, isTelegram);
+    }
   } else if (text.startsWith('/rold')) {
     // Get recent matches on a user (old format)
-    if (text == '/rold') {
+    if (tokens.length === 1) {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
         return;
       }
     } else {
-      user = text.substring(6);
+      user = tokens.slice(1).join(' ');
     }
-    sendRoldCalls(user, msg, isTelegram);
-  } else if (text.match(/^\/(season|s)(3|4) (.+)$/i)
-          || text.match(/^\/(season|s)(3|4)$/i)) {
+    platform = tokens[0].substring(5);
+    if (platform) {
+      getRoldData(user, constants[platform.toUpperCase()])
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    } else {
+      sendRoldCalls(user, msg, isTelegram);
+    }
+  } else if (text.match(/^\/(season|s)(3|4)(pc|xbox|ps4)?(.+)?$/i)) {
     // Get all season stats on a user
-    arr = text.split(' ');
-    let season = arr[0].substr(-1);
-    user = arr.slice(1).join(' '); // Username
-    if (user == '') {
+    tokens[0] = tokens[0].substring(1);
+    let season = tokens[0].replace(/(pc|xbox|ps4)/i, '').substring(1);
+    platform = tokens[0].replace(/(season|s)/i, '');
+    platform = platform.replace(/(3|4)/, '');
+    user = tokens.slice(1).join(' '); // Username
+    if (user === '') {
       try {
         user = await getIdCache(id, isTelegram);
       } catch (err) {
         return;
       }
     }
-    sendSeasonCalls(user, season, msg, isTelegram);
+    console.log(season);
+    console.log(platform);
+    console.log(user);
+    if (platform.length === 0) {
+      sendSeasonCalls(user, season, msg, isTelegram);
+    } else {
+      getSeasonData(user, season, constants[platform.toUpperCase()])
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    }
   } else if (text.startsWith('/set ')) {
     user = text.substring(5);
     setIdCache(user, id, isTelegram);
@@ -218,12 +255,7 @@ function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
 // Gets the Fortnite data for modes (checks all platforms)
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
-  let season;
-  if (mode.endsWith('s3') || mode.endsWith('s4'))
-    season = mode.substr(-1);
-  else
-    season = '';
-  let top = constants[mode.toUpperCase()].top;
+  let [season, top] = getModeInfo(mode);
   getModesData(user, mode, top, constants.PC, season)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
@@ -235,6 +267,17 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
             .catch(e => sendMessage(msg, e, isTelegram));
         });
     });
+}
+
+// Gets season and top placements based on the mode
+function getModeInfo(mode) {
+  let season;
+  if (mode.endsWith('s3') || mode.endsWith('s4'))
+    season = mode.substr(-1);
+  else
+    season = '';
+  let top = constants[mode.toUpperCase()].top;
+  return [season, top];
 }
 
 // Gets the Fortnite data for recent (checks all platforms)
