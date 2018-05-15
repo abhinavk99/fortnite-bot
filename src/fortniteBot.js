@@ -89,7 +89,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/recent')) {
     // Get recent matches on a user
-    user = await getUser(tokens.length, id, isTelegram);
+    user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
     platform = tokens[0].substring(7);
