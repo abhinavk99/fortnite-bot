@@ -51,31 +51,20 @@ async function parseCommand(text, msg, isTelegram = true) {
     sendMessage(msg, constants.START_MSG, isTelegram);
   } else if (text.startsWith('/user')) {
     // Get global stats on a user
-    if (tokens.length === 1) {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    } else {
-      user = tokens.slice(1).join(' ');
-    }
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
     platform = tokens[0].substring(5);
     if (platform)
       sendPlatformsCalls(user, platform, msg, isTelegram);
     else
       sendGlobalCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(pc|xbox|ps4)(.+)?$/i)) {
-    // Get global stats on a user specifying platform
-    user = tokens.slice(1).join(' '); // Username
+    // Get global stats on a user specifying 
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
     let platform = tokens[0].substring(1); // Platform
-    if (user === '') {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    }
     sendPlatformsCalls(user, platform, msg, isTelegram);
   } else if (text.match(/^\/(solo|duo|squad)(s3|s4)?(pc|xbox|ps4)?(.+)?$/i)) {
     // Get solo, duo, or squad stats for lifetime or season
@@ -87,14 +76,9 @@ async function parseCommand(text, msg, isTelegram = true) {
     platform = platform.replace(/(s3|s4)/i, '');
     // Strip mode of the platform info
     mode = mode.replace(/(pc|xbox|ps4)/i, '');
-    user = tokens.slice(1).join(' '); // Username
-    if (user === '') {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    }
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
     if (platform.length === 0) {
       sendModesCalls(user, mode, msg, isTelegram);
     } else {
@@ -105,15 +89,9 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/recent')) {
     // Get recent matches on a user
-    if (tokens.length === 1) {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    } else {
-      user = tokens.slice(1).join(' ');
-    }
+    user = await getUser(tokens.length, id, isTelegram);
+    if (!user)
+      return;
     platform = tokens[0].substring(7);
     if (platform) {
       getRecentData(user, constants[platform.toUpperCase()])
@@ -124,15 +102,9 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/rold')) {
     // Get recent matches on a user (old format)
-    if (tokens.length === 1) {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    } else {
-      user = tokens.slice(1).join(' ');
-    }
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
     platform = tokens[0].substring(5);
     if (platform) {
       getRoldData(user, constants[platform.toUpperCase()])
@@ -147,17 +119,9 @@ async function parseCommand(text, msg, isTelegram = true) {
     let season = tokens[0].replace(/(pc|xbox|ps4)/i, '').substring(1);
     platform = tokens[0].replace(/(season|s)/i, '');
     platform = platform.replace(/(3|4)/, '');
-    user = tokens.slice(1).join(' '); // Username
-    if (user === '') {
-      try {
-        user = await getIdCache(id, isTelegram);
-      } catch (err) {
-        return;
-      }
-    }
-    console.log(season);
-    console.log(platform);
-    console.log(user);
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
     if (platform.length === 0) {
       sendSeasonCalls(user, season, msg, isTelegram);
     } else {
@@ -170,6 +134,20 @@ async function parseCommand(text, msg, isTelegram = true) {
     setIdCache(user, id, isTelegram);
     sendMessage(msg, `Wrote ${user} to database.`, isTelegram);
   }
+}
+
+// Gets Fortnite user from the cache based on the messaging ID of the user
+async function getUser(tokens, id, isTelegram) {
+  if (tokens.length === 1) {
+    try {
+      user = await getIdCache(id, isTelegram);
+    } catch (err) {
+      return;
+    }
+  } else {
+    user = tokens.slice(1).join(' ');
+  }
+  return user;
 }
 
 // Sends message a different way based on whether it's for Discord or Telegram
