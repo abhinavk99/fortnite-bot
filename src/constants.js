@@ -39,6 +39,9 @@ module.exports = Object.freeze({
     id: 'curr_p9'
   },
   DISCORD_COLOR: 0x761FA1,
+  HTTP_ERROR: 'HTTP Player Not Found',
+  NOT_FOUND_ERROR: 'User not found.',
+  GENERIC_ERROR: 'Error found when getting user info.',
   START_MSG: `/user username for information on the player
 /pc username for information on the player on PC platform
 /xbox username for information on the player on XBOX platform

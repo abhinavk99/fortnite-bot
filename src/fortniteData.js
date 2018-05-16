@@ -26,6 +26,8 @@ const writeRecentMsg = writeMsg.writeRecentMsg;
 const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
 
+const constants = require('./constants');
+
 module.exports = {
   // Get global stats
   getGlobalData: (user, platform) => {
@@ -99,7 +101,7 @@ module.exports = {
       let path = isTelegram ? 'telegram/' : 'discord/';
       database.ref(path + id).once('value').then(snapshot => {
         if (snapshot.val() == null)
-          return reject('User not found.');
+          return reject(constants.NOT_FOUND_ERROR);
         return resolve(snapshot.val().username);
       });
     });
@@ -109,10 +111,10 @@ module.exports = {
 // Handle error from getting fortnite.js data
 function handleError(err) {
   console.log(err);
-  if (err === 'HTTP Player Not Found')
-    return 'User not found.';
+  if (err === constants.HTTP_ERROR)
+    return constants.NOT_FOUND_ERROR;
   else
-    return 'Error found when getting user info.';
+    return constants.GENERIC_ERROR;
 }
 
 // Debug logs for Firebase
