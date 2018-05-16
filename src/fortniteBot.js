@@ -26,48 +26,60 @@ teleBot.on(/^\/start$/i, msg => {
 
 // Telegram bot responding to messages
 teleBot.on(['text', 'forward'], msg => {
-  let text = msg.text.toLowerCase();
+  const text = msg.text.toLowerCase();
   parseCommand(text, msg);
 });
 
 // Discord bot sets game to /info when it's ready
 discBot.on('ready', () => {
-  console.log('Fortnite Bot is ready!');
+  console.log('[DISCORD] Fortnite Bot is ready!');
   discBot.editStatus('online', { name: '/info' });
 });
 
 // Discord bot responding to messages
 discBot.on('messageCreate', msg => {
-  let text = msg.content.toLowerCase();
+  const text = msg.content.toLowerCase();
   parseCommand(text, msg, false);
 });
 
-// Calls the right method based on the command
+/**
+ * Parses the command to choose what data to get from Fortnite
+ * @param {string} text user's message
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 async function parseCommand(text, msg, isTelegram = true) {
   let user, tokens, id, platform;
-  id = isTelegram ? msg.from.id : msg.author.id; // User ID on platform
+  id = isTelegram ? msg.from.id : msg.author.id; // User account ID on platform
+  // Split command by spaces to get command and argument
   tokens = text.split(' ');
+
   if (text === '/info') {
     sendMessage(msg, constants.START_MSG, isTelegram);
   } else if (text.startsWith('/user')) {
     // Get global stats on a user
+
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
-    platform = tokens[0].substring(5);
+    platform = tokens[0].substring(5); // Platform
     if (platform)
       sendPlatformsCalls(user, platform, msg, isTelegram);
     else
       sendGlobalCalls(user, msg, isTelegram);
   } else if (text.match(/^\/(pc|xbox|ps4)(.+)?$/i)) {
-    // Get global stats on a user specifying 
+    // Get global stats on a user specifying platform
+
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
-    let platform = tokens[0].substring(1); // Platform
+    platform = tokens[0].substring(1); // Platform
     sendPlatformsCalls(user, platform, msg, isTelegram);
   } else if (text.match(/^\/(solo|duo|squad)(s3|s4)?(pc|xbox|ps4)?(.+)?$/i)) {
     // Get solo, duo, or squad stats for lifetime or season
+
     let mode = tokens[0].substring(1); // Mode
     // Only capitalize first letter
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
@@ -76,6 +88,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     platform = platform.replace(/(s3|s4)/i, '');
     // Strip mode of the platform info
     mode = mode.replace(/(pc|xbox|ps4)/i, '');
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
@@ -89,6 +102,8 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/recent')) {
     // Get recent matches on a user
+
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
@@ -102,6 +117,8 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/rold')) {
     // Get recent matches on a user (old format)
+
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
@@ -114,11 +131,13 @@ async function parseCommand(text, msg, isTelegram = true) {
       sendRoldCalls(user, msg, isTelegram);
     }
   } else if (text.match(/^\/(season|s)(3|4)(pc|xbox|ps4)?(.+)?$/i)) {
-    // Get all season stats on a user
-    tokens[0] = tokens[0].substring(1);
-    let season = tokens[0].replace(/(pc|xbox|ps4)/i, '').substring(1);
-    platform = tokens[0].replace(/(season|s)/i, '');
-    platform = platform.replace(/(3|4)/, '');
+    // Get all season stats on a user 
+
+    // Get season and platform by stripping data from the command text
+    const strippedData = tokens[0].substring(1).replace(/(season|s)/i, '');
+    const season = strippedData.substring(0, 1);
+    platform = strippedData.substring(1);
+    // Get username, exit if not found
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
@@ -130,31 +149,50 @@ async function parseCommand(text, msg, isTelegram = true) {
         .catch(e => sendMessage(msg, e, isTelegram));
     }
   } else if (text.startsWith('/set ')) {
+    // Write username to database
+
     user = text.substring(5);
     setIdCache(user, id, isTelegram);
     sendMessage(msg, `Wrote ${user} to database.`, isTelegram);
   }
 }
 
-// Gets Fortnite user from the cache based on the messaging ID of the user
-async function getUser(tokens, id, isTelegram) {
+/**
+ * Gets Fortnite user from the cache based on the messaging ID of the user
+ * @param {string[]} tokens words from the user's message
+ * @param {number} id user's ID on the messaging platform
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+async function getUser(tokens, id, isTelegram = true) {
+  let user;
+  // Tokens is of length 1 if no user was passed in as an argument
   if (tokens.length === 1) {
     try {
+      // Check cache for the username associated with the messaging ID
       user = await getIdCache(id, isTelegram);
     } catch (err) {
+      // Exit if no user found
       return;
     }
   } else {
+    // Get the username if it was passed in as an argument
     user = tokens.slice(1).join(' ');
   }
   return user;
 }
 
-// Sends message a different way based on whether it's for Discord or Telegram
+/**
+ * Sends message a different way based on whether it's for Discord or Telegram
+ * @param {Object} msg object containing info about the user's message
+ * @param {string} content content to put in the message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendMessage(msg, content, isTelegram = true) {
   if (isTelegram) {
+    // Send Telegram message if message is from Telegram
     return msg.reply.text(content, { asReply: true });
   } else {
+    // Send Discord embed if message is from Discord
     return discBot.createMessage(msg.channel.id, {
       embed: {
         color: constants.DISCORD_COLOR,
@@ -170,29 +208,38 @@ function sendMessage(msg, content, isTelegram = true) {
   }
 }
 
-// Sends message specially for /recent to show the table
+/**
+ * Sends message specially for /recent to show the table
+ * @param {Object} msg object containing info about the user's message
+ * @param {Array} response intro message and table of recent matches
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendRecentMessage(msg, response, isTelegram = true) {
-  let introMsg = response[0];
+  const introMsg = response[0];
   let matrix = response[1];
 
   // Transpose the table, taken from link below
   // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
   matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
   matrix.unshift(['Mode', 'Matches', 'Wins', 'Kills', 'Time']);
+  // Create the markdown table from the transposed table
   let mdTable = table(matrix, { align: Array(5).fill('c') });
   let mdRows = mdTable.split('\n');
   // Remove the 2nd row separating titles and values
   mdTable = mdRows[0] + '\n' + mdRows.slice(2).join('\n');
   // Replace the pipe separators between columns with spaces
   mdTable = mdTable.replace(/\|/g, ' ');
-  let output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
+  // Format the message into intro message and the table in a code block
+  const output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
 
   if (isTelegram) {
+    // Sends a markdown message to Telegram with recent matches in code block
     return teleBot.sendMessage(msg.chat.id, output, {
       replyToMessage: msg.message_id,
       parseMode: 'Markdown'
     });
   } else {
+    // Sends a Discord embed with recent matches in code block
     return discBot.createMessage(msg.channel.id, {
       embed: {
         color: constants.DISCORD_COLOR,
@@ -208,7 +255,12 @@ function sendRecentMessage(msg, response, isTelegram = true) {
   }
 }
 
-// Gets the Fortnite data for global (checks all platforms)
+/**
+ * Gets the Fortnite data for global (checks all platforms)
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendGlobalCalls(user, msg, isTelegram = true) {
   getGlobalData(user, constants.PC) // Tries to find user on PC
     .then(res => sendMessage(msg, res, isTelegram))
@@ -223,14 +275,26 @@ function sendGlobalCalls(user, msg, isTelegram = true) {
     });
 }
 
-// Gets the Fortnite data for platforms
+/**
+ * Gets the Fortnite data for platforms
+ * @param {string} user Fortnite username
+ * @param {string} platform platform to search Fortnite player on
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
   getGlobalData(user, constants[platform.toUpperCase()])
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => sendMessage(msg, err, isTelegram));
 }
 
-// Gets the Fortnite data for modes (checks all platforms)
+/**
+ * Gets the Fortnite data for modes (checks all platforms)
+ * @param {string} user Fortnite username
+ * @param {string} mode mode to get Fortnite data of
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
   let [season, top] = getModeInfo(mode);
@@ -247,18 +311,26 @@ function sendModesCalls(user, mode, msg, isTelegram = true) {
     });
 }
 
-// Gets season and top placements based on the mode
+/**
+ * Gets season and top placements based on the mode
+ * @param {string} mode mode to get Fortnite data of
+ */
 function getModeInfo(mode) {
-  let season;
-  if (mode.endsWith('s3') || mode.endsWith('s4'))
-    season = mode.substr(-1);
-  else
-    season = '';
-  let top = constants[mode.toUpperCase()].top;
+  const lastChar = mode.substr(-1);
+  // Season is the season's number if the mode is a season based command
+  // Otherwise it's an empty string
+  const season = ['3', '4'].includes(lastChar) ? lastChar : '';
+  // Each mode has a different way of storing times a player made it to top x
+  const top = constants[mode.toUpperCase()].top;
   return [season, top];
 }
 
-// Gets the Fortnite data for recent (checks all platforms)
+/**
+ * Gets the Fortnite data for recent (checks all platforms)
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendRecentCalls(user, msg, isTelegram = true) {
   getRecentData(user, constants.PC)
     .then(res => sendRecentMessage(msg, res, isTelegram))
@@ -273,7 +345,12 @@ function sendRecentCalls(user, msg, isTelegram = true) {
     });
 }
 
-// Gets the Fortnite data for recent (checks all platforms) (old format)
+/**
+ * Gets the Fortnite data for recent (checks all platforms) (old format)
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendRoldCalls(user, msg, isTelegram = true) {
   getRoldData(user, constants.PC)
     .then(res => sendMessage(msg, res, isTelegram))
@@ -288,7 +365,13 @@ function sendRoldCalls(user, msg, isTelegram = true) {
     });
 }
 
-// Gets the Fortnite data for Season (checks all platforms)
+/**
+ * Gets the Fortnite data for seasons (checks all platforms)
+ * @param {string} user Fortnite username
+ * @param {string} season season to get Fortnite data of
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
 function sendSeasonCalls(user, season, msg, isTelegram = true) {
   getSeasonData(user, season, constants.PC)
     .then(res => sendMessage(msg, res, isTelegram))

@@ -8,7 +8,7 @@ module.exports = {
   // Writes the message for global stats
   writeGlobalMsg: info => {
     console.log(info);
-    stats = info.lifeTimeStats;
+    const stats = info.lifeTimeStats;
 
     let res = `Lifetime stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
@@ -17,9 +17,9 @@ module.exports = {
     // res += `Avg Survival Time: ${stats[14].value}\n`;
     res += `Wins: ${stats[8].value}\n`;
 
-    let sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
+    const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
       + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
-    let sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+    const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
       + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
     res += `Times in top 3/5/10: ${sumPlaces1}\n`;
     res += `Times in top 6/12/25: ${sumPlaces2}\n`;
@@ -57,7 +57,7 @@ module.exports = {
   // Writes the message for modes stats
   writeModesMsg: (info, season, mode, nums) => {
     // The API data stores data for each of the modes with the mapped names
-    let stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
+    const stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
     if (!(stats && stats.matches)) // No matches exist for the mode
       return 'User has never played ' + mode + '.';
     console.log(stats);
@@ -104,7 +104,7 @@ module.exports = {
   // Creates a table for recent stats
   writeRecentMsg: info => {
     console.log(info);
-    let matches = info.recentMatches;
+    const matches = info.recentMatches;
 
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}`;
@@ -138,7 +138,7 @@ module.exports = {
   // Writes the message for recent stats
   writeRoldMsg: info => {
     console.log(info);
-    let matches = info.recentMatches;
+    const matches = info.recentMatches;
 
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
@@ -169,7 +169,7 @@ module.exports = {
   // Writes the message for season stats
   writeSeasonMsg: (info, season) => {
     console.log(info);
-    stats = info.lifeTimeStats;
+    const stats = info.lifeTimeStats;
 
     let matches, wins, sumPlaces1, sumPlaces2, kills, deaths;
     matches = wins = sumPlaces1 = sumPlaces2 = kills = deaths = 0;
@@ -222,9 +222,9 @@ module.exports = {
 function formatSeconds(seconds, recent) {
   let days = Math.floor(seconds / (60 * 60 * 24)); // days
   seconds -= days * 60 * 60 * 24;
-  let hrs = Math.floor(seconds / (60 * 60)); // hours
+  const hrs = Math.floor(seconds / (60 * 60)); // hours
   seconds -= hrs * 60 * 60;
-  let mnts = Math.floor(seconds / 60); // minutes
+  const mnts = Math.floor(seconds / 60); // minutes
   seconds -= mnts * 60; // seconds
 
   let res = '';
