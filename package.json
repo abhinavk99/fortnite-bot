@@ -1,11 +1,11 @@
 {
   "name": "fortnite-bot",
-  "description": "Telegram bot that gets information on Fortnite players",
+  "description": "Telegram/Discord bot that gets information on Fortnite players",
   "version": "3.6.1",
   "main": "src/fortniteBot.js",
   "scripts": {
     "start": "node src/fortniteBot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "directories": {
     "example": "examples"
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-string": "^1.4.0",
     "mocha": "^5.1.1"
   },
   "repository": {
