@@ -335,14 +335,38 @@ function sendRecentCalls(user, msg, isTelegram = true) {
   getRecentData(user, constants.PC)
     .then(res => sendRecentMessage(msg, res, isTelegram))
     .catch(err => {
+      err = handleRecentError(err, msg, isTelegram);
+      if (!err)
+        return;
       getRecentData(user, constants.XBOX)
         .then(resp => sendRecentMessage(msg, resp, isTelegram))
         .catch(error => {
+          err = handleRecentError(err, msg, isTelegram);
+          if (!err)
+            return;
           getRecentData(user, constants.PS4)
             .then(response => sendRecentMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
+            .catch(e => {
+              err = handleRecentError(err, msg, isTelegram);
+              if (err)
+                sendMessage(msg, e, isTelegram);
+            });
         });
     });
+}
+
+/**
+ * Handles errors with /recent
+ * @param {(Object|string)} err object containing error info
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function handleRecentError(err, msg, isTelegram = true) {
+  if (err.description.startsWith(constants.MD_PARSE_ERROR_INPUT)) {
+    sendMessage(msg, constants.MD_PARSE_ERROR_OUTPUT, isTelegram);
+    return;
+  }
+  return err;
 }
 
 /**

@@ -42,6 +42,8 @@ module.exports = Object.freeze({
   HTTP_ERROR: 'HTTP Player Not Found',
   NOT_FOUND_ERROR: 'User not found.',
   GENERIC_ERROR: 'Error found when getting user info.',
+  MD_PARSE_ERROR_INPUT: 'Bad Request: can\'t parse entities: ',
+  MD_PARSE_ERROR_OUTPUT: 'Error with parsing username in Markdown. Try using /rold instead.',
   START_MSG: `/user username for information on the player
 /pc username for information on the player on PC platform
 /xbox username for information on the player on XBOX platform
