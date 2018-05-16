@@ -1,11 +1,6 @@
-require('dotenv').config();
-
 const fortniteData = require('../src/fortniteData');
 const constants = require('../src/constants');
-
-const chai = require('chai');
-const expect = chai.expect;
-chai.use(require('chai-string'));
+const expect = require('chai').expect;
 
 const platform = 'pc';
 
@@ -60,30 +55,27 @@ describe('#Fortnite Data', () => {
     expect(lines[0]).to.equal('Lifetime stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
 
-    expect(lines[3]).to.startsWith('Matches played: ');
-    expect(lines[4]).to.startsWith('Wins: ');
-    expect(lines[5]).to.startsWith('Times in top 3/5/10: ');
-    expect(lines[6]).to.startsWith('Times in top 6/12/25: ');
-    expect(lines[7]).to.startsWith('Win Rate: ');
-    expect(lines[7]).to.endsWith('%');
-    expect(lines[8]).to.startsWith('Kills: ');
-    expect(lines[9]).to.startsWith('K/D Ratio: ');
-    expect(lines[9]).to.contain('.');
-    expect(lines[10]).to.startsWith('Kills/Game: ');
-    expect(lines[10]).to.contain('.');
-    expect(lines[11]).to.startsWith('Score: ');
+    expect(lines[3]).to.match(/^Matches played: \d+$/);
+    expect(lines[4]).to.match(/^Wins: \d+$/);
+    expect(lines[5]).to.match(/^Times in top 3\/5\/10: \d+$/);
+    expect(lines[6]).to.match(/^Times in top 6\/12\/25: \d+$/);
+    expect(lines[7]).to.match(/^Win Rate: \d+%$/);
+    expect(lines[8]).to.match(/^Kills: \d+$/);
+    expect(lines[9]).to.match(/^K\/D Ratio: \d+\.\d+$/);
+    expect(lines[10]).to.match(/^Kills\/Game: \d+\.\d+$/);
+    expect(lines[11]).to.match(/^Score: .+$/);
 
-    expect(lines[13]).to.startsWith('Solo matches played: ');
-    expect(lines[14]).to.startsWith('Solo wins: ');
-    expect(lines[15]).to.startsWith('Solo kills: ');
+    expect(lines[13]).to.match(/^Solo matches played: \d+$/);
+    expect(lines[14]).to.match(/^Solo wins: \d+$/);
+    expect(lines[15]).to.match(/^Solo kills: \d+$/);
 
-    expect(lines[17]).to.startsWith('Duo matches played: ');
-    expect(lines[18]).to.startsWith('Duo wins: ');
-    expect(lines[19]).to.startsWith('Duo kills: ');
+    expect(lines[17]).to.match(/^Duo matches played: \d+$/);
+    expect(lines[18]).to.match(/^Duo wins: \d+$/);
+    expect(lines[19]).to.match(/^Duo kills: \d+$/);
 
-    expect(lines[21]).to.startsWith('Squad matches played: ');
-    expect(lines[22]).to.startsWith('Squad wins: ');
-    expect(lines[23]).to.startsWith('Squad kills: ');
+    expect(lines[21]).to.match(/^Squad matches played: \d+$/);
+    expect(lines[22]).to.match(/^Squad wins: \d+$/);
+    expect(lines[23]).to.match(/^Squad kills: \d+$/);
   });
 
   it('should get solo season 3 data', async () => {
@@ -127,15 +119,17 @@ Score/Match: 355.06\n`);
       expect(mode).to.match(/^\d+ kill(s)?$/);
     }
     for (let mode of res[1][4]) {
-      expect(mode).to.endsWith(' ago');
+      expect(mode).to.match(/^.+ ago$/);
     }
   });
 
   it('should get recent data in old format', async () => {
     const user = 'ninja';
     const res = await fortniteData.getRoldData(user, platform);
-    expect(res).to.startsWith('Recent matches for Ninja:\nPlatform: PC');
-    const lines = res.substr(0, -1).split('\n').slice(3);
+    let lines = res.substring(0, res.length - 1).split('\n');
+    expect(lines[0]).to.equal('Recent matches for Ninja:');
+    expect(lines[1]).to.equal('Platform: PC');
+    lines = lines.slice(3);
     for (let line of lines) {
       expect(line).to.match(
         /^(Solo|Duo|Squad) - \d+ match(es)? - \d+ win(s)? - \d+ kill(s)? - .+ ago$/
