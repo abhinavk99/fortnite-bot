@@ -29,11 +29,8 @@ const writeSeasonMsg = writeMsg.writeSeasonMsg;
 const constants = require('./constants');
 
 // Temporary cache
-let tempCache = {
-  pc: {},
-  xbox: {},
-  ps4: {}
-};
+const tempCache = {};
+resetCache();
 
 module.exports = {
   // Get global stats
@@ -162,12 +159,12 @@ String.prototype.hashCode = function () {
   return hash;
 }
 
-// Clear the temporary cache every 5 minutes
-setInterval(() => {
-  console.log(`[TEMP CACHE] Clearing at ${new Date().toString()}`);
-  tempCache = {
-    pc: {},
-    xbox: {},
-    ps4: {}
-  };
-}, 300000);
+// Reset the temporary cache every 5 minutes
+setInterval(resetCache, 300000);
+function resetCache() {
+  console.log(`[TEMP CACHE] Resetting at ${new Date().toString()}`);
+  // Temporary cache
+  tempCache[constants.PC] = {};
+  tempCache[constants.XBOX] = {};
+  tempCache[constants.PS4] = {};
+}
