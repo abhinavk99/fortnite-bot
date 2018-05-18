@@ -28,11 +28,18 @@ const writeSeasonMsg = writeMsg.writeSeasonMsg;
 
 const constants = require('./constants');
 
+// Temporary cache
+let tempCache = {
+  pc: {},
+  xbox: {},
+  ps4: {}
+};
+
 module.exports = {
   // Get global stats
   getGlobalData: (user, platform) => {
     return new Promise((resolve, reject) => {
-      client.get(user, platform, true)
+      getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeGlobalMsg(info));
         }).catch(err => {
@@ -44,7 +51,7 @@ module.exports = {
   // Get solo/duo/squad lifetime/season3 stats
   getModesData: (user, mode, nums, platform, season) => {
     return new Promise((resolve, reject) => {
-      client.get(user, platform, true)
+      getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeModesMsg(info, season, mode, nums));
         }).catch(err => {
@@ -56,7 +63,7 @@ module.exports = {
   // Get recent matches stats
   getRecentData: (user, platform) => {
     return new Promise((resolve, reject) => {
-      client.get(user, platform, true)
+      getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeRecentMsg(info));
         }).catch(err => {
@@ -68,7 +75,7 @@ module.exports = {
   // Get recent matches stats (old format)
   getRoldData: (user, platform) => {
     return new Promise((resolve, reject) => {
-      client.get(user, platform, true)
+      getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeRoldMsg(info));
         }).catch(err => {
@@ -80,7 +87,7 @@ module.exports = {
   // Get all season stats
   getSeasonData: (user, season, platform) => {
     return new Promise((resolve, reject) => {
-      client.get(user, platform, true)
+      getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeSeasonMsg(info, season));
         }).catch(err => {
@@ -107,6 +114,24 @@ module.exports = {
     });
   }
 };
+
+// Gets the user's Fortnite info from cache or fortnite.js
+function getFortniteInfo(user, platform) {
+  return new Promise((resolve, reject) => {
+    // Look for user in cache
+    if (user in tempCache[platform])
+      return resolve(tempCache[platform][user]);
+    // If not found in cache, use fortnite.js to get the user
+    client.get(user, platform, true)
+      .then(info => {
+        // Store user's info in the temporary cache
+        tempCache[platform][user] = info;
+        return resolve(info);
+      }).catch(err => {
+        return reject(err);
+      });
+  });
+}
 
 // Handle error from getting fortnite.js data
 function handleError(err) {
@@ -136,3 +161,13 @@ String.prototype.hashCode = function () {
   }
   return hash;
 }
+
+// Clear the temporary cache every 5 minutes
+setInterval(() => {
+  console.log(`[TEMP CACHE] Clearing at ${new Date().toString()}`);
+  tempCache = {
+    pc: {},
+    xbox: {},
+    ps4: {}
+  };
+}, 300000);
