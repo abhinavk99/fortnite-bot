@@ -45,6 +45,8 @@ in your personal cache for season 3 data, the season 3 commands will not work.
 ## Commands
 
 ### Global Commands
+Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
+
 | Command | Description | Usage |
 | --- | --- | --- |
 | /user | Get global stats for a player | /user `<username>` |

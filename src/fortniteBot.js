@@ -33,7 +33,7 @@ teleBot.on(['text', 'forward'], msg => {
 // Discord bot sets game to /info when it's ready
 discBot.on('ready', () => {
   console.log('[DISCORD] Fortnite Bot is ready!');
-  discBot.editStatus('online', { name: '/info' });
+  discBot.editStatus('online', { name: '/help' });
 });
 
 // Discord bot responding to messages
@@ -54,7 +54,7 @@ async function parseCommand(text, msg, isTelegram = true) {
   // Split command by spaces to get command and argument
   tokens = text.split(' ');
 
-  if (text === '/info') {
+  if (text.match(/^\/(info|help)$/i)) {
     sendMessage(msg, constants.START_MSG, isTelegram);
   } else if (text.startsWith('/user')) {
     // Get global stats on a user
