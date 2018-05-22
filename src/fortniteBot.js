@@ -51,8 +51,9 @@ discBot.on('messageCreate', msg => {
 async function parseCommand(text, msg, isTelegram = true) {
   let user, tokens, id, platform;
   id = isTelegram ? msg.from.id : msg.author.id; // User account ID on platform
-  // Split command by spaces to get command and argument
-  tokens = text.split(' ');
+  // Match non white space to get command and argument
+  // Accounts for accidental extra whitespace by matching instead of splitting
+  tokens = text.match(/\S+/g);
 
   if (text.match(/^\/(info|help)$/i)) {
     sendMessage(msg, constants.START_MSG, isTelegram);
