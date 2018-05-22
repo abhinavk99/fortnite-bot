@@ -11,7 +11,12 @@ module.exports = {
     const stats = info.lifeTimeStats;
 
     let res = `Lifetime stats for ${info.epicUserHandle}:\n`;
-    res += `Platform: ${info.platformNameLong}\n\n`;
+    res += `Platform: ${info.platformNameLong}\n`;
+
+    let platform = info.platformName;
+    let user = encodeURIComponent(info.epicUserHandle);
+    res += `${constants.BASE_URL}/${platform}/${user}\n\n`;
+
     res += `Matches played: ${stats[7].value}\n`;
     // res += `Time played: ${stats[13].value}\n`;
     // res += `Avg Survival Time: ${stats[14].value}\n`;

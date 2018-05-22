@@ -39,6 +39,7 @@ module.exports = Object.freeze({
     id: 'curr_p9'
   },
   DISCORD_COLOR: 0x761FA1,
+  BASE_URL: 'https://fortnitetracker.com/profile',
   HTTP_ERROR: 'HTTP Player Not Found',
   NOT_FOUND_ERROR: 'User not found.',
   GENERIC_ERROR: 'Error found when getting user info.',
