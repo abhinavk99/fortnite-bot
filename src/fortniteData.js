@@ -132,7 +132,7 @@ function getFortniteInfo(user, platform) {
 
 // Handle error from getting fortnite.js data
 function handleError(err) {
-  console.log(err);
+  console.error(err);
   if (err === constants.HTTP_ERROR)
     return constants.NOT_FOUND_ERROR;
   else
