@@ -25,6 +25,7 @@ const writeModesMsg = writeMsg.writeModesMsg;
 const writeRecentMsg = writeMsg.writeRecentMsg;
 const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
+const writeRatingMsg = writeMsg.writeRatingMsg;
 
 const constants = require('./constants');
 
@@ -91,6 +92,18 @@ module.exports = {
           return reject(handleError(err));
         });
     });
+  },
+
+  // Get TRN rating stats
+  getRatingData: (user, platform) => {
+    return new Promise((resolve, reject) => {
+      getFortniteInfo(user, platform)
+        .then(info => {
+          return resolve(writeRatingMsg(info));
+        }).catch(err => {
+          return reject(handleError(err));
+        });
+    })
   },
 
   // Map Telegram or Discord user ID to Fortnite username

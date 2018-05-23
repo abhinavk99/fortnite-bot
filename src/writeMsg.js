@@ -220,6 +220,29 @@ module.exports = {
     res += `Kills/Game: ${kg}\n`;
 
     return res + modeRes;
+  },
+
+  // Writes the message for TRN rating stats
+  writeRatingMsg: (info) => {
+    console.log(info);
+
+    let res = `TRN Rating stats for ${info.epicUserHandle}:\n`;
+    res += `Platform: ${info.platformNameLong}\n\n`;
+
+    let formattedMode, rating;
+    constants.MODES.forEach((mode, index) => {
+      if (index >= 3)
+        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
+      else
+        formattedMode = mode.toUpperCase();
+      rating = info.stats[constants[formattedMode].id].trnRating.displayValue;
+      if (rating)
+        res += `${mode} TRN Rating: ${rating}\n`;
+      if ((index + 1) % 3 === 0)
+        res += '\n';
+    });
+
+    return res;
   }
 };
 

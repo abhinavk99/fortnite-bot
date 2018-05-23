@@ -27,7 +27,7 @@ describe('#Fortnite Data', () => {
       expect(err).to.equal(constants.NOT_FOUND_ERROR);
     }
     try {
-      await fortniteData.getModesData(user, platform);
+      await fortniteData.getModesData(user, 'Solo', [10, 25], platform, '3');
     } catch (err) {
       expect(err).to.equal(constants.NOT_FOUND_ERROR);
     }
@@ -42,7 +42,12 @@ describe('#Fortnite Data', () => {
       expect(err).to.equal(constants.NOT_FOUND_ERROR);
     }
     try {
-      await fortniteData.getSeasonData(user, platform);
+      await fortniteData.getSeasonData(user, 3, platform);
+    } catch (err) {
+      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+    }
+    try {
+      await fortniteData.getRatingData(user, platform);
     } catch (err) {
       expect(err).to.equal(constants.NOT_FOUND_ERROR);
     }
@@ -54,28 +59,29 @@ describe('#Fortnite Data', () => {
     const lines = res.split('\n');
     expect(lines[0]).to.equal('Lifetime stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
+    expect(lines[2]).to.equal('https://fortnitetracker.com/profile/pc/Ninja');
 
-    expect(lines[3]).to.match(/^Matches played: \d+$/);
-    expect(lines[4]).to.match(/^Wins: \d+$/);
-    expect(lines[5]).to.match(/^Times in top 3\/5\/10: \d+$/);
-    expect(lines[6]).to.match(/^Times in top 6\/12\/25: \d+$/);
-    expect(lines[7]).to.match(/^Win Rate: \d+%$/);
-    expect(lines[8]).to.match(/^Kills: \d+$/);
-    expect(lines[9]).to.match(/^K\/D Ratio: \d+\.\d+$/);
-    expect(lines[10]).to.match(/^Kills\/Game: \d+\.\d+$/);
-    expect(lines[11]).to.match(/^Score: .+$/);
+    expect(lines[4]).to.match(/^Matches played: \d+$/);
+    expect(lines[5]).to.match(/^Wins: \d+$/);
+    expect(lines[6]).to.match(/^Times in top 3\/5\/10: \d+$/);
+    expect(lines[7]).to.match(/^Times in top 6\/12\/25: \d+$/);
+    expect(lines[8]).to.match(/^Win Rate: \d+%$/);
+    expect(lines[9]).to.match(/^Kills: \d+$/);
+    expect(lines[10]).to.match(/^K\/D Ratio: \d+\.\d+$/);
+    expect(lines[11]).to.match(/^Kills\/Game: \d+\.\d+$/);
+    expect(lines[12]).to.match(/^Score: .+$/);
 
-    expect(lines[13]).to.match(/^Solo matches played: \d+$/);
-    expect(lines[14]).to.match(/^Solo wins: \d+$/);
-    expect(lines[15]).to.match(/^Solo kills: \d+$/);
+    expect(lines[14]).to.match(/^Solo matches played: \d+$/);
+    expect(lines[15]).to.match(/^Solo wins: \d+$/);
+    expect(lines[16]).to.match(/^Solo kills: \d+$/);
 
-    expect(lines[17]).to.match(/^Duo matches played: \d+$/);
-    expect(lines[18]).to.match(/^Duo wins: \d+$/);
-    expect(lines[19]).to.match(/^Duo kills: \d+$/);
+    expect(lines[18]).to.match(/^Duo matches played: \d+$/);
+    expect(lines[19]).to.match(/^Duo wins: \d+$/);
+    expect(lines[20]).to.match(/^Duo kills: \d+$/);
 
-    expect(lines[21]).to.match(/^Squad matches played: \d+$/);
-    expect(lines[22]).to.match(/^Squad wins: \d+$/);
-    expect(lines[23]).to.match(/^Squad kills: \d+$/);
+    expect(lines[22]).to.match(/^Squad matches played: \d+$/);
+    expect(lines[23]).to.match(/^Squad wins: \d+$/);
+    expect(lines[24]).to.match(/^Squad kills: \d+$/);
   });
 
   it('should get solo season 3 data', async () => {
@@ -164,5 +170,25 @@ Duo kills: 7410
 Squad matches played: 429
 Squad wins: 122
 Squad kills: 2885\n`);
+  });
+
+  it('should get TRN rating data', async () => {
+    const user = 'ninja';
+    const res = await fortniteData.getRatingData(user, platform);
+    const lines = res.split('\n');
+    expect(lines[0]).to.equal('TRN Rating stats for Ninja:');
+    expect(lines[1]).to.equal('Platform: PC');
+
+    expect(lines[3]).to.match(/^Solo TRN Rating: .+$/);
+    expect(lines[4]).to.match(/^Duo TRN Rating: .+$/);
+    expect(lines[5]).to.match(/^Squad TRN Rating: .+$/);
+
+    expect(lines[7]).to.match(/^Season 3 Solo TRN Rating: .+$/);
+    expect(lines[8]).to.match(/^Season 3 Duo TRN Rating: .+$/);
+    expect(lines[9]).to.match(/^Season 3 Squad TRN Rating: .+$/);
+
+    expect(lines[11]).to.match(/^Season 4 Solo TRN Rating: .+$/);
+    expect(lines[12]).to.match(/^Season 4 Duo TRN Rating: .+$/);
+    expect(lines[13]).to.match(/^Season 4 Squad TRN Rating: .+$/);
   });
 });

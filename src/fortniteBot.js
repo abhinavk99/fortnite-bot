@@ -14,6 +14,7 @@ const getModesData = fortniteData.getModesData;
 const getRecentData = fortniteData.getRecentData;
 const getRoldData = fortniteData.getRoldData;
 const getSeasonData = fortniteData.getSeasonData;
+const getRatingData = fortniteData.getRatingData;
 const setIdCache = fortniteData.setIdCache;
 const getIdCache = fortniteData.getIdCache;
 
@@ -155,6 +156,21 @@ async function parseCommand(text, msg, isTelegram = true) {
     user = text.substring(5);
     setIdCache(user, id, isTelegram);
     sendMessage(msg, `Wrote ${user} to database.`, isTelegram);
+  } else if (text.startsWith('/rating')) {
+    // Get TRN ratings on a user
+
+    // Get username, exit if not found
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
+    platform = tokens[0].substring(7);
+    if (platform) {
+      getRatingData(user, constants[platform.toUpperCase()])
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    } else {
+      sendRatingCalls(user, msg, isTelegram);
+    }
   }
 }
 
@@ -405,6 +421,26 @@ function sendSeasonCalls(user, season, msg, isTelegram = true) {
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
           getSeasonData(user, season, constants.PS4)
+            .then(response => sendMessage(msg, response, isTelegram))
+            .catch(e => sendMessage(msg, e, isTelegram));
+        });
+    });
+}
+
+/**
+ * Gets the TRN rating data
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function sendRatingCalls(user, msg, isTelegram = true) {
+  getRatingData(user, constants.PC)
+    .then(res => sendMessage(msg, res, isTelegram))
+    .catch(err => {
+      getRatingData(user, constants.XBOX)
+        .then(resp => sendMessage(msg, resp, isTelegram))
+        .catch(error => {
+          getRatingData(user, constants.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
