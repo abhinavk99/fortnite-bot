@@ -117,7 +117,7 @@
 ### Added
 - /season3 command to combine data from season 3 modes
 
-## [2.0.0] - 2018-04-19
+## [2.0.1] - 2018-04-19
 ### Changed
 - Use configuration tokens from .env instead of config.json
 - Merged heroku branch into master branch to remove the need for two branches

@@ -5,7 +5,7 @@
   "main": "src/fortniteBot.js",
   "scripts": {
     "start": "node src/fortniteBot.js",
-    "test": "mocha --reporter spec --timeout 10000"
+    "test": "mocha --reporter spec --timeout 5000"
   },
   "directories": {
     "example": "examples"

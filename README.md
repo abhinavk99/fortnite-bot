@@ -7,26 +7,31 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 
 ## Installation
 1. Clone the repo to your computer.
-    ```console
-    git clone https://github.com/abhinavk99/fortnite-bot.git
-    cd fortnite-bot
+    ```shell
+    $ git clone https://github.com/abhinavk99/fortnite-bot.git
+    $ cd fortnite-bot
     ```
 2. Install the required dependencies with yarn or npm.
-    ```console
-    yarn install
-    ```
-    OR
-    ```console
-    npm install
+    ```shell
+    # Installs all dependencies with yarn
+    $ yarn install
+    # If you don't want the dev dependencies
+    $ yarn install --prod
+
+    # OR
+
+    # Installs all dependencies with npm
+    $ npm install
+    # If you don't want the dev dependencies
+    $ npm install --only=prod
     ```
 3. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
-4. Get a Discord bot token from making a Bot User.
+4. Get a Discord bot token from making a Bot User. [This tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) should help.
 5. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-6. Create a Firebase project for retrieving cached data from Season 3. If you have nothing
-in your personal cache for season 3 data, the season 3 commands will not work.
-7. Make a file called `.env` in the repo directory.
+6. [Start a Firebase project](https://console.firebase.google.com). This is used for caching Fortnite usernames for the /set command.
+7. Create a file called `.env` in the repo directory.
 8. Copy/paste the below into the file.
-    ```
+    ```ini
     TELEGRAM_TOKEN=Token here
     FORTNITE_KEY=Key here
     DISCORD_TOKEN=Token here
@@ -38,9 +43,16 @@ in your personal cache for season 3 data, the season 3 commands will not work.
     ```
 9. Put your tokens and key where it says to in the config. Do not put quotes around the tokens.
 10. Run the bot.
-    ```console
-    npm start
+    ```shell
+    $ npm start
     ```
+
+## Testing
+
+```shell
+# Requires dev dependencies to be installed
+$ npm test
+```
 
 ## Commands
 
@@ -117,11 +129,34 @@ Example:
 ![](examples/duo.png)
 ![](examples/squad.png)
 
-## Dependencies
-Powered by [Fortnite Tracker API](https://fortnitetracker.com/site-api) and [fortnite.js](https://github.com/ickerio/fortnite.js)
+## Contributing
 
-## Changelog
-Go to the changelog [here](CHANGELOG.md)!
+Contributions are greatly appreciated!
+
+```shell
+# 1. Fork the bot and clone it to your computer
+$ git clone https://github.com/your-username/fortnite-bot.git
+$ cd fortnite-bot
+
+# 2. Connect your fork with this repo to stay up to date on any changes
+$ git remote add upstream https://github.com/abhinavk99/fortnite-bot.git
+
+# 3. Make your feature branch
+$ git checkout -b new-feature
+
+# 4. Commit the changes you made
+$ git commit -m "Added new feature"
+
+# 5. Push to your branch
+$ git push origin new-feature
+
+# 6. Create a pull request on GitHub
+```
+
+Alternatively, feel free to open [an issue](https://github.com/abhinavk99/fortnite-bot/issues).
 
 ## Releases
-Releases start at v2.0.1 because I didn't know how to use git tags before then and manually changed the versions in package.json
+Go to the changelog [here](CHANGELOG.md)! Releases start at v2.0.1 because I didn't know how to use git tags before then and never updated version numbers in `package.json`.
+
+## Dependencies
+Powered by [Fortnite Tracker API](https://fortnitetracker.com/site-api) and [fortnite.js](https://github.com/ickerio/fortnite.js).
