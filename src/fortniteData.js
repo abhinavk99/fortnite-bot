@@ -145,16 +145,16 @@ function getFortniteInfo(user, platform) {
 
 // Handle error from getting fortnite.js data
 function handleError(err) {
-  console.error(err);
-  if (err === constants.HTTP_ERROR)
-    return constants.NOT_FOUND_ERROR;
+  console.error('[Fortnite Tracker]', err);
+  if (err in constants.ERRORS)
+    return constants.ERRORS[err];
   else
     return constants.GENERIC_ERROR;
 }
 
 // Debug logs for Firebase
 firebase.database.enableLogging(message => {
-  console.log("[FIREBASE]", message);
+  console.log('[FIREBASE]', message);
 });
 
 // Hashcode for strings, used for caching data, taken from answer in link below
