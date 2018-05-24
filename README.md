@@ -28,7 +28,7 @@ Talk to [@fortnite_info_bot](https://t.me/fortnite_info_bot) on Telegram!
 3. Go to [Fortnite Tracker API](https://fortnitetracker.com/site-api) and get an API key.
 4. Get a Discord bot token from making a Bot User. [This tutorial](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token) should help.
 5. Get a Telegram bot token from [@BotFather](https://t.me/BotFather).
-6. [Start a Firebase project](https://console.firebase.google.com). This is used for caching Fortnite usernames for the /set command.
+6. [Start a Firebase project](https://console.firebase.google.com). This is used for caching Fortnite usernames for the `/set` command.
 7. Create a file called `.env` in the repo directory.
 8. Copy/paste the below into the file.
     ```ini
@@ -144,7 +144,8 @@ $ git remote add upstream https://github.com/abhinavk99/fortnite-bot.git
 # 3. Make your feature branch
 $ git checkout -b new-feature
 
-# 4. Commit the changes you made
+# 4. Add and commit the changes you made
+$ git add .
 $ git commit -m "Added new feature"
 
 # 5. Push to your branch
