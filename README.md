@@ -65,7 +65,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /pc | Get global stats for a PC player | /pc `<username>` |
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
-| /season4 | Get all season 4 stats for a player | /season3 `<username>` |
+| /season4 | Get all season 4 stats for a player | /season4 `<username>` |
 | /s4 | Get all season 4 stats for a player | /s4 `<username>` |
 | /season3 | Get all season 3 stats for a player | /season3 `<username>` |
 | /s3 | Get all season 3 stats for a player | /s3 `<username>` |
@@ -79,9 +79,9 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
 | /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
 | /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
-| /solos4 | Get season 4 solo stats for a player | /solos3 `<username>` |
-| /duos4 | Get season 4 duo stats for a player | /duos3 `<username>` |
-| /squads4 | Get season 4 squad stats for a player | /squads3 `<username>` |
+| /solos4 | Get season 4 solo stats for a player | /solos4 `<username>` |
+| /duos4 | Get season 4 duo stats for a player | /duos4 `<username>` |
+| /squads4 | Get season 4 squad stats for a player | /squads4 `<username>` |
 
 ### Other Commands
 | Command | Description | Usage |
