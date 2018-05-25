@@ -1,7 +1,7 @@
 {
   "name": "fortnite-bot",
   "description": "Telegram/Discord bot that gets information on Fortnite players",
-  "version": "3.6.4",
+  "version": "3.7.0",
   "main": "src/fortniteBot.js",
   "scripts": {
     "start": "node src/fortniteBot.js",
