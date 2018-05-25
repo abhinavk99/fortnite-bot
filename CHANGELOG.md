@@ -2,7 +2,17 @@
 
 ## [Unreleased]
 - /compare command to compare users delimited by commas
+
+## [3.7.0] - 2018-05-25
+### Added
 - /rating command to quickly see user's TRN rating
+- /kd command to quickly see user's K/D ratios
+- Test cases for rating and kd methods
+- Contributing section and link to making Discord bot tutorial to README.md
+
+### Fixed
+- Handled error when Fortnite Tracker service is unavailable
+- Fixed usage of season 4 commands in README.md
 
 ## [3.6.4] - 2018-05-22
 ### Added
