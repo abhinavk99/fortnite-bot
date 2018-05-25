@@ -15,6 +15,7 @@ const getRecentData = fortniteData.getRecentData;
 const getRoldData = fortniteData.getRoldData;
 const getSeasonData = fortniteData.getSeasonData;
 const getRatingData = fortniteData.getRatingData;
+const getKdData = fortniteData.getKdData;
 const setIdCache = fortniteData.setIdCache;
 const getIdCache = fortniteData.getIdCache;
 
@@ -170,6 +171,19 @@ async function parseCommand(text, msg, isTelegram = true) {
         .catch(e => sendMessage(msg, e, isTelegram));
     } else {
       sendRatingCalls(user, msg, isTelegram);
+    }
+  } else if (text.startsWith('/kd')) {
+    // Get KD stats on a user
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
+    platform = tokens[0].substring(3);
+    if (platform) {
+      getKdData(user, constants[platform.toUpperCase()])
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    } else {
+      sendKdCalls(user, msg, isTelegram);
     }
   }
 }
@@ -441,6 +455,26 @@ function sendRatingCalls(user, msg, isTelegram = true) {
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
           getRatingData(user, constants.PS4)
+            .then(response => sendMessage(msg, response, isTelegram))
+            .catch(e => sendMessage(msg, e, isTelegram));
+        });
+    });
+}
+
+/**
+ * Gets the KD data
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function sendKdCalls(user, msg, isTelegram = true) {
+  getKdData(user, constants.PC)
+    .then(res => sendMessage(msg, res, isTelegram))
+    .catch(err => {
+      getKdData(user, constants.XBOX)
+        .then(resp => sendMessage(msg, resp, isTelegram))
+        .catch(error => {
+          getKdData(user, constants.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });

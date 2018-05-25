@@ -186,12 +186,12 @@ module.exports = {
         // Sums up the values needed to show all season stats
         matches += modeStats.matches.valueInt;
         wins += modeStats.top1.valueInt;
-        sumPlaces1 += (modeStats.top3.valueInt + modeStats.top5.valueInt
-          + modeStats.top10.valueInt);
-        sumPlaces2 += (modeStats.top6.valueInt + modeStats.top12.valueInt
-          + modeStats.top25.valueInt);
+        sumPlaces1 += modeStats.top3.valueInt + modeStats.top5.valueInt
+          + modeStats.top10.valueInt;
+        sumPlaces2 += modeStats.top6.valueInt + modeStats.top12.valueInt
+          + modeStats.top25.valueInt;
         kills += modeStats.kills.valueInt;
-        deaths += (modeStats.kills.valueInt / modeStats.kd.valueDec);
+        deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
 
         // Gets some mode data to display
         modeRes += `\n${mode} matches played: ${modeStats.matches.value}\n`;
@@ -207,7 +207,7 @@ module.exports = {
     res += `Times in top 3/5/10: ${sumPlaces1}\n`;
     res += `Times in top 6/12/25: ${sumPlaces2}\n`;
 
-    let wr = (matches === 0) ? 0 : (wins / matches * 100).toFixed(2);
+    let wr = matches === 0 ? 0 : (wins / matches * 100).toFixed(2);
     res += `Win Rate: ${wr}%\n`;
 
     res += `Kills: ${kills}\n`;
@@ -216,14 +216,14 @@ module.exports = {
       deaths++;
     res += `K/D Ratio: ${(kills / deaths).toFixed(2)}\n`;
 
-    let kg = (matches === 0) ? 0 : (kills / matches).toFixed(2);
+    let kg = matches === 0 ? 0 : (kills / matches).toFixed(2);
     res += `Kills/Game: ${kg}\n`;
 
     return res + modeRes;
   },
 
   // Writes the message for TRN rating stats
-  writeRatingMsg: (info) => {
+  writeRatingMsg: info => {
     console.log(info);
 
     let res = `TRN Rating stats for ${info.epicUserHandle}:\n`;
@@ -240,6 +240,42 @@ module.exports = {
         res += `${mode} TRN Rating: ${rating}\n`;
       if ((index + 1) % 3 === 0)
         res += '\n';
+    });
+
+    return res;
+  },
+
+  // Writes the message for KD stats
+  writeKdMsg: info => {
+    console.log(info);
+
+    let res = `K/D Ratios for ${info.epicUserHandle}:\n`;
+    res += `Platform: ${info.platformNameLong}\n\n`;
+
+    let formattedMode, kd, modeKd, kills, deaths, modeStats;
+    constants.MODES.forEach((mode, index) => {
+      // Reset kills and deaths for overall, season 3, and season 4 modes
+      if (index % 3 === 0)
+        kills = deaths = 0;
+      // Get the mode stats
+      if (index >= 3)
+        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
+      else
+        formattedMode = mode.toUpperCase();
+      modeStats = info.stats[constants[formattedMode].id];
+      kd = modeStats.kd.displayValue;
+      kills += modeStats.kills.valueInt;
+      deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
+      // Add mode KD
+      if (kd)
+        res += `${mode} K/D Ratio: ${kd}\n`;
+      // Add lifetime and season KD
+      if ((index + 1) % 3 === 0) {
+        if (index === 2)
+          res += `Lifetime K/D Ratio: ${info.lifeTimeStats[11].value}\n\n`;
+        else
+          res += `${mode.substr(0, 8)} K/D Ratio: ${(kills / deaths).toFixed(2)}\n\n`;
+      }
     });
 
     return res;

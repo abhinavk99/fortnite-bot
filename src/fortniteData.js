@@ -26,6 +26,7 @@ const writeRecentMsg = writeMsg.writeRecentMsg;
 const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
 const writeRatingMsg = writeMsg.writeRatingMsg;
+const writeKdMsg = writeMsg.writeKdMsg;
 
 const constants = require('./constants');
 
@@ -100,6 +101,18 @@ module.exports = {
       getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeRatingMsg(info));
+        }).catch(err => {
+          return reject(handleError(err));
+        });
+    })
+  },
+
+  // Get KD stats
+  getKdData: (user, platform) => {
+    return new Promise((resolve, reject) => {
+      getFortniteInfo(user, platform)
+        .then(info => {
+          return resolve(writeKdMsg(info));
         }).catch(err => {
           return reject(handleError(err));
         });

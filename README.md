@@ -89,6 +89,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /recent | Get recent match stats for a player | /recent `<username>` |
 | /rold | Get recent match stats for a player (old format) | /rold `<username>` |
 | /rating | Get TRN rating stats for a player | /rating `<username>` |
+| /kd | Get K/D ratio stats for a player | /kd `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 
 #### Optional Platform Flags

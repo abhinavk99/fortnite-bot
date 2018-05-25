@@ -4,6 +4,8 @@ const expect = require('chai').expect;
 
 const platform = 'pc';
 
+const NOT_FOUND_ERROR = Object.values(constants.ERRORS)[0];
+
 describe('#Fortnite Data', () => {
 
   it('should have methods to get Fortnite data', () => {
@@ -12,6 +14,8 @@ describe('#Fortnite Data', () => {
     expect(fortniteData.getRecentData).to.exist;
     expect(fortniteData.getRoldData).to.exist;
     expect(fortniteData.getSeasonData).to.exist;
+    expect(fortniteData.getRatingData).to.exist;
+    expect(fortniteData.getKdData).to.exist;
   });
 
   it('should have methods to access the cache', () => {
@@ -24,32 +28,37 @@ describe('#Fortnite Data', () => {
     try {
       await fortniteData.getGlobalData(user, platform);
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
     try {
       await fortniteData.getModesData(user, 'Solo', [10, 25], platform, '3');
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
     try {
       await fortniteData.getRecentData(user, platform);
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
     try {
       await fortniteData.getRoldData(user, platform);
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
     try {
       await fortniteData.getSeasonData(user, 3, platform);
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
     try {
       await fortniteData.getRatingData(user, platform);
     } catch (err) {
-      expect(err).to.equal(constants.NOT_FOUND_ERROR);
+      expect(err).to.equal(NOT_FOUND_ERROR);
+    }
+    try {
+      await fortniteData.getKdData(user, platform);
+    } catch (err) {
+      expect(err).to.equal(NOT_FOUND_ERROR);
     }
   });
 
@@ -190,5 +199,28 @@ Squad kills: 2885\n`);
     expect(lines[11]).to.match(/^Season 4 Solo TRN Rating: .+$/);
     expect(lines[12]).to.match(/^Season 4 Duo TRN Rating: .+$/);
     expect(lines[13]).to.match(/^Season 4 Squad TRN Rating: .+$/);
+  });
+
+  it('should get TRN rating data', async () => {
+    const user = 'ninja';
+    const res = await fortniteData.getKdData(user, platform);
+    const lines = res.split('\n');
+    expect(lines[0]).to.equal('K/D Ratios for Ninja:');
+    expect(lines[1]).to.equal('Platform: PC');
+
+    expect(lines[3]).to.match(/^Solo K\/D Ratio: .+$/);
+    expect(lines[4]).to.match(/^Duo K\/D Ratio: .+$/);
+    expect(lines[5]).to.match(/^Squad K\/D Ratio: .+$/);
+    expect(lines[6]).to.match(/^Lifetime K\/D Ratio: .+$/);
+
+    expect(lines[8]).to.equal('Season 3 Solo K/D Ratio: 12.55');
+    expect(lines[9]).to.equal('Season 3 Duo K/D Ratio: 15.73');
+    expect(lines[10]).to.equal('Season 3 Squad K/D Ratio: 9.40');
+    expect(lines[11]).to.equal('Season 3 K/D Ratio: 12.92');
+
+    expect(lines[13]).to.match(/^Season 4 Solo K\/D Ratio: .+$/);
+    expect(lines[14]).to.match(/^Season 4 Duo K\/D Ratio: .+$/);
+    expect(lines[15]).to.match(/^Season 4 Squad K\/D Ratio: .+$/);
+    expect(lines[16]).to.match(/^Season 4 K\/D Ratio: .+$/);
   });
 });

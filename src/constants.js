@@ -72,6 +72,7 @@ module.exports = Object.freeze({
 /squads3 or /squads4 <username> for player's season 4 squad stats
 /recent or /rold <username> for player's recent match information
 /rating <username> for player's TRN rating stats
+/kd <username> for player's K/D ratio stats
 
 You can end any command (except /set, /pc, /xbox, /ps4) with pc, xbox, or ps4 to specify the platform to search for the user.`
 });
