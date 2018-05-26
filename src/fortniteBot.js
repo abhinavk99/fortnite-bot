@@ -291,7 +291,7 @@ function sendMessage(msg, content, isTelegram = true) {
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
 function sendMdTableMessage(msg, response, isTelegram = true) {
-  const introMsg = response[0];
+  let introMsg = response[0];
   // Replace underscores with escaped underscores because of Markdown parsing
   introMsg = introMsg.replace(/_/g, '\\_');
   let matrix = response[1];

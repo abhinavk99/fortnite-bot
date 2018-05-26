@@ -176,7 +176,7 @@ function getFortniteInfo(user, platform) {
 
 // Handle error from getting fortnite.js data
 function handleError(err, user1, user2) {
-  console.error(`Username: ${user1}${user2 ? ` ${user2} ` : ''}-- Error: ${err}`);
+  console.error(`Username: ${user1} ${user2 ? ` ${user2} ` : ''}-- Error: ${err}`);
   if (err in constants.ERRORS)
     return constants.ERRORS[err];
   else
