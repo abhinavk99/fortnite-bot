@@ -63,15 +63,16 @@ module.exports = {
   writeModesMsg: (info, season, mode, nums) => {
     // The API data stores data for each of the modes with the mapped names
     const stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
-    if (!(stats && stats.matches)) // No matches exist for the mode
-      return 'User has never played ' + mode + '.';
-    console.log(stats);
-
+    
     let res = season != '' ? `Season ${season} ` : '';
     // Cuts off the 's3' at the end for current season
-    mode = season != '' ? mode.slice(0, -2) : mode;
-    res += `${mode} stats for ${info.epicUserHandle}:\n`;
+    res += season != '' ? mode.slice(0, -2) : mode;
 
+    if (!(stats && stats.matches)) // No matches exist for the mode
+      return 'User has never played ' + res + '.';
+    console.log(stats);
+
+    res += ` stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
     res += `Matches played: ${stats.matches.value}\n`;
 
