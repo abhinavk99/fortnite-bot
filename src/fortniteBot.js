@@ -292,6 +292,8 @@ function sendMessage(msg, content, isTelegram = true) {
  */
 function sendMdTableMessage(msg, response, isTelegram = true) {
   const introMsg = response[0];
+  // Replace underscores with escaped underscores because of Markdown parsing
+  introMsg = introMsg.replace(/_/g, '\\_');
   let matrix = response[1];
   // Transpose the table, taken from link below
   // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
