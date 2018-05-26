@@ -1,7 +1,13 @@
 # Changelog for Fortnite Bot
 
-## [Unreleased]
-- /compare command to compare users delimited by commas
+## [3.8.0] - 2018-05-26
+### Added
+- /compare command to compare two users delimited by commas
+- Test cases for compare method
+
+### Fixed
+- Issue with underscores being parsed as italics in Markdown
+- Error handling and logging
 
 ## [3.7.0] - 2018-05-25
 ### Added

@@ -132,7 +132,7 @@ module.exports = {
               return reject(handleError(e, user1, user2));
             });
         }).catch(err => {
-          return reject(handleError(err, user));
+          return reject(handleError(err, user1, user2));
         });
     });
   },
