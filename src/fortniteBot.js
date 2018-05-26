@@ -330,14 +330,17 @@ function sendMdTableMessage(msg, response, isTelegram = true) {
 }
 
 /**
- * Sends message specially for /compare to show the table
+ * Handles errors with Markdown
+ * @param {(Object|string)} err object containing error info
  * @param {Object} msg object containing info about the user's message
- * @param {Array} response intro message and table to compare two users
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
-function sendCompareMessage(msg, response, isTelegram = true) {
-  const introMsg = response[0];
-  letmatr
+function handleMdError(err, msg, isTelegram = true) {
+  if (err.description && err.description.startsWith(constants.MD_PARSE_ERROR_INPUT)) {
+    sendMessage(msg, constants.MD_PARSE_ERROR_OUTPUT, isTelegram);
+    return;
+  }
+  return err;
 }
 
 /**
@@ -438,20 +441,6 @@ function sendRecentCalls(user, msg, isTelegram = true) {
             });
         });
     });
-}
-
-/**
- * Handles errors with Markdown
- * @param {(Object|string)} err object containing error info
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function handleMdError(err, msg, isTelegram = true) {
-  if (err.description.startsWith(constants.MD_PARSE_ERROR_INPUT)) {
-    sendMessage(msg, constants.MD_PARSE_ERROR_OUTPUT, isTelegram);
-    return;
-  }
-  return err;
 }
 
 /**
