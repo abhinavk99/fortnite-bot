@@ -129,7 +129,7 @@ module.exports = {
             .then(info2 => {
               return resolve(writeCompareMsg(info1, info2));
             }).catch(e => {
-              return reject(handleError(e));
+              return reject(handleError(e, user));
             });
         }).catch(err => {
           return reject(handleError(err, user));
@@ -175,7 +175,7 @@ function getFortniteInfo(user, platform) {
 }
 
 // Handle error from getting fortnite.js data
-function handleError(err, user, method) {
+function handleError(err, user) {
   console.error(`Username: ${user} -- Error: ${err}`);
   if (err in constants.ERRORS)
     return constants.ERRORS[err];
