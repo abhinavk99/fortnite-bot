@@ -27,6 +27,7 @@ const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
 const writeRatingMsg = writeMsg.writeRatingMsg;
 const writeKdMsg = writeMsg.writeKdMsg;
+const writeCompareMsg = writeMsg.writeCompareMsg;
 
 const constants = require('./constants');
 
@@ -42,7 +43,7 @@ module.exports = {
         .then(info => {
           return resolve(writeGlobalMsg(info));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
     });
   },
@@ -54,7 +55,7 @@ module.exports = {
         .then(info => {
           return resolve(writeModesMsg(info, season, mode, nums));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
     });
   },
@@ -66,7 +67,7 @@ module.exports = {
         .then(info => {
           return resolve(writeRecentMsg(info));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
     });
   },
@@ -78,7 +79,7 @@ module.exports = {
         .then(info => {
           return resolve(writeRoldMsg(info));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
     });
   },
@@ -90,7 +91,7 @@ module.exports = {
         .then(info => {
           return resolve(writeSeasonMsg(info, season));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
     });
   },
@@ -102,9 +103,9 @@ module.exports = {
         .then(info => {
           return resolve(writeRatingMsg(info));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
-    })
+    });
   },
 
   // Get KD stats
@@ -114,9 +115,26 @@ module.exports = {
         .then(info => {
           return resolve(writeKdMsg(info));
         }).catch(err => {
-          return reject(handleError(err));
+          return reject(handleError(err, user));
         });
-    })
+    });
+  },
+
+  // Compare two players
+  getCompareData: (user1, user2, platform) => {
+    return new Promise((resolve, reject) => {
+      getFortniteInfo(user1, platform)
+        .then(info1 => {
+          getFortniteInfo(user2, platform)
+            .then(info2 => {
+              return resolve(writeCompareMsg(info1, info2));
+            }).catch(e => {
+              return reject(handleError(e));
+            });
+        }).catch(err => {
+          return reject(handleError(err, user));
+        });
+    });
   },
 
   // Map Telegram or Discord user ID to Fortnite username
@@ -157,8 +175,8 @@ function getFortniteInfo(user, platform) {
 }
 
 // Handle error from getting fortnite.js data
-function handleError(err) {
-  console.error('[Fortnite Tracker]', err);
+function handleError(err, user, method) {
+  console.error(`Username: ${user} -- Error: ${err}`);
   if (err in constants.ERRORS)
     return constants.ERRORS[err];
   else

@@ -16,6 +16,7 @@ const getRoldData = fortniteData.getRoldData;
 const getSeasonData = fortniteData.getSeasonData;
 const getRatingData = fortniteData.getRatingData;
 const getKdData = fortniteData.getKdData;
+const getCompareData = fortniteData.getCompareData;
 const setIdCache = fortniteData.setIdCache;
 const getIdCache = fortniteData.getIdCache;
 
@@ -113,8 +114,12 @@ async function parseCommand(text, msg, isTelegram = true) {
     platform = tokens[0].substring(7);
     if (platform) {
       getRecentData(user, constants[platform.toUpperCase()])
-        .then(res => sendRecentMessage(msg, res, isTelegram))
-        .catch(e => sendMessage(msg, e, isTelegram));
+        .then(res => sendMdTableMessage(msg, res, isTelegram))
+        .catch(e => {
+          err = handleMdError(e, msg, isTelegram);
+          if (err)
+            sendMessage(msg, e, isTelegram);
+        });
     } else {
       sendRecentCalls(user, msg, isTelegram);
     }
@@ -174,6 +179,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text.startsWith('/kd')) {
     // Get KD stats on a user
+
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
@@ -185,11 +191,24 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendKdCalls(user, msg, isTelegram);
     }
+  } else if (text.startsWith('/compare')) {
+    // Compare two users
+
+    let users = await getTwoUsers(tokens, id, isTelegram);
+    if (!users)
+      return;
+    getCompareData(users[0], users[1], constants.PC)
+      .then(res => sendMdTableMessage(msg, res, isTelegram))
+      .catch(e => {
+        err = handleMdError(e, msg, isTelegram);
+        if (err)
+          sendMessage(msg, e, isTelegram);
+      });
   }
 }
 
 /**
- * Gets Fortnite user from the cache based on the messaging ID of the user
+ * Gets Fortnite user from the cache or from the argument
  * @param {string[]} tokens words from the user's message
  * @param {number} id user's ID on the messaging platform
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
@@ -210,6 +229,32 @@ async function getUser(tokens, id, isTelegram = true) {
     user = tokens.slice(1).join(' ');
   }
   return user;
+}
+
+/**
+ * Gets two Fortnite users from the cache or from the argument (used in /compare)
+ * @param {string[]} tokens words from the user's message
+ * @param {number} id user's ID on the messaging platform
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+async function getTwoUsers(tokens, id, isTelegram = true) {
+  let user1, user2;
+  let subtokens = tokens.slice(1).join(' ').split(/,\s?/g);
+  if (subtokens.length === 1) {
+    try {
+      // Check cache for first user
+      user1 = await getIdCache(id, isTelegram);
+    } catch (err) {
+      // Exit if no user found
+      return;
+    }
+    return [user1, subtokens[0]];
+  } else if (subtokens.length === 2) {
+    return subtokens;
+  } else {
+    // No more than two users are supported
+    return;
+  }
 }
 
 /**
@@ -240,21 +285,19 @@ function sendMessage(msg, content, isTelegram = true) {
 }
 
 /**
- * Sends message specially for /recent to show the table
+ * Sends message specially for Markdown to show the table
  * @param {Object} msg object containing info about the user's message
  * @param {Array} response intro message and table of recent matches
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
-function sendRecentMessage(msg, response, isTelegram = true) {
+function sendMdTableMessage(msg, response, isTelegram = true) {
   const introMsg = response[0];
   let matrix = response[1];
-
   // Transpose the table, taken from link below
   // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
   matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
-  matrix.unshift(['Mode', 'Matches', 'Wins', 'Kills', 'Time']);
   // Create the markdown table from the transposed table
-  let mdTable = table(matrix, { align: Array(5).fill('c') });
+  let mdTable = table(matrix, { align: Array(matrix.length).fill('c') });
   let mdRows = mdTable.split('\n');
   // Remove the 2nd row separating titles and values
   mdTable = mdRows[0] + '\n' + mdRows.slice(2).join('\n');
@@ -284,6 +327,17 @@ function sendRecentMessage(msg, response, isTelegram = true) {
       }
     });
   }
+}
+
+/**
+ * Sends message specially for /compare to show the table
+ * @param {Object} msg object containing info about the user's message
+ * @param {Array} response intro message and table to compare two users
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function sendCompareMessage(msg, response, isTelegram = true) {
+  const introMsg = response[0];
+  letmatr
 }
 
 /**
@@ -364,21 +418,21 @@ function getModeInfo(mode) {
  */
 function sendRecentCalls(user, msg, isTelegram = true) {
   getRecentData(user, constants.PC)
-    .then(res => sendRecentMessage(msg, res, isTelegram))
+    .then(res => sendMdTableMessage(msg, res, isTelegram))
     .catch(err => {
-      err = handleRecentError(err, msg, isTelegram);
+      err = handleMdError(err, msg, isTelegram);
       if (!err)
         return;
       getRecentData(user, constants.XBOX)
-        .then(resp => sendRecentMessage(msg, resp, isTelegram))
+        .then(resp => sendMdTableMessage(msg, resp, isTelegram))
         .catch(error => {
-          err = handleRecentError(err, msg, isTelegram);
+          err = handleMdError(err, msg, isTelegram);
           if (!err)
             return;
           getRecentData(user, constants.PS4)
-            .then(response => sendRecentMessage(msg, response, isTelegram))
+            .then(response => sendMdTableMessage(msg, response, isTelegram))
             .catch(e => {
-              err = handleRecentError(err, msg, isTelegram);
+              err = handleMdError(err, msg, isTelegram);
               if (err)
                 sendMessage(msg, e, isTelegram);
             });
@@ -387,12 +441,12 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 }
 
 /**
- * Handles errors with /recent
+ * Handles errors with Markdown
  * @param {(Object|string)} err object containing error info
  * @param {Object} msg object containing info about the user's message
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
-function handleRecentError(err, msg, isTelegram = true) {
+function handleMdError(err, msg, isTelegram = true) {
   if (err.description.startsWith(constants.MD_PARSE_ERROR_INPUT)) {
     sendMessage(msg, constants.MD_PARSE_ERROR_OUTPUT, isTelegram);
     return;

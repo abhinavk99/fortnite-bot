@@ -13,8 +13,8 @@ module.exports = {
     let res = `Lifetime stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n`;
 
-    let platform = info.platformName;
-    let user = encodeURIComponent(info.epicUserHandle);
+    const platform = info.platformName;
+    const user = encodeURIComponent(info.epicUserHandle);
     res += `${constants.BASE_URL}/${platform}/${user}\n\n`;
 
     res += `Matches played: ${stats[7].value}\n`;
@@ -115,6 +115,11 @@ module.exports = {
     res += `Platform: ${info.platformNameLong}`;
 
     let table = [[], [], [], [], []];
+    table[0].push('Mode');
+    table[1].push('Matches');
+    table[2].push('Wins');
+    table[3].push('Kills');
+    table[4].push('Time');
     let m, w, k, mode, date, diffSecs;
     matches.forEach(data => {
       // Make it plural if not 1
@@ -279,8 +284,101 @@ module.exports = {
     });
 
     return res;
+  },
+
+  // Creates a table to compare two players
+  writeCompareMsg: (info1, info2) => {
+    console.log(info1);
+    console.log(info2);
+
+    const stats1 = info1.lifeTimeStats;
+    const stats2 = info2.lifeTimeStats;
+    const modes1 = info1.stats;
+    const modes2 = info2.stats;
+
+    let res = `${info1.epicUserHandle} vs ${info2.epicUserHandle}\n`;
+    res += `Platform: ${info1.platformNameLong}\n`;
+
+    const platform1 = info1.platformName;
+    const platform2 = info2.platformName;
+    const user1 = encodeURIComponent(info1.epicUserHandle);
+    const user2 = encodeURIComponent(info2.epicUserHandle);
+    res += `${constants.BASE_URL}/${platform1}/${user1}\n`;
+    res += `${constants.BASE_URL}/${platform2}/${user2}`;
+
+    let table = [
+      [
+        'User',
+        'Matches played',
+        'Wins',
+        'Times in top 3/5/10',
+        'Times in top 6/12/25',
+        'Win Rate',
+        'Kills',
+        'K/D Ratio',
+        'Kills/Game',
+        'Score',
+        '',
+        'Solo matches played',
+        'Solo wins',
+        'Solo kills',
+        '',
+        'Duo matches played',
+        'Duo wins',
+        'Duo kills',
+        '',
+        'Squad matches played',
+        'Squad wins',
+        'Squad kills'
+      ],
+      populateStatsList(stats1, modes1, info1.epicUserHandle),
+      populateStatsList(stats2, modes2, info2.epicUserHandle)
+    ];
+
+    return [res, table];
   }
 };
+
+// Populate list of stats for /compare
+function populateStatsList(stats, modes, user) {
+  let list = [];
+  list.push(user);
+  list.push(stats[7].value); // Matches played
+  list.push(stats[8].value); // Wins
+
+  const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
+    + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
+  const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+    + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
+  list.push(sumPlaces1); // Top 3/5/10
+  list.push(sumPlaces2); // Top 6/12/25
+
+  list.push(stats[9].value); // Win Rate
+  list.push(stats[10].value); // Kills
+  list.push(stats[11].value); // K/D Ratio
+
+  let kg;
+  if (parseInt(stats[7].value) === 0)
+    kg = 0;
+  else
+    kg = (parseInt(stats[10].value) / parseInt(stats[7].value)).toFixed(2);
+  list.push(kg); // Kills/Game
+  list.push(stats[6].value); // Score
+
+  ['Solo', 'Duo', 'Squad'].forEach(mode => {
+    list.push('');
+    modeStats = modes[constants[mode.toUpperCase()].id];
+    if (modeStats) {
+      list.push(modeStats.matches.value);
+      list.push(modeStats.top1.value);
+      list.push(modeStats.kills.value);
+    } else {
+      list.push(0, 0, 0);
+    }
+  });
+
+  return list;
+}
 
 // Convert seconds to days, hours, minutes, and seconds
 function formatSeconds(seconds, recent) {

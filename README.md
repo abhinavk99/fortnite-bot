@@ -88,13 +88,14 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | --- | --- | --- |
 | /recent | Get recent match stats for a player | /recent `<username>` |
 | /rold | Get recent match stats for a player (old format) | /rold `<username>` |
+| /compare | Compare two players | /compare `<username1>, <username2>` |
 | /rating | Get TRN rating stats for a player | /rating `<username>` |
 | /kd | Get K/D ratio stats for a player | /kd `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 
 #### Optional Platform Flags
 
-You can end any command (except `/set`, `/pc`, `/xbox`, `/ps4`) with `pc`, `xbox`, or `ps4` to specify the platform
+You can end any command (except `/set`, `/pc`, `/xbox`, `/ps4`, `/compare`) with `pc`, `xbox`, or `ps4` to specify the platform
 to search for the user.
 
 ```
@@ -111,13 +112,14 @@ Example:
 
     /set ninja
     ```
-2. Use any of the above commands (except `/set`) without a username.
+2. Use any of the above commands (except `/set`) without your username.
     ```
     Example:
 
     /user
     /squads3
     /recent
+    /compare TSM_Myth
     ```
 3. The bot will use the username that you set with `/set yourusername` for your stats.
 
