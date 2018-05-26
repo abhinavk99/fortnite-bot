@@ -234,15 +234,17 @@ module.exports = {
     let res = `TRN Rating stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
-    let formattedMode, rating;
+    let formattedMode, rating, modeStats;
     constants.MODES.forEach((mode, index) => {
       if (index >= 3)
         formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
       else
         formattedMode = mode.toUpperCase();
-      rating = info.stats[constants[formattedMode].id].trnRating.displayValue;
-      if (rating)
+      modeStats = info.stats[constants[formattedMode].id];
+      if (modeStats) {
+        rating = modeStats.trnRating.displayValue;
         res += `${mode} TRN Rating: ${rating}\n`;
+      }
       if ((index + 1) % 3 === 0)
         res += '\n';
     });
@@ -268,18 +270,22 @@ module.exports = {
       else
         formattedMode = mode.toUpperCase();
       modeStats = info.stats[constants[formattedMode].id];
-      kd = modeStats.kd.displayValue;
-      kills += modeStats.kills.valueInt;
-      deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
-      // Add mode KD
-      if (kd)
+      if (modeStats) {
+        kd = modeStats.kd.displayValue;
+        kills += modeStats.kills.valueInt;
+        deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
+        // Add mode KD
         res += `${mode} K/D Ratio: ${kd}\n`;
-      // Add lifetime and season KD
+      }
+      // Add lifetime or season KD
       if ((index + 1) % 3 === 0) {
-        if (index === 2)
+        if (index === 2) {
           res += `Lifetime K/D Ratio: ${info.lifeTimeStats[11].value}\n\n`;
-        else
+        } else {
+          if (deaths === 0)
+            deaths++;
           res += `${mode.substr(0, 8)} K/D Ratio: ${(kills / deaths).toFixed(2)}\n\n`;
+        }
       }
     });
 
