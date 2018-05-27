@@ -293,6 +293,44 @@ module.exports = {
     return res;
   },
 
+  // Writes the message for win rate stats
+  writeWinrateMsg: info => {
+    console.log(info);
+
+    let res = `Win Rates for ${info.epicUserHandle}:\n`;
+    res += `Platform: ${info.platformNameLong}\n\n`;
+
+    let formattedMode, wins, matches, winrate, totalWinrate, modeStats;
+    constants.MODES.forEach((mode, index) => {
+      // Reset wins and matches for overall, season 3, and season 4 modes
+      if (index % 3 === 0)
+        wins = matches = 0;
+      // Get the mode stats
+      if (index >= 3)
+        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
+      else
+        formattedMode = mode.toUpperCase();
+      modeStats = info.stats[constants[formattedMode].id];
+      if (modeStats) {
+        winrate = modeStats.winRatio.displayValue;
+        wins += modeStats.top1.valueInt;
+        matches += modeStats.matches.valueInt;
+        // Add mode KD
+        res += `${mode} Win Rate: ${winrate}%\n`;
+      }
+      // Add lifetime or season win rate
+      if ((index + 1) % 3 === 0) {
+        totalWinrate = matches === 0 ? 0 : (wins / matches * 100).toFixed(2);
+        if (index === 2)
+          res += `Lifetime Win Rate: ${totalWinrate}%\n\n`;
+        else
+          res += `${mode.substr(0, 8)} Win Rate: ${totalWinrate}%\n\n`;
+      }
+    });
+
+    return res;
+  },
+
   // Creates a table to compare two players
   writeCompareMsg: (info1, info2) => {
     console.log(info1);

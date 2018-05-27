@@ -27,6 +27,7 @@ const writeRoldMsg = writeMsg.writeRoldMsg;
 const writeSeasonMsg = writeMsg.writeSeasonMsg;
 const writeRatingMsg = writeMsg.writeRatingMsg;
 const writeKdMsg = writeMsg.writeKdMsg;
+const writeWinrateMsg = writeMsg.writeWinrateMsg;
 const writeCompareMsg = writeMsg.writeCompareMsg;
 
 const constants = require('./constants');
@@ -114,6 +115,18 @@ module.exports = {
       getFortniteInfo(user, platform)
         .then(info => {
           return resolve(writeKdMsg(info));
+        }).catch(err => {
+          return reject(handleError(err, user));
+        });
+    });
+  },
+
+  // Get win rate stats
+  getWinrateData: (user, platform) => {
+    return new Promise((resolve, reject) => {
+      getFortniteInfo(user, platform)
+        .then(info => {
+          return resolve(writeWinrateMsg(info));
         }).catch(err => {
           return reject(handleError(err, user));
         });

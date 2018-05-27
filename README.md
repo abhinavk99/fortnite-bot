@@ -91,6 +91,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /compare | Compare two players | /compare `<username1>, <username2>` |
 | /rating | Get TRN rating stats for a player | /rating `<username>` |
 | /kd | Get K/D ratio stats for a player | /kd `<username>` |
+| /winrate | Get win rate stats for a player | /winrate `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 
 #### Optional Platform Flags

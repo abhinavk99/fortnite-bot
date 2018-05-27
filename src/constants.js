@@ -74,6 +74,7 @@ module.exports = Object.freeze({
 /compare <username1>, <username2> to compare two players
 /rating <username> for player's TRN rating stats
 /kd <username> for player's K/D ratio stats
+/winrate <username> for player's win rate stats
 
 You can end any command (except /set, /pc, /xbox, /ps4, /compare) with pc, xbox, or ps4 to specify the platform to search for the user.`
 });

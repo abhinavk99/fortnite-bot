@@ -1,5 +1,8 @@
 # Changelog for Fortnite Bot
 
+## [Unreleased]
+- /winrate command to quickly see user's win rate
+
 ## [3.8.0] - 2018-05-26
 ### Added
 - /compare command to compare two users delimited by commas

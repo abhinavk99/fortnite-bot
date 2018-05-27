@@ -16,6 +16,7 @@ const getRoldData = fortniteData.getRoldData;
 const getSeasonData = fortniteData.getSeasonData;
 const getRatingData = fortniteData.getRatingData;
 const getKdData = fortniteData.getKdData;
+const getWinrateData = fortniteData.getWinrateData;
 const getCompareData = fortniteData.getCompareData;
 const setIdCache = fortniteData.setIdCache;
 const getIdCache = fortniteData.getIdCache;
@@ -204,6 +205,20 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
+  } else if (text.startsWith('/winrate')) {
+    // Get win rate stats on a user
+
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
+    platform = tokens[0].substring(8);
+    if (platform) {
+      getWinrateData(user, constants[platform.toUpperCase()])
+        .then(res => sendMessage(msg, res, isTelegram))
+        .catch(e => sendMessage(msg, e, isTelegram));
+    } else {
+      sendWinrateCalls(user, msg, isTelegram);
+    }
   }
 }
 
@@ -520,6 +535,26 @@ function sendKdCalls(user, msg, isTelegram = true) {
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
           getKdData(user, constants.PS4)
+            .then(response => sendMessage(msg, response, isTelegram))
+            .catch(e => sendMessage(msg, e, isTelegram));
+        });
+    });
+}
+
+/**
+ * Gets the win rate data
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function sendWinrateCalls(user, msg, isTelegram = true) {
+  getWinrateData(user, constants.PC)
+    .then(res => sendMessage(msg, res, isTelegram))
+    .catch(err => {
+      getWinrateData(user, constants.XBOX)
+        .then(resp => sendMessage(msg, resp, isTelegram))
+        .catch(error => {
+          getWinrateData(user, constants.PS4)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });
