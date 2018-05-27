@@ -1,7 +1,14 @@
 # Changelog for Fortnite Bot
 
-## [Unreleased]
+## [3.9.0] - 2018-05-27
+### Added
 - /winrate command to quickly see user's win rate
+
+### Changed
+- Improved formatting the output if user has never played a mode for mode command
+
+### Fixed
+- Crash when user has never played a mode for /rating and /kd commands
 
 ## [3.8.0] - 2018-05-26
 ### Added
