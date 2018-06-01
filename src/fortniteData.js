@@ -20,14 +20,6 @@ const client = new fortnite(process.env.FORTNITE_KEY);
 
 // Methods for formatting the messages are in writeMsg.js
 const writeMsg = require('./writeMsg');
-const writeGlobalMsg = writeMsg.writeGlobalMsg;
-const writeModesMsg = writeMsg.writeModesMsg;
-const writeRecentMsg = writeMsg.writeRecentMsg;
-const writeRoldMsg = writeMsg.writeRoldMsg;
-const writeSeasonMsg = writeMsg.writeSeasonMsg;
-const writeRatingMsg = writeMsg.writeRatingMsg;
-const writeKdMsg = writeMsg.writeKdMsg;
-const writeWinrateMsg = writeMsg.writeWinrateMsg;
 const writeCompareMsg = writeMsg.writeCompareMsg;
 
 const constants = require('./constants');
@@ -37,96 +29,12 @@ const tempCache = {};
 resetCache();
 
 module.exports = {
-  // Get global stats
-  getGlobalData: (user, platform) => {
+  // Get stats for the given type of data (i.e. Global, Season, etc.)
+  getData: (datatype, user, platform, args) => {
     return new Promise((resolve, reject) => {
       getFortniteInfo(user, platform)
         .then(info => {
-          return resolve(writeGlobalMsg(info));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get solo/duo/squad lifetime/season3 stats
-  getModesData: (user, mode, nums, platform, season) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeModesMsg(info, season, mode, nums));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get recent matches stats
-  getRecentData: (user, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeRecentMsg(info));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get recent matches stats (old format)
-  getRoldData: (user, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeRoldMsg(info));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get all season stats
-  getSeasonData: (user, season, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeSeasonMsg(info, season));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get TRN rating stats
-  getRatingData: (user, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeRatingMsg(info));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get KD stats
-  getKdData: (user, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeKdMsg(info));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
-    });
-  },
-
-  // Get win rate stats
-  getWinrateData: (user, platform) => {
-    return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
-        .then(info => {
-          return resolve(writeWinrateMsg(info));
+          return resolve(writeMsg[`write${datatype}Msg`](info, args));
         }).catch(err => {
           return reject(handleError(err, user));
         });

@@ -12,13 +12,8 @@ const NOT_FOUND_ERROR = Object.values(constants.ERRORS)[0];
 describe('#Fortnite Data', () => {
 
   it('should have methods to get Fortnite data', () => {
-    expect(fortniteData.getGlobalData).to.exist;
-    expect(fortniteData.getModesData).to.exist;
-    expect(fortniteData.getRecentData).to.exist;
-    expect(fortniteData.getRoldData).to.exist;
-    expect(fortniteData.getSeasonData).to.exist;
-    expect(fortniteData.getRatingData).to.exist;
-    expect(fortniteData.getKdData).to.exist;
+    expect(fortniteData.getData).to.exist;
+    expect(fortniteData.getCompareData).to.exist;
   });
 
   it('should have methods to access the cache', () => {
@@ -28,7 +23,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for global with invalid username', async () => {
     try {
-      await fortniteData.getGlobalData(user1, platform);
+      await fortniteData.getData('Global', user1, platform);
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -36,7 +31,11 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for modes with invalid username', async () => {
     try {
-      await fortniteData.getModesData(user1, 'Solo', [10, 25], platform, '3');
+      await fortniteData.getData('Modes', user1, platform, {
+        mode: 'Solo',
+        top: [10, 25],
+        season: '3'
+      });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -44,7 +43,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for recent with invalid username', async () => {
     try {
-      await fortniteData.getRecentData(user1, platform);
+      await fortniteData.getData('Recent', user1, platform);
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -52,7 +51,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for rold with invalid username', async () => {
     try {
-      await fortniteData.getRoldData(user1, platform);
+      await fortniteData.getData('Rold', user1, platform);
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -60,7 +59,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for season with invalid username', async () => {
     try {
-      await fortniteData.getSeasonData(user1, 3, platform);
+      await fortniteData.getData('Season', user1, platform, { season: 3 });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -68,7 +67,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for rating with invalid username', async () => {
     try {
-      await fortniteData.getRatingData(user1, platform);
+      await fortniteData.getData('Rating', user1, platform);
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -76,7 +75,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for kd with invalid username', async () => {
     try {
-      await fortniteData.getKdData(user1, platform);
+      await fortniteData.getData('Kd', user1, platform);
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -92,7 +91,7 @@ describe('#Fortnite Data', () => {
 
   it('should get global data', async () => {
     const user = 'ninja';
-    const res = await fortniteData.getGlobalData(user, platform);
+    const res = await fortniteData.getData('Global', user, platform);
     const lines = res.split('\n');
     expect(lines[0]).to.equal('Lifetime stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
@@ -124,9 +123,13 @@ describe('#Fortnite Data', () => {
   it('should get solo season 3 data', async () => {
     const user = 'ninja';
     const mode = 'Solos3';
-    const nums = constants.SOLOS3.top;
+    const top = constants.SOLOS3.top;
     const season = '3';
-    const res = await fortniteData.getModesData(user, mode, nums, platform, season);
+    const res = await fortniteData.getData('Modes', user, platform, {
+      mode: mode,
+      top: top,
+      season: season
+    });
     expect(res).to.equal(`Season 3 Solo stats for Ninja:
 Platform: PC
 
@@ -145,7 +148,7 @@ Score/Match: 355.06\n`);
 
   it('should get recent data', async () => {
     const user = 'ninja';
-    const res = await fortniteData.getRecentData(user, platform);
+    const res = await fortniteData.getData('Recent', user, platform);
     expect(res.length).to.equal(2);
     expect(res[0]).to.equal('Recent matches for Ninja:\nPlatform: PC');
     expect(res[1].length).to.equal(5);
@@ -168,7 +171,7 @@ Score/Match: 355.06\n`);
 
   it('should get recent data in old format', async () => {
     const user = 'ninja';
-    const res = await fortniteData.getRoldData(user, platform);
+    const res = await fortniteData.getData('Rold', user, platform);
     let lines = res.substring(0, res.length - 1).split('\n');
     expect(lines[0]).to.equal('Recent matches for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
@@ -183,7 +186,7 @@ Score/Match: 355.06\n`);
   it('should get season 3 data', async () => {
     const user = 'ninja';
     const season = '3';
-    const res = await fortniteData.getSeasonData(user, season, platform);
+    const res = await fortniteData.getData('Season', user, platform, { season: season });
     expect(res).to.equal(`Season 3 stats for Ninja:
 Platform: PC
 
@@ -211,7 +214,7 @@ Squad kills: 2885\n`);
 
   it('should get TRN rating data', async () => {
     const user = 'ninja';
-    const res = await fortniteData.getRatingData(user, platform);
+    const res = await fortniteData.getData('Rating', user, platform);
     const lines = res.split('\n');
     expect(lines[0]).to.equal('TRN Rating stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
@@ -231,7 +234,7 @@ Squad kills: 2885\n`);
 
   it('should get K/D data', async () => {
     const user = 'ninja';
-    const res = await fortniteData.getKdData(user, platform);
+    const res = await fortniteData.getData('Kd', user, platform);
     const lines = res.split('\n');
     expect(lines[0]).to.equal('K/D Ratios for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');

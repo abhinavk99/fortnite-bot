@@ -9,17 +9,10 @@ const discBot = new Eris(process.env.DISCORD_TOKEN); // Discord bot
 
 // Methods for actually getting Fortnite data are in fortniteData.js
 const fortniteData = require('./fortniteData');
-const getGlobalData = fortniteData.getGlobalData;
-const getModesData = fortniteData.getModesData;
-const getRecentData = fortniteData.getRecentData;
-const getRoldData = fortniteData.getRoldData;
-const getSeasonData = fortniteData.getSeasonData;
-const getRatingData = fortniteData.getRatingData;
-const getKdData = fortniteData.getKdData;
-const getWinrateData = fortniteData.getWinrateData;
+const getData = fortniteData.getData;
 const getCompareData = fortniteData.getCompareData;
-const setIdCache = fortniteData.setIdCache;
 const getIdCache = fortniteData.getIdCache;
+const setIdCache = fortniteData.setIdCache;
 
 const constants = require('./constants');
 
@@ -72,7 +65,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     if (platform)
       sendPlatformsCalls(user, platform, msg, isTelegram);
     else
-      sendGlobalCalls(user, msg, isTelegram);
+      sendMethodCalls('Global', user, msg, isTelegram);
   } else if (text.match(/^\/(pc|xbox|ps4)(.+)?$/i)) {
     // Get global stats on a user specifying platform
 
@@ -101,8 +94,11 @@ async function parseCommand(text, msg, isTelegram = true) {
       sendModesCalls(user, mode, msg, isTelegram);
     } else {
       let [season, top] = getModeInfo(mode);
-      getModesData(user, mode, top, constants[platform.toUpperCase()], season)
-        .then(res => sendMessage(msg, res, isTelegram))
+      getData('Modes', user, constants[platform.toUpperCase()], {
+        mode: mode,
+        top: top,
+        season: season
+      }).then(res => sendMessage(msg, res, isTelegram))
         .catch(err => sendMessage(msg, err, isTelegram));
     }
   } else if (text.startsWith('/recent')) {
@@ -114,7 +110,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(7);
     if (platform) {
-      getRecentData(user, constants[platform.toUpperCase()])
+      getData('Recent', user, constants[platform.toUpperCase()])
         .then(res => sendMdTableMessage(msg, res, isTelegram))
         .catch(e => {
           err = handleMdError(e, msg, isTelegram);
@@ -133,11 +129,11 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(5);
     if (platform) {
-      getRoldData(user, constants[platform.toUpperCase()])
+      getData('Rold', user, constants[platform.toUpperCase()])
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     } else {
-      sendRoldCalls(user, msg, isTelegram);
+      sendMethodCalls('Rold', user, msg, isTelegram);
     }
   } else if (text.match(/^\/(season|s)(3|4)(pc|xbox|ps4)?(.+)?$/i)) {
     // Get all season stats on a user 
@@ -151,9 +147,9 @@ async function parseCommand(text, msg, isTelegram = true) {
     if (!user)
       return;
     if (platform.length === 0) {
-      sendSeasonCalls(user, season, msg, isTelegram);
+      sendMethodCalls('Season', user, msg, isTelegram, { season: season });
     } else {
-      getSeasonData(user, season, constants[platform.toUpperCase()])
+      getData('Season', user, constants[platform.toUpperCase()], { season: season })
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     }
@@ -172,11 +168,11 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(7);
     if (platform) {
-      getRatingData(user, constants[platform.toUpperCase()])
+      getData('Rating', user, constants[platform.toUpperCase()])
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     } else {
-      sendRatingCalls(user, msg, isTelegram);
+      sendMethodCalls('Rating', user, msg, isTelegram);
     }
   } else if (text.startsWith('/kd')) {
     // Get KD stats on a user
@@ -186,11 +182,11 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(3);
     if (platform) {
-      getKdData(user, constants[platform.toUpperCase()])
+      getData('Kd', user, constants[platform.toUpperCase()])
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     } else {
-      sendKdCalls(user, msg, isTelegram);
+      sendMethodCalls('Kd', user, msg, isTelegram);
     }
   } else if (text.startsWith('/compare')) {
     // Compare two users
@@ -213,11 +209,11 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(8);
     if (platform) {
-      getWinrateData(user, constants[platform.toUpperCase()])
+      getData('Winrate', user, constants[platform.toUpperCase()])
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     } else {
-      sendWinrateCalls(user, msg, isTelegram);
+      sendMethodCalls('Winrate', user, msg, isTelegram);
     }
   }
 }
@@ -361,26 +357,6 @@ function handleMdError(err, msg, isTelegram = true) {
 }
 
 /**
- * Gets the Fortnite data for global (checks all platforms)
- * @param {string} user Fortnite username
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function sendGlobalCalls(user, msg, isTelegram = true) {
-  getGlobalData(user, constants.PC) // Tries to find user on PC
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getGlobalData(user, constants.XBOX) // Tries xbox if PC not found
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getGlobalData(user, constants.PS4) // Tries ps4 if xbox not found
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
-}
-
-/**
  * Gets the Fortnite data for platforms
  * @param {string} user Fortnite username
  * @param {string} platform platform to search Fortnite player on
@@ -388,7 +364,7 @@ function sendGlobalCalls(user, msg, isTelegram = true) {
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
 function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
-  getGlobalData(user, constants[platform.toUpperCase()])
+  getData('Global', user, constants[platform.toUpperCase()])
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => sendMessage(msg, err, isTelegram));
 }
@@ -403,17 +379,11 @@ function sendPlatformsCalls(user, platform, msg, isTelegram = true) {
 function sendModesCalls(user, mode, msg, isTelegram = true) {
   // Checks if command is for season 3 because formatting is slightly different
   let [season, top] = getModeInfo(mode);
-  getModesData(user, mode, top, constants.PC, season)
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getModesData(user, mode, top, constants.XBOX, season)
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getModesData(user, mode, top, constants.PS4, season)
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
+  sendMethodCalls('Modes', user, msg, isTelegram, {
+    mode: mode,
+    top: top,
+    season: season
+  });
 }
 
 /**
@@ -437,19 +407,19 @@ function getModeInfo(mode) {
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
 function sendRecentCalls(user, msg, isTelegram = true) {
-  getRecentData(user, constants.PC)
+  getData('Recent', user, constants.PC)
     .then(res => sendMdTableMessage(msg, res, isTelegram))
     .catch(err => {
       err = handleMdError(err, msg, isTelegram);
       if (!err)
         return;
-      getRecentData(user, constants.XBOX)
+      getData('Recent', user, constants.XBOX)
         .then(resp => sendMdTableMessage(msg, resp, isTelegram))
         .catch(error => {
           err = handleMdError(err, msg, isTelegram);
           if (!err)
             return;
-          getRecentData(user, constants.PS4)
+          getData('Recent', user, constants.PS4)
             .then(response => sendMdTableMessage(msg, response, isTelegram))
             .catch(e => {
               err = handleMdError(err, msg, isTelegram);
@@ -461,100 +431,23 @@ function sendRecentCalls(user, msg, isTelegram = true) {
 }
 
 /**
- * Gets the Fortnite data for recent (checks all platforms) (old format)
+ * Gets the data for a method based on its name (used for most of the commands)
+ * @param {string} datatype type of data to get data on (i.e. Global, Season, etc.)
  * @param {string} user Fortnite username
  * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ * @param {boolean} isTelegram true if message is from Telegram, false if from Discord
+ * @param {Object=} args optional arguments for commands that need them
+ * @param {string=} args.mode mode to get Fortnite data of
+ * @param {string=} args.season season to get Fortnite data of
  */
-function sendRoldCalls(user, msg, isTelegram = true) {
-  getRoldData(user, constants.PC)
+function sendMethodCalls(datatype, user, msg, isTelegram, args) {
+  getData(datatype, user, constants.PC, args)
     .then(res => sendMessage(msg, res, isTelegram))
     .catch(err => {
-      getRoldData(user, constants.XBOX)
+      getData(datatype, user, constants.XBOX, args)
         .then(resp => sendMessage(msg, resp, isTelegram))
         .catch(error => {
-          getRoldData(user, constants.PS4)
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
-}
-
-/**
- * Gets the Fortnite data for seasons (checks all platforms)
- * @param {string} user Fortnite username
- * @param {string} season season to get Fortnite data of
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function sendSeasonCalls(user, season, msg, isTelegram = true) {
-  getSeasonData(user, season, constants.PC)
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getSeasonData(user, season, constants.XBOX)
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getSeasonData(user, season, constants.PS4)
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
-}
-
-/**
- * Gets the TRN rating data
- * @param {string} user Fortnite username
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function sendRatingCalls(user, msg, isTelegram = true) {
-  getRatingData(user, constants.PC)
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getRatingData(user, constants.XBOX)
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getRatingData(user, constants.PS4)
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
-}
-
-/**
- * Gets the KD data
- * @param {string} user Fortnite username
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function sendKdCalls(user, msg, isTelegram = true) {
-  getKdData(user, constants.PC)
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getKdData(user, constants.XBOX)
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getKdData(user, constants.PS4)
-            .then(response => sendMessage(msg, response, isTelegram))
-            .catch(e => sendMessage(msg, e, isTelegram));
-        });
-    });
-}
-
-/**
- * Gets the win rate data
- * @param {string} user Fortnite username
- * @param {Object} msg object containing info about the user's message
- * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
- */
-function sendWinrateCalls(user, msg, isTelegram = true) {
-  getWinrateData(user, constants.PC)
-    .then(res => sendMessage(msg, res, isTelegram))
-    .catch(err => {
-      getWinrateData(user, constants.XBOX)
-        .then(resp => sendMessage(msg, resp, isTelegram))
-        .catch(error => {
-          getWinrateData(user, constants.PS4)
+          getData(datatype, user, constants.PS4, args)
             .then(response => sendMessage(msg, response, isTelegram))
             .catch(e => sendMessage(msg, e, isTelegram));
         });

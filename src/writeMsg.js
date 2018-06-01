@@ -60,7 +60,7 @@ module.exports = {
   },
 
   // Writes the message for modes stats
-  writeModesMsg: (info, season, mode, nums) => {
+  writeModesMsg: (info, { season, mode, top }) => {
     // The API data stores data for each of the modes with the mapped names
     const stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
     
@@ -88,7 +88,7 @@ module.exports = {
     res += `Wins: ${stats.top1.value}\n`;
 
     // Gets times in top x for the 2 numbers passed in the array
-    nums.forEach(num => {
+    top.forEach(num => {
       res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
     });
 
@@ -178,7 +178,7 @@ module.exports = {
   },
 
   // Writes the message for season stats
-  writeSeasonMsg: (info, season) => {
+  writeSeasonMsg: (info, { season }) => {
     console.log(info);
     const stats = info.lifeTimeStats;
 
