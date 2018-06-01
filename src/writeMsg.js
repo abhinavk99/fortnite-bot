@@ -43,7 +43,7 @@ module.exports = {
     res += `Score: ${stats[6].value}\n`;
 
     // Shows some limited data for the game modes
-    ['Solo', 'Duo', 'Squad'].forEach(mode => {
+    for (let mode of ['Solo', 'Duo', 'Squad']) {
       modeStats = info.stats[constants[mode.toUpperCase()].id];
       if (modeStats) {
         res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
@@ -54,7 +54,7 @@ module.exports = {
         // let seconds = modeStats.matches.valueInt * avgSeconds;
         // res += `${mode} time played:${formatSeconds(seconds, false)}\n`;
       }
-    });
+    }
 
     return res;
   },
@@ -88,9 +88,9 @@ module.exports = {
     res += `Wins: ${stats.top1.value}\n`;
 
     // Gets times in top x for the 2 numbers passed in the array
-    top.forEach(num => {
+    for (let num of top) {
       res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
-    });
+    }
 
     if (stats.winRatio)
       res += `Win Rate: ${stats.winRatio.displayValue}%\n`;
@@ -122,7 +122,7 @@ module.exports = {
     table[3].push('Kills');
     table[4].push('Time');
     let m, w, k, mode, date, diffSecs;
-    matches.forEach(data => {
+    for (let data of matches) {
       // Make it plural if not 1
       m = data.matches === 1 ? 'match' : 'matches';
       w = data.top1 === 1 ? 'win' : 'wins';
@@ -141,7 +141,7 @@ module.exports = {
       date = new Date(data.dateCollected);
       diffSecs = (Date.now() - date.getTime()) / 1000;
       table[4].push(`${formatSeconds(diffSecs, true)} ago`);
-    });
+    }
 
     return [res, table];
   },
@@ -155,7 +155,7 @@ module.exports = {
     res += `Platform: ${info.platformNameLong}\n\n`;
 
     let m, w, k, mode, date, diffSecs;
-    matches.forEach(data => {
+    for (let data of matches) {
       // Make it plural if not 1
       m = data.matches === 1 ? 'match' : 'matches';
       w = data.top1 === 1 ? 'win' : 'wins';
@@ -172,7 +172,7 @@ module.exports = {
       date = new Date(data.dateCollected);
       diffSecs = (Date.now() - date.getTime()) / 1000;
       res += `${formatSeconds(diffSecs, true)} ago\n`;
-    });
+    }
     
     return res;
   },
@@ -186,7 +186,7 @@ module.exports = {
     matches = wins = sumPlaces1 = sumPlaces2 = kills = deaths = 0;
     let modeRes = '';
 
-    ['Solo', 'Duo', 'Squad'].forEach(mode => {
+    for (let mode of ['Solo', 'Duo', 'Squad']) {
       modeStats = info.stats[constants[`${mode.toUpperCase()}S${season}`].id];
       if (modeStats) {
         // Sums up the values needed to show all season stats
@@ -204,7 +204,7 @@ module.exports = {
         modeRes += `${mode} wins: ${modeStats.top1.value}\n`;
         modeRes += `${mode} kills: ${modeStats.kills.value}\n`;
       }
-    });
+    }
 
     let res = `Season ${season} stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
@@ -410,7 +410,7 @@ function populateStatsList(stats, modes, user) {
   list.push(kg); // Kills/Game
   list.push(stats[6].value); // Score
 
-  ['Solo', 'Duo', 'Squad'].forEach(mode => {
+  for (let mode of ['Solo', 'Duo', 'Squad']) {
     list.push('');
     modeStats = modes[constants[mode.toUpperCase()].id];
     if (modeStats) {
@@ -420,7 +420,7 @@ function populateStatsList(stats, modes, user) {
     } else {
       list.push(0, 0, 0);
     }
-  });
+  }
 
   return list;
 }
