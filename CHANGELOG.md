@@ -1,5 +1,10 @@
 # Changelog for Fortnite Bot
 
+## [3.9.1] - 2018-06-05
+### Changed
+- Generalized method for getting Fortnite data to remove code reuse
+- Replace usage of forEach with for-of
+
 ## [3.9.0] - 2018-05-27
 ### Added
 - /winrate command to quickly see user's win rate
