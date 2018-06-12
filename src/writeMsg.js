@@ -69,7 +69,7 @@ module.exports = {
     res += season != '' ? mode.slice(0, -2) : mode;
 
     if (!(stats && stats.matches)) // No matches exist for the mode
-      return 'User has never played ' + res + '.';
+      return `${info.epicUserHandle} has never played ${res}.`;
     console.log(stats);
 
     res += ` stats for ${info.epicUserHandle}:\n`;

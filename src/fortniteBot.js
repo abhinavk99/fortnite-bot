@@ -306,18 +306,25 @@ function sendMdTableMessage(msg, response, isTelegram = true) {
   // Replace underscores with escaped underscores because of Markdown parsing
   introMsg = introMsg.replace(/_/g, '\\_');
   let matrix = response[1];
-  // Transpose the table, taken from link below
-  // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
-  matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
-  // Create the markdown table from the transposed table
-  let mdTable = table(matrix, { align: Array(matrix.length).fill('c') });
-  let mdRows = mdTable.split('\n');
-  // Remove the 2nd row separating titles and values
-  mdTable = mdRows[0] + '\n' + mdRows.slice(2).join('\n');
-  // Replace the pipe separators between columns with spaces
-  mdTable = mdTable.replace(/\|/g, ' ');
-  // Format the message into intro message and the table in a code block
-  const output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
+  let output;
+  // No recent matches found for the user
+  if (matrix[0].length === 1) {
+    let user = introMsg.split('\n')[0].split(' ').slice(3).join(' ').slice(0, -1);
+    output = `${user} has no recent matches.`;
+  } else {
+    // Transpose the table, taken from link below
+    // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
+    matrix = matrix[0].map((_, c) => matrix.map(r => r[c]));
+    // Create the markdown table from the transposed table
+    let mdTable = table(matrix, { align: Array(matrix.length).fill('c') });
+    let mdRows = mdTable.split('\n');
+    // Remove the 2nd row separating titles and values
+    mdTable = mdRows[0] + '\n' + mdRows.slice(2).join('\n');
+    // Replace the pipe separators between columns with spaces
+    mdTable = mdTable.replace(/\|/g, ' ');
+    // Format the message into intro message and the table in a code block
+    output = `${introMsg}\n\n\`\`\`text\n${mdTable}\n\`\`\``;
+  }
 
   if (isTelegram) {
     // Sends a markdown message to Telegram with recent matches in code block

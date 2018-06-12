@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+### Unreleased
+- Fix message for when user has no recent matches
+- Put username instead of the word 'user' for when user hasn't played a mode
+
 ## [3.9.1] - 2018-06-05
 ### Changed
 - Generalized method for getting Fortnite data to remove code reuse
