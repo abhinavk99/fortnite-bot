@@ -3,6 +3,8 @@
 ### Unreleased
 - Fix message for when user has no recent matches
 - Put username instead of the word 'user' for when user hasn't played a mode
+- Fix regex matching for commands
+- Removed case insensitive flag on regex matching because text is made lowercase beforehand
 
 ## [3.9.1] - 2018-06-05
 ### Changed

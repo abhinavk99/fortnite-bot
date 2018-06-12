@@ -52,9 +52,9 @@ async function parseCommand(text, msg, isTelegram = true) {
   // Accounts for accidental extra whitespace by matching instead of splitting
   tokens = text.match(/\S+/g);
 
-  if (text.match(/^\/(info|help)$/i)) {
+  if (text.match(/^\/(info|help)$/)) {
     sendMessage(msg, constants.START_MSG, isTelegram);
-  } else if (text.startsWith('/user')) {
+  } else if (text.match(/^\/user(\s.+)?$/)) {
     // Get global stats on a user
 
     // Get username, exit if not found
@@ -66,7 +66,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       sendPlatformsCalls(user, platform, msg, isTelegram);
     else
       sendMethodCalls('Global', user, msg, isTelegram);
-  } else if (text.match(/^\/(pc|xbox|ps4)(.+)?$/i)) {
+  } else if (text.match(/^\/(pc|xbox|ps4)(\s.+)?$/)) {
     // Get global stats on a user specifying platform
 
     // Get username, exit if not found
@@ -75,7 +75,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(1); // Platform
     sendPlatformsCalls(user, platform, msg, isTelegram);
-  } else if (text.match(/^\/(solo|duo|squad)(s3|s4)?(pc|xbox|ps4)?(.+)?$/i)) {
+  } else if (text.match(/^\/(solo|duo|squad)(s3|s4)?(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get solo, duo, or squad stats for lifetime or season
 
     let mode = tokens[0].substring(1); // Mode
@@ -101,7 +101,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       }).then(res => sendMessage(msg, res, isTelegram))
         .catch(err => sendMessage(msg, err, isTelegram));
     }
-  } else if (text.startsWith('/recent')) {
+  } else if (text.match(/^\/recent(\s.+)?$/)) {
     // Get recent matches on a user
 
     // Get username, exit if not found
@@ -120,7 +120,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendRecentCalls(user, msg, isTelegram);
     }
-  } else if (text.startsWith('/rold')) {
+  } else if (text.match(/^\/rold(\s.+)?$/)) {
     // Get recent matches on a user (old format)
 
     // Get username, exit if not found
@@ -135,7 +135,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Rold', user, msg, isTelegram);
     }
-  } else if (text.match(/^\/(season|s)(3|4)(pc|xbox|ps4)?(.+)?$/i)) {
+  } else if (text.match(/^\/(season|s)(3|4)(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get all season stats on a user 
 
     // Get season and platform by stripping data from the command text
@@ -153,13 +153,13 @@ async function parseCommand(text, msg, isTelegram = true) {
         .then(res => sendMessage(msg, res, isTelegram))
         .catch(e => sendMessage(msg, e, isTelegram));
     }
-  } else if (text.startsWith('/set ')) {
+  } else if (text.match(/^\/set\s.+$/)) {
     // Write username to database
 
     user = text.substring(5);
     setIdCache(user, id, isTelegram);
     sendMessage(msg, `Wrote ${user} to database.`, isTelegram);
-  } else if (text.startsWith('/rating')) {
+  } else if (text.match(/^\/rating(\s.+)?$/)) {
     // Get TRN ratings on a user
 
     // Get username, exit if not found
@@ -174,7 +174,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Rating', user, msg, isTelegram);
     }
-  } else if (text.startsWith('/kd')) {
+  } else if (text.match(/^\/kd(\s.+)?$/)) {
     // Get KD stats on a user
 
     user = await getUser(tokens, id, isTelegram);
@@ -188,7 +188,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Kd', user, msg, isTelegram);
     }
-  } else if (text.startsWith('/compare')) {
+  } else if (text.match(/^\/compare(\s.+)?$/)) {
     // Compare two users
 
     let users = await getTwoUsers(tokens, id, isTelegram);
@@ -201,7 +201,7 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
-  } else if (text.startsWith('/winrate')) {
+  } else if (text.match(/^\/winrate(\s.+)?$/)) {
     // Get win rate stats on a user
 
     user = await getUser(tokens, id, isTelegram);
