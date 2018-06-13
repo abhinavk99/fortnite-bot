@@ -1,5 +1,5 @@
 const fortniteData = require('../src/fortniteData');
-const constants = require('../src/constants');
+const modes = require('../src/utils/modes');
 const expect = require('chai').expect;
 
 const user1 = '4,ycdoetnuid49';
@@ -7,7 +7,8 @@ const user2 = '.y4223lt3';
 
 const platform = 'pc';
 
-const NOT_FOUND_ERROR = Object.values(constants.ERRORS)[0];
+const NOT_FOUND_ERROR = `User ${user1} not found.`;
+const COMPARE_NOT_FOUND_ERROR = `User ${user1} or ${user2} not found.`;
 
 describe('#Fortnite Data', () => {
 
@@ -85,7 +86,7 @@ describe('#Fortnite Data', () => {
     try {
       await fortniteData.getCompareData(user1, user2, platform);
     } catch (err) {
-      expect(err).to.equal(NOT_FOUND_ERROR);
+      expect(err).to.equal(COMPARE_NOT_FOUND_ERROR);
     }
   });
 
@@ -123,7 +124,7 @@ describe('#Fortnite Data', () => {
   it('should get solo season 3 data', async () => {
     const user = 'ninja';
     const mode = 'Solos3';
-    const top = constants.SOLOS3.top;
+    const top = modes.SOLOS3.top;
     const season = '3';
     const res = await fortniteData.getData('Modes', user, platform, {
       mode: mode,

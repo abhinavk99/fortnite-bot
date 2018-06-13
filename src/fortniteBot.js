@@ -14,7 +14,11 @@ const getCompareData = fortniteData.getCompareData;
 const getIdCache = fortniteData.getIdCache;
 const setIdCache = fortniteData.setIdCache;
 
-const constants = require('./constants');
+const constants = require('./utils/constants');
+const modes = require('./utils/modes');
+
+const errors = require('./utils/errors');
+const getNoRecentMatchesError = errors.getNoRecentMatchesError;
 
 // Telegram start message
 teleBot.on(/^\/start$/i, msg => {
@@ -310,7 +314,7 @@ function sendMdTableMessage(msg, response, isTelegram = true) {
   // No recent matches found for the user
   if (matrix[0].length === 1) {
     let user = introMsg.split('\n')[0].split(' ').slice(3).join(' ').slice(0, -1);
-    output = `${user} has no recent matches.`;
+    output = getNoRecentMatchesError(user);
   } else {
     // Transpose the table, taken from link below
     // http://www.codesuck.com/2012/02/transpose-javascript-array-in-one-line.html
@@ -356,8 +360,8 @@ function sendMdTableMessage(msg, response, isTelegram = true) {
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
 function handleMdError(err, msg, isTelegram = true) {
-  if (err.description && err.description.startsWith(constants.MD_PARSE_ERROR_INPUT)) {
-    sendMessage(msg, constants.MD_PARSE_ERROR_OUTPUT, isTelegram);
+  if (err.description && err.description.startsWith(errors.MD_PARSE_ERROR.INPUT)) {
+    sendMessage(msg, errors.MD_PARSE_ERROR.OUTPUT, isTelegram);
     return;
   }
   return err;
@@ -403,7 +407,7 @@ function getModeInfo(mode) {
   // Otherwise it's an empty string
   const season = ['3', '4'].includes(lastChar) ? lastChar : '';
   // Each mode has a different way of storing times a player made it to top x
-  const top = constants[mode.toUpperCase()].top;
+  const top = modes[mode.toUpperCase()].top;
   return [season, top];
 }
 

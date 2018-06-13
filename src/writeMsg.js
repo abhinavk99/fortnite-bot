@@ -2,7 +2,15 @@
  * Methods to write messages given the data
  */
 
-const constants = require('./constants');
+const constants = require('./utils/constants');
+const modes = require('./utils/modes');
+
+const formatSeconds = require('./utils/formatSeconds').formatSeconds;
+
+// Methods to write error messages
+const errors = require('./utils/errors');
+const getModeNotFoundError = errors.getModeNotFoundError;
+const getNoRecentMatchesError = errors.getNoRecentMatchesError;
 
 module.exports = {
   // Writes the message for global stats
@@ -44,7 +52,7 @@ module.exports = {
 
     // Shows some limited data for the game modes
     for (let mode of ['Solo', 'Duo', 'Squad']) {
-      modeStats = info.stats[constants[mode.toUpperCase()].id];
+      modeStats = info.stats[modes[mode.toUpperCase()].id];
       if (modeStats) {
         res += `\n${mode} matches played: ${modeStats.matches.value}\n`;
         res += `${mode} wins: ${modeStats.top1.value}\n`;
@@ -62,14 +70,14 @@ module.exports = {
   // Writes the message for modes stats
   writeModesMsg: (info, { season, mode, top }) => {
     // The API data stores data for each of the modes with the mapped names
-    const stats = info.stats[constants[mode.toUpperCase()].id]; // Data for the mode
+    const stats = info.stats[modes[mode.toUpperCase()].id]; // Data for the mode
     
     let res = season != '' ? `Season ${season} ` : '';
     // Cuts off the 's3' at the end for current season
     res += season != '' ? mode.slice(0, -2) : mode;
 
     if (!(stats && stats.matches)) // No matches exist for the mode
-      return `${info.epicUserHandle} has never played ${res}.`;
+      return getModeNotFoundError(info.epicUserHandle, res);
     console.log(stats);
 
     res += ` stats for ${info.epicUserHandle}:\n`;
@@ -130,7 +138,7 @@ module.exports = {
 
       // Get mode from the ID (p2, p10, p9)
       mode = ['Solo', 'Duo', 'Squad'].find(mode =>
-        constants[mode.toUpperCase()].id === data.playlist
+        modes[mode.toUpperCase()].id === data.playlist
       );
       table[0].push(mode);
       table[1].push(`${data.matches} ${m}`);
@@ -151,6 +159,9 @@ module.exports = {
     console.log(info);
     const matches = info.recentMatches;
 
+    if (matches.length === 0)
+      return getNoRecentMatchesError(info.epicUserHandle);
+
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
@@ -162,7 +173,7 @@ module.exports = {
       k = data.kills === 1 ? 'kill' : 'kills';
     
       mode = ['Solo', 'Duo', 'Squad'].find(mode =>
-        constants[mode.toUpperCase()].id === data.playlist
+        modes[mode.toUpperCase()].id === data.playlist
       );
       res += `${mode} - ${data.matches} ${m} - `;
 
@@ -187,7 +198,7 @@ module.exports = {
     let modeRes = '';
 
     for (let mode of ['Solo', 'Duo', 'Squad']) {
-      modeStats = info.stats[constants[`${mode.toUpperCase()}S${season}`].id];
+      modeStats = info.stats[modes[`${mode.toUpperCase()}S${season}`].id];
       if (modeStats) {
         // Sums up the values needed to show all season stats
         matches += modeStats.matches.valueInt;
@@ -235,13 +246,14 @@ module.exports = {
     let res = `TRN Rating stats for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
+    let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, rating, modeStats;
-    constants.MODES.forEach((mode, index) => {
+    modeArr.forEach((mode, index) => {
       if (index >= 3)
         formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
       else
         formattedMode = mode.toUpperCase();
-      modeStats = info.stats[constants[formattedMode].id];
+      modeStats = info.stats[modes[formattedMode].id];
       if (modeStats) {
         rating = modeStats.trnRating.displayValue;
         res += `${mode} TRN Rating: ${rating}\n`;
@@ -260,8 +272,9 @@ module.exports = {
     let res = `K/D Ratios for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
+    let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, kd, modeKd, kills, deaths, modeStats;
-    constants.MODES.forEach((mode, index) => {
+    modeArr.forEach((mode, index) => {
       // Reset kills and deaths for overall, season 3, and season 4 modes
       if (index % 3 === 0)
         kills = deaths = 0;
@@ -270,7 +283,7 @@ module.exports = {
         formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
       else
         formattedMode = mode.toUpperCase();
-      modeStats = info.stats[constants[formattedMode].id];
+      modeStats = info.stats[modes[formattedMode].id];
       if (modeStats) {
         kd = modeStats.kd.displayValue;
         kills += modeStats.kills.valueInt;
@@ -300,8 +313,9 @@ module.exports = {
     let res = `Win Rates for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}\n\n`;
 
+    let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, wins, matches, winrate, totalWinrate, modeStats;
-    constants.MODES.forEach((mode, index) => {
+    modeArr.forEach((mode, index) => {
       // Reset wins and matches for overall, season 3, and season 4 modes
       if (index % 3 === 0)
         wins = matches = 0;
@@ -310,7 +324,7 @@ module.exports = {
         formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
       else
         formattedMode = mode.toUpperCase();
-      modeStats = info.stats[constants[formattedMode].id];
+      modeStats = info.stats[modes[formattedMode].id];
       if (modeStats) {
         winrate = modeStats.winRatio.displayValue;
         wins += modeStats.top1.valueInt;
@@ -385,7 +399,7 @@ module.exports = {
 };
 
 // Populate list of stats for /compare
-function populateStatsList(stats, modes, user) {
+function populateStatsList(stats, modesStats, user) {
   let list = [];
   list.push(user);
   list.push(stats[7].value); // Matches played
@@ -412,7 +426,7 @@ function populateStatsList(stats, modes, user) {
 
   for (let mode of ['Solo', 'Duo', 'Squad']) {
     list.push('');
-    modeStats = modes[constants[mode.toUpperCase()].id];
+    modeStats = modesStats[modes[mode.toUpperCase()].id];
     if (modeStats) {
       list.push(modeStats.matches.value);
       list.push(modeStats.top1.value);
@@ -423,28 +437,4 @@ function populateStatsList(stats, modes, user) {
   }
 
   return list;
-}
-
-// Convert seconds to days, hours, minutes, and seconds
-function formatSeconds(seconds, recent) {
-  let days = Math.floor(seconds / (60 * 60 * 24)); // days
-  seconds -= days * 60 * 60 * 24;
-  const hrs = Math.floor(seconds / (60 * 60)); // hours
-  seconds -= hrs * 60 * 60;
-  const mnts = Math.floor(seconds / 60); // minutes
-  seconds -= mnts * 60; // seconds
-
-  let res = '';
-  if (days < 0)
-    days = 0;
-
-
-  if (recent || days > 0) // Always shows days for current season, else if > 0
-    res += (' ' + days + 'd');
-  // Only shows hours and minutes if not for current season
-  if (!recent && (hrs > 0 || days > 0)) // Shows hours if exists or days exists
-    res += (' ' + hrs + 'h');
-  if (!recent && (mnts > 0 || hrs > 0)) // Shows min if exists or hours exists
-    res += (' ' + mnts + 'm');
-  return res;
 }

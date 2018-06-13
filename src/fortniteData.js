@@ -22,7 +22,11 @@ const client = new fortnite(process.env.FORTNITE_KEY);
 const writeMsg = require('./writeMsg');
 const writeCompareMsg = writeMsg.writeCompareMsg;
 
-const constants = require('./constants');
+const constants = require('./utils/constants');
+const hashCode = require('./utils/hashCode').hashCode;
+
+const errors = require('./utils/errors');
+const getUserNotFoundError = errors.getUserNotFoundError;
 
 // Temporary cache
 const tempCache = {};
@@ -70,7 +74,7 @@ module.exports = {
       let path = isTelegram ? 'telegram/' : 'discord/';
       database.ref(path + id).once('value').then(snapshot => {
         if (snapshot.val() == null)
-          return reject(constants.NOT_FOUND_ERROR);
+          return reject(errors.NOT_MAPPED_ERROR);
         return resolve(snapshot.val().username);
       });
     });
@@ -98,31 +102,18 @@ function getFortniteInfo(user, platform) {
 // Handle error from getting fortnite.js data
 function handleError(err, user1, user2) {
   console.error(`Username: ${user1} ${user2 ? ` ${user2} ` : ''}-- Error: ${err}`);
-  if (err in constants.ERRORS)
-    return constants.ERRORS[err];
+  if (err === errors.UNAVAILABLE_ERROR.INPUT)
+    return err.UNAVAILABLE_ERROR.OUTPUT;
+  else if (err === errors.NOT_FOUND_ERROR)
+    return getUserNotFoundError(user1, user2);
   else
-    return constants.GENERIC_ERROR;
+    return err;
 }
 
 // Debug logs for Firebase
 firebase.database.enableLogging(message => {
   console.log('[FIREBASE]', message);
 });
-
-// Hashcode for strings, used for caching data, taken from answer in link below
-// stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
-String.prototype.hashCode = function () {
-  let hash = 0;
-  if (this.length === 0) {
-    return hash;
-  }
-  for (let i = 0; i < this.length; i++) {
-    let char = this.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return hash;
-}
 
 // Reset the temporary cache every 5 minutes
 setInterval(resetCache, 300000);
