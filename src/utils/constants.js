@@ -4,6 +4,7 @@ module.exports = Object.freeze({
   PS4: 'psn',
   DISCORD_COLOR: 0x761FA1,
   BASE_URL: 'https://fortnitetracker.com/profile',
+  LEADERBOARDS_URL: 'https://fortnitetracker.com/leaderboards',
   START_MSG: `/user <username> for information on the player
 /pc <username> for information on the player on PC platform
 /xbox <username> for information on the player on XBOX platform
@@ -21,6 +22,7 @@ module.exports = Object.freeze({
 /rating <username> for player's TRN rating stats
 /kd <username> for player's K/D ratio stats
 /winrate <username> for player's win rate stats
+/leaderboards for leaderboard data
 
 You can end any command (except /set, /pc, /xbox, /ps4, /compare) with pc, xbox, or ps4 to specify the platform to search for the user.`
 });

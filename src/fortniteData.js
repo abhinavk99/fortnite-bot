@@ -18,6 +18,10 @@ const database = firebase.database();
 const fortnite = require('fortnite.js');
 const client = new fortnite(process.env.FORTNITE_KEY);
 
+const fetch = require('node-fetch');
+const Cheerio = require('cheerio');
+const userAgents = require('./utils/userAgents');
+
 // Methods for formatting the messages are in writeMsg.js
 const writeMsg = require('./writeMsg');
 const writeCompareMsg = writeMsg.writeCompareMsg;
@@ -58,6 +62,29 @@ module.exports = {
             });
         }).catch(err => {
           return reject(handleError(err, user1, user2));
+        });
+    });
+  },
+
+  // Get leaderboard data
+  getLeaderboardsData: () => {
+    return new Promise((resolve, reject) => {
+      fetch(constants.LEADERBOARDS_URL, {
+        headers: {
+          'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+          'Accept': '/',
+          'Connection': 'Keep-Alive',
+          'Accept-Encoding': 'identity'
+        }
+      }).then(res => res.text())
+        .then(html => {
+          let $ = Cheerio.load(html);
+          let users = [];
+          $('tr').each(function(i, elem) {
+            if (i > 0 && i < 11)
+              users.push($(this).children()[1].children[1].children[0].data);
+          });
+          return resolve(users.join(', '));
         });
     });
   },

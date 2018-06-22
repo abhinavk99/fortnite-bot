@@ -13,6 +13,7 @@ const getData = fortniteData.getData;
 const getCompareData = fortniteData.getCompareData;
 const getIdCache = fortniteData.getIdCache;
 const setIdCache = fortniteData.setIdCache;
+const getLeaderboardsData = fortniteData.getLeaderboardsData;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
@@ -219,6 +220,16 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Winrate', user, msg, isTelegram);
     }
+  } else if (text === '/leaderboards') {
+    // Get leaderboards data
+
+    getLeaderboardsData()
+      .then(res => sendMessage(msg, res, isTelegram))
+      .catch(e => {
+        err = handleMdError(e, msg, isTelegram);
+        if (err)
+          sendMessage(msg, e, isTelegram);
+      });
   }
 }
 

@@ -93,6 +93,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /kd | Get K/D ratio stats for a player | /kd `<username>` |
 | /winrate | Get win rate stats for a player | /winrate `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
+| /leaderboards | Get leaderboard data | /leaderboards |
 
 #### Optional Platform Flags
 
