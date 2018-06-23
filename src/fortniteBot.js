@@ -21,6 +21,8 @@ const modes = require('./utils/modes');
 const errors = require('./utils/errors');
 const getNoRecentMatchesError = errors.getNoRecentMatchesError;
 
+let scrapeCalls = 0;
+
 // Telegram start message
 teleBot.on(/^\/start$/i, msg => {
   sendMessage(msg, constants.START_MSG);
@@ -222,14 +224,15 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text === '/leaderboards') {
     // Get leaderboards data
-
-    getLeaderboardsData()
+    if (scrapeCalls < 3) {
+      getLeaderboardsData()
       .then(res => sendMessage(msg, res, isTelegram))
       .catch(e => {
         err = handleMdError(e, msg, isTelegram);
         if (err)
           sendMessage(msg, e, isTelegram);
       });
+    }
   }
 }
 
@@ -478,3 +481,10 @@ function sendMethodCalls(datatype, user, msg, isTelegram, args) {
 
 teleBot.start();
 discBot.connect();
+
+resetNumCalls();
+setInterval(resetNumCalls, 60000);
+function resetNumCalls() {
+  console.log('[Calls]', 'Resetting number of calls at ' + new Date().toString());
+  scrapeCalls = 0;
+}
