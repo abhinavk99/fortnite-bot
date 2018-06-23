@@ -225,6 +225,7 @@ async function parseCommand(text, msg, isTelegram = true) {
   } else if (text === '/leaderboards') {
     // Get leaderboards data
     if (scrapeCalls < 3) {
+      scrapeCalls++;
       getLeaderboardsData()
       .then(res => sendMessage(msg, res, isTelegram))
       .catch(e => {
