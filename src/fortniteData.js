@@ -82,9 +82,9 @@ module.exports = {
           let users = [];
           $('tr').each(function(i, elem) {
             if (i > 0 && i < 11)
-              users.push($(this).children()[1].children[1].children[0].data);
+              users.push(`${i}. ${$(this).children()[1].children[1].children[0].data}`);
           });
-          return resolve(users.join(', '));
+          return resolve(users.join('\n'));
         });
     });
   },
