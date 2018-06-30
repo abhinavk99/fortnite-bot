@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [3.11.0] - 2018-06-29
+### Added
+- /leaderboards command to see list of best players
+
 ## [3.10.0] - 2018-06-12
 ### Changed
 - Specify username in bot's response when user hasn't played a mode
