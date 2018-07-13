@@ -73,7 +73,7 @@ module.exports = {
     const stats = info.stats[modes[mode.toUpperCase()].id]; // Data for the mode
     
     let res = season != '' ? `Season ${season} ` : '';
-    // Cuts off the 's3' at the end for current season
+    // Cuts off the 's<n>' at the end for season, where n is the season number
     res += season != '' ? mode.slice(0, -2) : mode;
 
     if (!(stats && stats.matches)) // No matches exist for the mode
@@ -191,7 +191,6 @@ module.exports = {
   // Writes the message for season stats
   writeSeasonMsg: (info, { season }) => {
     console.log(info);
-    const stats = info.lifeTimeStats;
 
     let matches, wins, sumPlaces1, sumPlaces2, kills, deaths;
     matches = wins = sumPlaces1 = sumPlaces2 = kills = deaths = 0;
@@ -275,7 +274,7 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, kd, modeKd, kills, deaths, modeStats;
     modeArr.forEach((mode, index) => {
-      // Reset kills and deaths for overall, season 3, and season 4 modes
+      // Reset kills and deaths for overall and season modes
       if (index % 3 === 0)
         kills = deaths = 0;
       // Get the mode stats
@@ -316,7 +315,7 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, wins, matches, winrate, totalWinrate, modeStats;
     modeArr.forEach((mode, index) => {
-      // Reset wins and matches for overall, season 3, and season 4 modes
+      // Reset wins and matches for overall and season modes
       if (index % 3 === 0)
         wins = matches = 0;
       // Get the mode stats

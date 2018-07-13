@@ -117,6 +117,7 @@ function getFortniteInfo(user, platform) {
     // If not found in cache, use fortnite.js to get the user
     client.get(user, platform, true)
       .then(info => {
+        console.log(info);
         // Store user's info in the temporary cache
         tempCache[platform][user] = info;
         return resolve(info);

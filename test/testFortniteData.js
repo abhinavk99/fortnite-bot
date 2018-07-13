@@ -121,30 +121,31 @@ describe('#Fortnite Data', () => {
     expect(lines[24]).to.match(/^Squad kills: \d+$/);
   });
 
-  it('should get solo season 3 data', async () => {
+  it('should get solo season 4 data', async () => {
     const user = 'ninja';
-    const mode = 'Solos3';
-    const top = modes.SOLOS3.top;
-    const season = '3';
+    const mode = 'Solos4';
+    const top = modes.SOLOS4.top;
+    const season = '4';
     const res = await fortniteData.getData('Modes', user, platform, {
       mode: mode,
       top: top,
       season: season
     });
-    expect(res).to.equal(`Season 3 Solo stats for Ninja:
-Platform: PC
+    const lines = res.split('\n');
+    expect(lines[0]).to.equal('Season 4 Solo stats for Ninja:');
+    expect(lines[1]).to.equal('Platform: PC');
 
-Matches played: 1064
-Wins: 412
-Times in top 10: 511
-Times in top 25: 594
-Win Rate: 38.70%
-Kills: 8180
-K/D Ratio: 12.55
-Kills/Game: 7.69
-TRN Rating: 4,979
-Score: 377,781
-Score/Match: 355.06\n`);
+    expect(lines[3]).to.match(/^Matches played: \d+$/);
+    expect(lines[4]).to.match(/^Wins: \d+$/);
+    expect(lines[5]).to.match(/^Times in top 10: \d+$/);
+    expect(lines[6]).to.match(/^Times in top 25: \d+$/);
+    expect(lines[7]).to.match(/^Win Rate: .+%$/);
+    expect(lines[8]).to.match(/^Kills: \d+$/);
+    expect(lines[9]).to.match(/^K\/D Ratio: \d+\.\d+$/);
+    expect(lines[10]).to.match(/^Kills\/Game: \d+\.\d+$/);
+    expect(lines[11]).to.match(/^TRN Rating: .+$/)
+    expect(lines[12]).to.match(/^Score: .+$/);
+    expect(lines[13]).to.match(/^Score\/Match: .+$/);
   });
 
   it('should get recent data', async () => {
@@ -184,33 +185,34 @@ Score/Match: 355.06\n`);
     }
   });
 
-  it('should get season 3 data', async () => {
+  it('should get season 4 data', async () => {
     const user = 'ninja';
-    const season = '3';
+    const season = '4';
     const res = await fortniteData.getData('Season', user, platform, { season: season });
-    expect(res).to.equal(`Season 3 stats for Ninja:
-Platform: PC
+    const lines = res.split('\n');
+    expect(lines[0]).to.equal('Season 4 stats for Ninja:');
+    expect(lines[1]).to.equal('Platform: PC');
 
-Matches played: 2444
-Wins: 1014
-Times in top 3/5/10: 1202
-Times in top 6/12/25: 1387
-Win Rate: 41.49%
-Kills: 18475
-K/D Ratio: 12.92
-Kills/Game: 7.56
+    expect(lines[3]).to.match(/^Matches played: \d+$/);
+    expect(lines[4]).to.match(/^Wins: \d+$/);
+    expect(lines[5]).to.match(/^Times in top 3\/5\/10: \d+$/);
+    expect(lines[6]).to.match(/^Times in top 6\/12\/25: \d+$/);
+    expect(lines[7]).to.match(/^Win Rate: .+%$/);
+    expect(lines[8]).to.match(/^Kills: \d+$/);
+    expect(lines[9]).to.match(/^K\/D Ratio: \d+\.\d+$/);
+    expect(lines[10]).to.match(/^Kills\/Game: \d+\.\d+$/);
 
-Solo matches played: 1064
-Solo wins: 412
-Solo kills: 8180
+    expect(lines[12]).to.match(/^Solo matches played: \d+$/);
+    expect(lines[13]).to.match(/^Solo wins: \d+$/);
+    expect(lines[14]).to.match(/^Solo kills: \d+$/);
 
-Duo matches played: 951
-Duo wins: 480
-Duo kills: 7410
+    expect(lines[16]).to.match(/^Duo matches played: \d+$/);
+    expect(lines[17]).to.match(/^Duo wins: \d+$/);
+    expect(lines[18]).to.match(/^Duo kills: \d+$/);
 
-Squad matches played: 429
-Squad wins: 122
-Squad kills: 2885\n`);
+    expect(lines[20]).to.match(/^Squad matches played: \d+$/);
+    expect(lines[21]).to.match(/^Squad wins: \d+$/);
+    expect(lines[22]).to.match(/^Squad kills: \d+$/);
   });
 
   it('should get TRN rating data', async () => {
@@ -224,13 +226,12 @@ Squad kills: 2885\n`);
     expect(lines[4]).to.match(/^Duo TRN Rating: .+$/);
     expect(lines[5]).to.match(/^Squad TRN Rating: .+$/);
 
-    expect(lines[7]).to.match(/^Season 3 Solo TRN Rating: .+$/);
-    expect(lines[8]).to.match(/^Season 3 Duo TRN Rating: .+$/);
-    expect(lines[9]).to.match(/^Season 3 Squad TRN Rating: .+$/);
+    expect(lines[7]).to.match(/^Season 4 Solo TRN Rating: .+$/);
+    expect(lines[8]).to.match(/^Season 4 Duo TRN Rating: .+$/);
+    expect(lines[9]).to.match(/^Season 4 Squad TRN Rating: .+$/);
 
-    expect(lines[11]).to.match(/^Season 4 Solo TRN Rating: .+$/);
-    expect(lines[12]).to.match(/^Season 4 Duo TRN Rating: .+$/);
-    expect(lines[13]).to.match(/^Season 4 Squad TRN Rating: .+$/);
+    expect(lines[11]).to.match(/^Season 5 Solo TRN Rating: .+$/);
+    expect(lines[12]).to.match(/^Season 5 Squad TRN Rating: .+$/);
   });
 
   it('should get K/D data', async () => {
@@ -245,15 +246,14 @@ Squad kills: 2885\n`);
     expect(lines[5]).to.match(/^Squad K\/D Ratio: .+$/);
     expect(lines[6]).to.match(/^Lifetime K\/D Ratio: .+$/);
 
-    expect(lines[8]).to.equal('Season 3 Solo K/D Ratio: 12.55');
-    expect(lines[9]).to.equal('Season 3 Duo K/D Ratio: 15.73');
-    expect(lines[10]).to.equal('Season 3 Squad K/D Ratio: 9.40');
-    expect(lines[11]).to.equal('Season 3 K/D Ratio: 12.92');
+    expect(lines[8]).to.match(/^Season 4 Solo K\/D Ratio: .+$/);
+    expect(lines[9]).to.match(/^Season 4 Duo K\/D Ratio: .+$/);
+    expect(lines[10]).to.match(/^Season 4 Squad K\/D Ratio: .+$/);
+    expect(lines[11]).to.match(/^Season 4 K\/D Ratio: .+$/);
 
-    expect(lines[13]).to.match(/^Season 4 Solo K\/D Ratio: .+$/);
-    expect(lines[14]).to.match(/^Season 4 Duo K\/D Ratio: .+$/);
-    expect(lines[15]).to.match(/^Season 4 Squad K\/D Ratio: .+$/);
-    expect(lines[16]).to.match(/^Season 4 K\/D Ratio: .+$/);
+    expect(lines[13]).to.match(/^Season 5 Solo K\/D Ratio: .+$/);
+    expect(lines[14]).to.match(/^Season 5 Squad K\/D Ratio: .+$/);
+    expect(lines[15]).to.match(/^Season 5 K\/D Ratio: .+$/);
   });
 
   it('should get comparing data', async () => {
