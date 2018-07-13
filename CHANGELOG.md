@@ -1,5 +1,12 @@
 # Changelog for Fortnite Bot
 
+## [4.0.0] - 2018-07-12
+### Added
+- Season 5 support for commands
+
+### Deprecated
+- Season 3 support because of Fortnite Tracker not providing the data anymore, uses cached data to get limited season 3 info
+
 ## [3.11.0] - 2018-06-29
 ### Added
 - /leaderboards command to see list of best players
