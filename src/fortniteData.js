@@ -40,7 +40,9 @@ module.exports = {
   // Get stats for the given type of data (i.e. Global, Season, etc.)
   getData: (datatype, user, platform, args) => {
     return new Promise((resolve, reject) => {
-      getFortniteInfo(user, platform)
+      // Checks Firebase cache for season 3 data if season 3 data is desired
+      let checkFbCache = args && args.season === '3';
+      getFortniteInfo(user, platform, checkFbCache)
         .then(info => {
           return resolve(writeMsg[`write${datatype}Msg`](info, args));
         }).catch(err => {
@@ -109,21 +111,29 @@ module.exports = {
 };
 
 // Gets the user's Fortnite info from cache or fortnite.js
-function getFortniteInfo(user, platform) {
+function getFortniteInfo(user, platform, checkFbCache) {
   return new Promise((resolve, reject) => {
-    // Look for user in cache
-    if (user in tempCache[platform])
-      return resolve(tempCache[platform][user]);
-    // If not found in cache, use fortnite.js to get the user
-    client.get(user, platform, true)
-      .then(info => {
-        console.log(info);
-        // Store user's info in the temporary cache
-        tempCache[platform][user] = info;
-        return resolve(info);
-      }).catch(err => {
-        return reject(err);
+    if (checkFbCache) {
+      database.ref(`users/${hashCode(user)}`).once('value').then(snapshot => {
+        if (snapshot.val() == null)
+          return resolve(errors.DEPRECATED_ERROR);
+        return resolve(snapshot.val());
       });
+    } else {
+      // Look for user in cache
+      if (user in tempCache[platform])
+        return resolve(tempCache[platform][user]);
+      // If not found in cache, use fortnite.js to get the user
+      client.get(user, platform, true)
+        .then(info => {
+          console.log(info);
+          // Store user's info in the temporary cache
+          tempCache[platform][user] = info;
+          return resolve(info);
+        }).catch(err => {
+          return reject(err);
+        });
+    }
   });
 }
 

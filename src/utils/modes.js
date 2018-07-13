@@ -18,6 +18,21 @@ module.exports = {
     id: 'p9',
     name: 'Squad'
   },
+  SOLOS3: {
+    top: [10, 25],
+    id: 'curr_p2',
+    name: 'Season 3 Solo'
+  },
+  DUOS3: {
+    top: [5, 12],
+    id: 'curr_p10',
+    name: 'Season 3 Duo'
+  },
+  SQUADS3: {
+    top: [3, 6],
+    id: 'curr_p9',
+    name: 'Season 3 Squad'
+  },
   SOLOS4: {
     top: [10, 25],
     id: 'prior_p2',
