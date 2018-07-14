@@ -102,7 +102,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       let path = isTelegram ? 'telegram/' : 'discord/';
       database.ref(path + id).once('value').then(snapshot => {
-        if (snapshot.val() == null)
+        if (!snapshot.val())
           return reject(errors.NOT_MAPPED_ERROR);
         return resolve(snapshot.val().username);
       });
@@ -115,8 +115,8 @@ function getFortniteInfo(user, platform, checkFbCache) {
   return new Promise((resolve, reject) => {
     if (checkFbCache) {
       database.ref(`users/${hashCode(user)}`).once('value').then(snapshot => {
-        if (snapshot.val() == null)
-          return resolve(errors.DEPRECATED_ERROR);
+        if (!snapshot.val())
+          return reject(errors.DEPRECATED_ERROR);
         return resolve(snapshot.val());
       });
     } else {
