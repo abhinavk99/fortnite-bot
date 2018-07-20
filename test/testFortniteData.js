@@ -35,7 +35,7 @@ describe('#Fortnite Data', () => {
       await fortniteData.getData('Modes', user1, platform, {
         mode: 'Solo',
         top: [10, 25],
-        season: '3'
+        season: '4'
       });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
@@ -60,7 +60,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for season with invalid username', async () => {
     try {
-      await fortniteData.getData('Season', user1, platform, { season: 3 });
+      await fortniteData.getData('Season', user1, platform, { season: '4' });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -231,7 +231,8 @@ describe('#Fortnite Data', () => {
     expect(lines[9]).to.match(/^Season 4 Squad TRN Rating: .+$/);
 
     expect(lines[11]).to.match(/^Season 5 Solo TRN Rating: .+$/);
-    expect(lines[12]).to.match(/^Season 5 Squad TRN Rating: .+$/);
+    expect(lines[12]).to.match(/^Season 5 Duo TRN Rating: .+$/);
+    expect(lines[13]).to.match(/^Season 5 Squad TRN Rating: .+$/);
   });
 
   it('should get K/D data', async () => {
@@ -252,8 +253,9 @@ describe('#Fortnite Data', () => {
     expect(lines[11]).to.match(/^Season 4 K\/D Ratio: .+$/);
 
     expect(lines[13]).to.match(/^Season 5 Solo K\/D Ratio: .+$/);
-    expect(lines[14]).to.match(/^Season 5 Squad K\/D Ratio: .+$/);
-    expect(lines[15]).to.match(/^Season 5 K\/D Ratio: .+$/);
+    expect(lines[14]).to.match(/^Season 5 Duo K\/D Ratio: .+$/);
+    expect(lines[15]).to.match(/^Season 5 Squad K\/D Ratio: .+$/);
+    expect(lines[16]).to.match(/^Season 5 K\/D Ratio: .+$/);
   });
 
   it('should get comparing data', async () => {
