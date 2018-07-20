@@ -248,6 +248,8 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, rating, modeStats;
     modeArr.forEach((mode, index) => {
+      if (mode.charAt(7) === '3')
+        continue;
       if (index >= 3)
         formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
       else
@@ -274,6 +276,8 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, kd, modeKd, kills, deaths, modeStats;
     modeArr.forEach((mode, index) => {
+      if (mode.charAt(7) === '3')
+          continue;
       // Reset kills and deaths for overall and season modes
       if (index % 3 === 0)
         kills = deaths = 0;
@@ -315,6 +319,8 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, wins, matches, winrate, totalWinrate, modeStats;
     modeArr.forEach((mode, index) => {
+      if (mode.charAt(7) === '3')
+          continue;
       // Reset wins and matches for overall and season modes
       if (index % 3 === 0)
         wins = matches = 0;
