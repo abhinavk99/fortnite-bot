@@ -248,19 +248,19 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, rating, modeStats;
     modeArr.forEach((mode, index) => {
-      if (mode.charAt(7) === '3')
-        continue;
-      if (index >= 3)
-        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
-      else
-        formattedMode = mode.toUpperCase();
-      modeStats = info.stats[modes[formattedMode].id];
-      if (modeStats) {
-        rating = modeStats.trnRating.displayValue;
-        res += `${mode} TRN Rating: ${rating}\n`;
+      if (mode.charAt(7) !== '3') {
+        if (index >= 3)
+          formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
+        else
+          formattedMode = mode.toUpperCase();
+        modeStats = info.stats[modes[formattedMode].id];
+        if (modeStats) {
+          rating = modeStats.trnRating.displayValue;
+          res += `${mode} TRN Rating: ${rating}\n`;
+        }
+        if ((index + 1) % 3 === 0)
+          res += '\n';
       }
-      if ((index + 1) % 3 === 0)
-        res += '\n';
     });
 
     return res;
@@ -276,32 +276,32 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, kd, modeKd, kills, deaths, modeStats;
     modeArr.forEach((mode, index) => {
-      if (mode.charAt(7) === '3')
-          continue;
-      // Reset kills and deaths for overall and season modes
-      if (index % 3 === 0)
-        kills = deaths = 0;
-      // Get the mode stats
-      if (index >= 3)
-        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
-      else
-        formattedMode = mode.toUpperCase();
-      modeStats = info.stats[modes[formattedMode].id];
-      if (modeStats) {
-        kd = modeStats.kd.displayValue;
-        kills += modeStats.kills.valueInt;
-        deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
-        // Add mode KD
-        res += `${mode} K/D Ratio: ${kd}\n`;
-      }
-      // Add lifetime or season KD
-      if ((index + 1) % 3 === 0) {
-        if (index === 2) {
-          res += `Lifetime K/D Ratio: ${info.lifeTimeStats[11].value}\n\n`;
-        } else {
-          if (deaths === 0)
-            deaths++;
-          res += `${mode.substr(0, 8)} K/D Ratio: ${(kills / deaths).toFixed(2)}\n\n`;
+      if (mode.charAt(7) !== '3') {
+        // Reset kills and deaths for overall and season modes
+        if (index % 3 === 0)
+          kills = deaths = 0;
+        // Get the mode stats
+        if (index >= 3)
+          formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
+        else
+          formattedMode = mode.toUpperCase();
+        modeStats = info.stats[modes[formattedMode].id];
+        if (modeStats) {
+          kd = modeStats.kd.displayValue;
+          kills += modeStats.kills.valueInt;
+          deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
+          // Add mode KD
+          res += `${mode} K/D Ratio: ${kd}\n`;
+        }
+        // Add lifetime or season KD
+        if ((index + 1) % 3 === 0) {
+          if (index === 2) {
+            res += `Lifetime K/D Ratio: ${info.lifeTimeStats[11].value}\n\n`;
+          } else {
+            if (deaths === 0)
+              deaths++;
+            res += `${mode.substr(0, 8)} K/D Ratio: ${(kills / deaths).toFixed(2)}\n\n`;
+          }
         }
       }
     });
@@ -319,31 +319,31 @@ module.exports = {
     let modeArr = Object.values(modes).map(mode => mode.name);
     let formattedMode, wins, matches, winrate, totalWinrate, modeStats;
     modeArr.forEach((mode, index) => {
-      if (mode.charAt(7) === '3')
-          continue;
-      // Reset wins and matches for overall and season modes
-      if (index % 3 === 0)
-        wins = matches = 0;
-      // Get the mode stats
-      if (index >= 3)
-        formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
-      else
-        formattedMode = mode.toUpperCase();
-      modeStats = info.stats[modes[formattedMode].id];
-      if (modeStats) {
-        winrate = modeStats.winRatio.displayValue;
-        wins += modeStats.top1.valueInt;
-        matches += modeStats.matches.valueInt;
-        // Add mode KD
-        res += `${mode} Win Rate: ${winrate}%\n`;
-      }
-      // Add lifetime or season win rate
-      if ((index + 1) % 3 === 0) {
-        totalWinrate = matches === 0 ? 0 : (wins / matches * 100).toFixed(2);
-        if (index === 2)
-          res += `Lifetime Win Rate: ${totalWinrate}%\n\n`;
+      if (mode.charAt(7) !== '3') {
+        // Reset wins and matches for overall and season modes
+        if (index % 3 === 0)
+          wins = matches = 0;
+        // Get the mode stats
+        if (index >= 3)
+          formattedMode = `${mode.substring(9)}S${mode.charAt(7)}`.toUpperCase();
         else
-          res += `${mode.substr(0, 8)} Win Rate: ${totalWinrate}%\n\n`;
+          formattedMode = mode.toUpperCase();
+        modeStats = info.stats[modes[formattedMode].id];
+        if (modeStats) {
+          winrate = modeStats.winRatio.displayValue;
+          wins += modeStats.top1.valueInt;
+          matches += modeStats.matches.valueInt;
+          // Add mode KD
+          res += `${mode} Win Rate: ${winrate}%\n`;
+        }
+        // Add lifetime or season win rate
+        if ((index + 1) % 3 === 0) {
+          totalWinrate = matches === 0 ? 0 : (wins / matches * 100).toFixed(2);
+          if (index === 2)
+            res += `Lifetime Win Rate: ${totalWinrate}%\n\n`;
+          else
+            res += `${mode.substr(0, 8)} Win Rate: ${totalWinrate}%\n\n`;
+        }
       }
     });
 
