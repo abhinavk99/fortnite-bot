@@ -33,21 +33,21 @@ module.exports = {
     id: 'curr_p9',
     name: 'Season 3 Squad'
   },
-  SOLOS4: {
-    top: [10, 25],
-    id: 'prior_p2',
-    name: 'Season 4 Solo'
-  },
-  DUOS4: {
-    top: [5, 12],
-    id: 'prior_p10',
-    name: 'Season 4 Duo'
-  },
-  SQUADS4: {
-    top: [3, 6],
-    id: 'prior_p9',
-    name: 'Season 4 Squad'
-  },
+  // SOLOS4: {
+  //   top: [10, 25],
+  //   id: 'prior_p2',
+  //   name: 'Season 4 Solo'
+  // },
+  // DUOS4: {
+  //   top: [5, 12],
+  //   id: 'prior_p10',
+  //   name: 'Season 4 Duo'
+  // },
+  // SQUADS4: {
+  //   top: [3, 6],
+  //   id: 'prior_p9',
+  //   name: 'Season 4 Squad'
+  // },
   SOLOS5: {
     top: [10, 25],
     id: 'curr_p2',
