@@ -40,8 +40,8 @@ module.exports = {
   // Get stats for the given type of data (i.e. Global, Season, etc.)
   getData: (datatype, user, platform, args) => {
     return new Promise((resolve, reject) => {
-      if (season === '4')
-        reject(handleError(errors.DEPRECATED_ERROR, user));
+      if (args && args.season === '4')
+        return reject(handleError(errors.DEPRECATED_ERROR, user));
       // Checks Firebase cache for season 3 data if season 3 data is desired
       let checkFbCache = args && args.season === '3';
       getFortniteInfo(user, platform, checkFbCache)
