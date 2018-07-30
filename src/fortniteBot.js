@@ -442,14 +442,14 @@ function sendRecentCalls(user, msg, isTelegram = true) {
       getData('Recent', user, constants.XBOX)
         .then(resp => sendMdTableMessage(msg, resp, isTelegram))
         .catch(error => {
-          err = handleMdError(err, msg, isTelegram);
-          if (!err)
+          error = handleMdError(error, msg, isTelegram);
+          if (!error)
             return;
           getData('Recent', user, constants.PS4)
             .then(response => sendMdTableMessage(msg, response, isTelegram))
             .catch(e => {
-              err = handleMdError(err, msg, isTelegram);
-              if (err)
+              e = handleMdError(e, msg, isTelegram);
+              if (e)
                 sendMessage(msg, e, isTelegram);
             });
         });
