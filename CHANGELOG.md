@@ -1,5 +1,15 @@
 # Changelog for Fortnite Bot
 
+## [5.0.0] - 2018-07-30
+### Fixed
+- Error handling for /recent
+
+### Deprecated
+- Season 4 support because of Fortnite Tracker not providing the data anymore
+
+### Removed
+- Season 3 and 4 data from /kd, /rating, and /winrate
+
 ## [4.0.0] - 2018-07-12
 ### Added
 - Season 5 support for commands
