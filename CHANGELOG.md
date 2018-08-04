@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [5.0.1] - 2018-08-03
+### Fixed
+- Incorrectly handling season 4 deprecation
+
 ## [5.0.0] - 2018-07-30
 ### Fixed
 - Error handling for /recent
