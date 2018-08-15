@@ -30,8 +30,8 @@ module.exports = {
     // res += `Avg Survival Time: ${stats[14].value}\n`;
     res += `Wins: ${stats[8].value}\n`;
 
-    const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
-      + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
+    const sumPlaces1 = parseInt(stats[1].value) + parseInt(stats[0].value)
+      + parseInt(stats[3].value); // Adds up times in top 3, 5, 10
     let rate1;
     if (parseInt(stats[7].value) === 0)
       rate1 = 0;
@@ -39,7 +39,7 @@ module.exports = {
       rate1 = (sumPlaces1 / stats[7].value * 100).toFixed(2);
     res += `Top 3/5/10 Rate: ${rate1}%\n`;
 
-    const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+    const sumPlaces2 = parseInt(stats[2].value) + parseInt(stats[4].value)
       + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
     let rate2;
     if (parseInt(stats[7].value) === 0)
