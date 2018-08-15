@@ -32,10 +32,21 @@ module.exports = {
 
     const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
       + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
+    let rate1;
+    if (parseInt(stats[7].value) === 0)
+      rate1 = 0;
+    else
+      rate1 = (sumPlaces1 / stats[7].value * 100).toFixed(2);
+    res += `Top 3/5/10 Rate: ${rate1}%\n`;
+
     const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
       + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
-    res += `Times in top 3/5/10: ${sumPlaces1}\n`;
-    res += `Times in top 6/12/25: ${sumPlaces2}\n`;
+    let rate2;
+    if (parseInt(stats[7].value) === 0)
+      rate2 = 0;
+    else
+      rate2 = (sumPlaces2 / stats[7].value * 100).toFixed(2);
+    res += `Top 6/12/25 Rate: ${rate2}%\n`;
 
     res += `Win Rate: ${stats[9].value}\n`;
     res += `Kills: ${stats[10].value}\n`;
@@ -96,8 +107,10 @@ module.exports = {
     res += `Wins: ${stats.top1.value}\n`;
 
     // Gets times in top x for the 2 numbers passed in the array
+    let rate;
     for (let num of top) {
-      res += `Times in top ${num}: ${stats[`top${num}`].value}\n`;
+      rate = (stats[`top${num}`].value / stats.matches.value * 100).toFixed(2);
+      res += `Top ${num} Rate: ${rate}%\n`;
     }
 
     if (stats.winRatio)
@@ -220,8 +233,12 @@ module.exports = {
     res += `Platform: ${info.platformNameLong}\n\n`;
     res += `Matches played: ${matches}\n`;
     res += `Wins: ${wins}\n`;
-    res += `Times in top 3/5/10: ${sumPlaces1}\n`;
-    res += `Times in top 6/12/25: ${sumPlaces2}\n`;
+
+    let rate1 = matches === 0 ? 0 : (sumPlaces1 / matches * 100).toFixed(2);
+    res += `Top 3/5/10 Rate: ${rate1}%\n`;
+
+    let rate2 = matches === 0 ? 0 : (sumPlaces2 / matches * 100).toFixed(2);
+    res += `Top 6/12/25 Rate: ${rate2}%\n`;
 
     let wr = matches === 0 ? 0 : (wins / matches * 100).toFixed(2);
     res += `Win Rate: ${wr}%\n`;
@@ -375,8 +392,8 @@ module.exports = {
         'User',
         'Matches played',
         'Wins',
-        'Times in top 3/5/10',
-        'Times in top 6/12/25',
+        'Top 3/5/10 Rate',
+        'Top 6/12/25 Rate',
         'Win Rate',
         'Kills',
         'K/D Ratio',
@@ -412,10 +429,21 @@ function populateStatsList(stats, modesStats, user) {
 
   const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
     + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
+  let rate1;
+  if (parseInt(stats[7].value) === 0)
+    rate1 = 0;
+  else
+    rate1 = (sumPlaces1 / stats[7].value * 100).toFixed(2);
+  list.push(`${rate1}%`); // Top 3/5/10
+
   const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
     + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
-  list.push(sumPlaces1); // Top 3/5/10
-  list.push(sumPlaces2); // Top 6/12/25
+  let rate2;
+  if (parseInt(stats[7].value) === 0)
+    rate2 = 0;
+  else
+    rate2 = (sumPlaces2 / stats[7].value * 100).toFixed(2);
+  list.push(`${rate2}%`); // Top 6/12/25
 
   list.push(stats[9].value); // Win Rate
   list.push(stats[10].value); // Kills
