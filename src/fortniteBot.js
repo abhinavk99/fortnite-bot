@@ -208,7 +208,7 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
-  } else if (text.match(/^\/winrate(\s.+)?$/)) {
+  } else if (text.match(/^\/(winrate|wr)(\s.+)?$/)) {
     // Get win rate stats on a user
 
     user = await getUser(tokens, id, isTelegram);

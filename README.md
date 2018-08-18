@@ -65,8 +65,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /pc | Get global stats for a PC player | /pc `<username>` |
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
-| /season5 | Get all season 3 stats for a player | /season3 `<username>` |
-| /s5 | Get all season 3 stats for a player | /s3 `<username>` |
+| /season5 or /s5 | Get all season 3 stats for a player | /season5 `<username>` |
 
 ### Modes Commands
 | Command | Description | Usage |
@@ -86,20 +85,18 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /compare | Compare two players | /compare `<username1>, <username2>` |
 | /rating | Get TRN rating stats for a player | /rating `<username>` |
 | /kd | Get K/D ratio stats for a player | /kd `<username>` |
-| /winrate | Get win rate stats for a player | /winrate `<username>` |
+| /winrate or /wr | Get win rate stats for a player | /winrate `<username>` |
 | /set | Set username to your messaging account | /set `<username>` |
 | /leaderboards | Get leaderboard data | /leaderboards |
 
 ### Deprecated Commands
 | Command | Description | Usage |
 | --- | --- | --- |
-| /season3 | Get all season 3 stats for a player | /season3 `<username>` |
-| /s3 | Get all season 3 stats for a player | /s3 `<username>` |
+| /season3 or /s3 | Get all season 3 stats for a player | /season3 `<username>` |
 | /solos3 | Get season 3 solo stats for a player | /solos3 `<username>` |
 | /duos3 | Get season 3 duo stats for a player | /duos3 `<username>` |
 | /squads3 | Get season 3 squad stats for a player | /squads3 `<username>` |
-| /season4 | Get all season 4 stats for a player | /season4 `<username>` |
-| /s4 | Get all season 4 stats for a player | /s4 `<username>` |
+| /season4 or /s4 | Get all season 4 stats for a player | /season4 `<username>` |
 | /solos4 | Get season 4 solo stats for a player | /solos4 `<username>` |
 | /duos4 | Get season 4 duo stats for a player | /duos4 `<username>` |
 | /squads4 | Get season 4 squad stats for a player | /squads4 `<username>` |
