@@ -1,5 +1,16 @@
 # Changelog for Fortnite Bot
 
+## [5.0.2] - 2018-08-18
+### Added
+- /wr as alias for /winrate
+
+### Changed
+- Times in top x changed to Top x Rate and now shows a percentage of times in top x
+
+### Fixed
+- Bug where times in top 3/5/10 and 6/12/25 were not being added up correctly
+- Test cases were updated to work with season 5
+
 ## [5.0.1] - 2018-08-03
 ### Fixed
 - Incorrectly handling season 4 deprecation
