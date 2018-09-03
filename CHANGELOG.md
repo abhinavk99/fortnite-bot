@@ -1,5 +1,11 @@
 # Changelog for Fortnite Bot
 
+## [Unreleased]
+### Added
+- /matches for match history
+- /store for current store
+- /challenges for current active challenges
+
 ## [5.0.2] - 2018-08-18
 ### Added
 - /wr as alias for /winrate
