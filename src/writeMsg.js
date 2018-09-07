@@ -441,11 +441,12 @@ module.exports = {
 
     let res = 'Current Store Items';
 
-    let table = [['Name'], ['Rarity'], ['Cost']];
+    let table = [['Name'], ['Rarity'], ['Cost'], ['Category']];
     for (let item of info) {
       table[0].push(item.name);
       table[1].push(item.rarity);
       table[2].push(`${item.vBucks} vBucks`);
+      table[3].push(item.storeCategory.match(/^BR(.+)Storefront$/)[1]);
     }
 
     return [res, table];
