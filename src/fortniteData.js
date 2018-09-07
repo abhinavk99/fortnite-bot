@@ -76,12 +76,21 @@ module.exports = {
       }).then(res => res.text())
         .then(html => {
           let $ = Cheerio.load(html);
-          let users = [];
+          let res = 'Leaderboards';
+          let table = [['Rank'], ['Username'], ['Wins'], ['Games']];
           $('tr').each(function(i, elem) {
-            if (i > 0 && i < 11)
-              users.push(`${i}. ${$(this).children()[1].children[1].children[0].data}`);
+            if (i > 0 && i < 11) {
+              table[0].push(i);
+              const row = $(this).children();
+              // Username
+              table[1].push(row[1].children[1].children[0].data);
+              // Wins
+              table[2].push(parseInt(row[2].children[0].data).toLocaleString());
+              // Games
+              table[3].push(parseInt(row[3].children[0].data).toLocaleString());
+            }
           });
-          return resolve(users.join('\n'));
+          return resolve([res, table]);
         });
     });
   },

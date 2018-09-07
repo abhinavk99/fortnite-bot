@@ -228,7 +228,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     if (scrapeCalls < 3) {
       scrapeCalls++;
       getLeaderboardsData()
-      .then(res => sendMessage(msg, res, isTelegram))
+      .then(res => sendMdTableMessage(msg, res, isTelegram))
       .catch(e => {
         err = handleMdError(e, msg, isTelegram);
         if (err)
