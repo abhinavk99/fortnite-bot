@@ -417,6 +417,31 @@ module.exports = {
     ];
 
     return [res, table];
+  },
+
+  // Creates a table for challenges
+  writeChallengesMsg: info => {
+    const challenges = info.items.map(challenge => challenge.metadata);
+    console.log(challenges);
+
+    let res = 'Current Weekly Challenges';
+
+    let table = [[], [], []];
+    table[0].push('Name');
+    table[1].push('Total');
+    table[2].push('Reward');
+    let m, w, k, mode, date, diffSecs;
+    for (let challenge of challenges) {
+      // Name
+      table[0].push(challenge[1].value);
+      // Total
+      table[1].push(challenge[3].value);
+      // Number of battle stars
+      let s = challenge[5].value === 1 ? 'star': 'stars';
+      table[2].push(`${challenge[5].value} ${s}`);
+    }
+
+    return [res, table];
   }
 };
 

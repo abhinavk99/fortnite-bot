@@ -25,6 +25,7 @@ const userAgents = require('./utils/userAgents');
 // Methods for formatting the messages are in writeMsg.js
 const writeMsg = require('./writeMsg');
 const writeCompareMsg = writeMsg.writeCompareMsg;
+const writeChallengesMsg = writeMsg.writeChallengesMsg;
 
 const constants = require('./utils/constants');
 const hashCode = require('./utils/hashCode').hashCode;
@@ -45,11 +46,8 @@ module.exports = {
       // Checks Firebase cache for season 3 data if season 3 data is desired
       let checkFbCache = args && args.season === '3';
       getFortniteInfo(user, platform, checkFbCache)
-        .then(info => {
-          return resolve(writeMsg[`write${datatype}Msg`](info, args));
-        }).catch(err => {
-          return reject(handleError(err, user));
-        });
+        .then(info => resolve(writeMsg[`write${datatype}Msg`](info, args)))
+        .catch(err => reject(handleError(err, user)));
     });
   },
 
@@ -59,14 +57,9 @@ module.exports = {
       getFortniteInfo(user1, platform)
         .then(info1 => {
           getFortniteInfo(user2, platform)
-            .then(info2 => {
-              return resolve(writeCompareMsg(info1, info2));
-            }).catch(e => {
-              return reject(handleError(e, user1, user2));
-            });
-        }).catch(err => {
-          return reject(handleError(err, user1, user2));
-        });
+            .then(info2 => resolve(writeCompareMsg(info1, info2)))
+            .catch(e => reject(handleError(e, user1, user2)));
+        }).catch(err => reject(handleError(err, user1, user2)));
     });
   },
 
@@ -90,6 +83,15 @@ module.exports = {
           });
           return resolve(users.join('\n'));
         });
+    });
+  },
+
+  // Get challenges
+  getChallengesData: () => {
+    return new Promise((resolve, reject) => {
+      client.getChallenges(true)
+        .then(info => resolve(writeChallengesMsg(info)))
+        .catch(err => reject(handleError(err, 'challenges')));
     });
   },
 
