@@ -422,7 +422,6 @@ module.exports = {
     let res = 'Current Weekly Challenges';
 
     let table = [['Name'], ['Total'], ['Reward']];
-    let m, w, k, mode, date, diffSecs;
     for (let challenge of challenges) {
       // Name
       table[0].push(challenge[1].value);
@@ -431,6 +430,22 @@ module.exports = {
       // Number of battle stars
       let s = challenge[5].value === 1 ? 'star': 'stars';
       table[2].push(`${challenge[5].value} ${s}`);
+    }
+
+    return [res, table];
+  },
+
+  // Creates a table for store info
+  writeStoreMsg: info => {
+    console.log(info);
+
+    let res = 'Current Store Items';
+
+    let table = [['Name'], ['Rarity'], ['Cost']];
+    for (let item of info) {
+      table[0].push(item.name);
+      table[1].push(item.rarity);
+      table[2].push(`${item.vBucks} vBucks`);
     }
 
     return [res, table];

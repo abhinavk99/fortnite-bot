@@ -26,6 +26,7 @@ const userAgents = require('./utils/userAgents');
 const writeMsg = require('./writeMsg');
 const writeCompareMsg = writeMsg.writeCompareMsg;
 const writeChallengesMsg = writeMsg.writeChallengesMsg;
+const writeStoreMsg = writeMsg.writeStoreMsg;
 
 const constants = require('./utils/constants');
 const hashCode = require('./utils/hashCode').hashCode;
@@ -101,6 +102,15 @@ module.exports = {
       client.getChallenges(true)
         .then(info => resolve(writeChallengesMsg(info)))
         .catch(err => reject(handleError(err, 'challenges')));
+    });
+  },
+
+  // Get store info
+  getStoreData: () => {
+    return new Promise((resolve, reject) => {
+      client.getStore(true)
+        .then(info => resolve(writeStoreMsg(info)))
+        .catch(err => reject(handleError(err, 'store')));
     });
   },
 

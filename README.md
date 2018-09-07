@@ -89,6 +89,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /set | Set username to your messaging account | /set `<username>` |
 | /leaderboards | Get leaderboard data | /leaderboards |
 | /challenges | Get current weekly challenges | /challenges |
+| /store | Get current store items | /store |
 
 ### Deprecated Commands
 | Command | Description | Usage |

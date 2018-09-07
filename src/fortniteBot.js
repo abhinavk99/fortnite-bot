@@ -15,6 +15,7 @@ const getIdCache = fortniteData.getIdCache;
 const setIdCache = fortniteData.setIdCache;
 const getLeaderboardsData = fortniteData.getLeaderboardsData;
 const getChallengesData = fortniteData.getChallengesData;
+const getStoreData = fortniteData.getStoreData;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
@@ -237,6 +238,14 @@ async function parseCommand(text, msg, isTelegram = true) {
     }
   } else if (text === '/challenges') {
     getChallengesData()
+      .then(res => sendMdTableMessage(msg, res, isTelegram))
+      .catch(e => {
+        err = handleMdError(e, msg, isTelegram);
+        if (err)
+          sendMessage(msg, e, isTelegram);
+      });
+  } else if (text === '/store') {
+    getStoreData()
       .then(res => sendMdTableMessage(msg, res, isTelegram))
       .catch(e => {
         err = handleMdError(e, msg, isTelegram);
