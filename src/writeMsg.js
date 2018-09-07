@@ -136,12 +136,7 @@ module.exports = {
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}`;
 
-    let table = [[], [], [], [], []];
-    table[0].push('Mode');
-    table[1].push('Matches');
-    table[2].push('Wins');
-    table[3].push('Kills');
-    table[4].push('Time');
+    let table = [['Mode'], ['Matches'], ['Wins'], ['Kills'], ['Time']];
     let m, w, k, mode, date, diffSecs;
     for (let data of matches) {
       // Make it plural if not 1
@@ -426,10 +421,7 @@ module.exports = {
 
     let res = 'Current Weekly Challenges';
 
-    let table = [[], [], []];
-    table[0].push('Name');
-    table[1].push('Total');
-    table[2].push('Reward');
+    let table = [['Name'], ['Total'], ['Reward']];
     let m, w, k, mode, date, diffSecs;
     for (let challenge of challenges) {
       // Name
