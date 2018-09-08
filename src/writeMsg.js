@@ -136,28 +136,7 @@ module.exports = {
     let res = `Recent matches for ${info.epicUserHandle}:\n`;
     res += `Platform: ${info.platformNameLong}`;
 
-    let table = [['Mode'], ['Matches'], ['Wins'], ['Kills'], ['Time']];
-    let m, w, k, mode, date, diffSecs;
-    for (let data of matches) {
-      // Make it plural if not 1
-      m = data.matches === 1 ? 'match' : 'matches';
-      w = data.top1 === 1 ? 'win' : 'wins';
-      k = data.kills === 1 ? 'kill' : 'kills';
-
-      // Get mode from the ID (p2, p10, p9)
-      mode = ['Solo', 'Duo', 'Squad'].find(mode =>
-        modes[mode.toUpperCase()].id === data.playlist
-      );
-      table[0].push(mode);
-      table[1].push(`${data.matches} ${m}`);
-      table[2].push(`${data.top1} ${w}`);
-      table[3].push(`${data.kills} ${k}`);
-
-      // Get time difference from match time and now
-      date = new Date(data.dateCollected);
-      diffSecs = (Date.now() - date.getTime()) / 1000;
-      table[4].push(`${formatSeconds(diffSecs, true)} ago`);
-    }
+    let table = getMatchesTable(matches);
 
     return [res, table];
   },
@@ -450,8 +429,44 @@ module.exports = {
     }
 
     return [res, table];
-  }
+  },
+
+  // Creates a table for match history
+  writeMatchesMsg: (info, username, platform) => {
+    console.log(info);
+    const matches = info.slice(0, 10);
+
+    let res = `Match history for ${username}:\n`;
+    res += `Platform: ${platform}`;
+
+    let table = getMatchesTable(matches);
+
+    return [res, table];
+  },
 };
+
+// Get table of matches
+function getMatchesTable(matches) {
+  let table = [['Mode'], ['Matches'], ['Wins'], ['Kills'], ['Time']];
+  let m, w, k, mode, date, diffSecs;
+  for (let data of matches) {
+    // Make it plural if not 1
+    m = data.matches === 1 ? 'match' : 'matches';
+    w = data.top1 === 1 ? 'win' : 'wins';
+    k = data.kills === 1 ? 'kill' : 'kills';
+    // Get mode from the ID (p2, p10, p9)
+    mode = ['Solo', 'Duo', 'Squad'].find(mode => modes[mode.toUpperCase()].id === data.playlist);
+    table[0].push(mode);
+    table[1].push(`${data.matches} ${m}`);
+    table[2].push(`${data.top1} ${w}`);
+    table[3].push(`${data.kills} ${k}`);
+    // Get time difference from match time and now
+    date = new Date(data.dateCollected);
+    diffSecs = (Date.now() - date.getTime()) / 1000;
+    table[4].push(`${formatSeconds(diffSecs, true)} ago`);
+  }
+  return table;
+}
 
 // Populate list of stats for /compare
 function populateStatsList(stats, modesStats, user) {

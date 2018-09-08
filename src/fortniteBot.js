@@ -16,6 +16,7 @@ const setIdCache = fortniteData.setIdCache;
 const getLeaderboardsData = fortniteData.getLeaderboardsData;
 const getChallengesData = fortniteData.getChallengesData;
 const getStoreData = fortniteData.getStoreData;
+const getMatchesData = fortniteData.getMatchesData;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
@@ -252,6 +253,24 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
+  } else if (text.match(/^\/matches(\s.+)?$/)) {
+    // Get match history on a user
+
+    user = await getUser(tokens, id, isTelegram);
+    if (!user)
+      return;
+    platform = tokens[0].substring(8);
+    if (platform) {
+      getMatchesData(user, constants[platform.toUpperCase()])
+        .then(res => sendMdTableMessage(msg, res, isTelegram))
+        .catch(e => {
+          err = handleMdError(e, msg, isTelegram);
+          if (err)
+            sendMessage(msg, e, isTelegram);
+        });
+    } else {
+      sendMatchesCalls(user, msg, isTelegram);
+    }
   }
 }
 
@@ -464,6 +483,36 @@ function sendRecentCalls(user, msg, isTelegram = true) {
           if (!error)
             return;
           getData('Recent', user, constants.PS4)
+            .then(response => sendMdTableMessage(msg, response, isTelegram))
+            .catch(e => {
+              e = handleMdError(e, msg, isTelegram);
+              if (e)
+                sendMessage(msg, e, isTelegram);
+            });
+        });
+    });
+}
+
+/**
+ * Gets the Fortnite data for matches (checks all platforms)
+ * @param {string} user Fortnite username
+ * @param {Object} msg object containing info about the user's message
+ * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
+ */
+function sendMatchesCalls(user, msg, isTelegram) {
+  getMatchesData(user, constants.PC)
+    .then(res => sendMdTableMessage(msg, res, isTelegram))
+    .catch(err => {
+      err = handleMdError(err, msg, isTelegram);
+      if (!err)
+        return;
+      getMatchesData(user, constants.XBOX)
+        .then(resp => sendMdTableMessage(msg, resp, isTelegram))
+        .catch(error => {
+          error = handleMdError(error, msg, isTelegram);
+          if (!error)
+            return;
+          getMatchesData(user, constants.PS4)
             .then(response => sendMdTableMessage(msg, response, isTelegram))
             .catch(e => {
               e = handleMdError(e, msg, isTelegram);

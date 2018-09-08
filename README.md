@@ -90,6 +90,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /leaderboards | Get leaderboard data | /leaderboards |
 | /challenges | Get current weekly challenges | /challenges |
 | /store | Get current store items | /store |
+| /matches | Get match history | /matches `<username>` |
 
 ### Deprecated Commands
 | Command | Description | Usage |

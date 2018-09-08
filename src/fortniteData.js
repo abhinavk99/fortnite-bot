@@ -27,6 +27,7 @@ const writeMsg = require('./writeMsg');
 const writeCompareMsg = writeMsg.writeCompareMsg;
 const writeChallengesMsg = writeMsg.writeChallengesMsg;
 const writeStoreMsg = writeMsg.writeStoreMsg;
+const writeMatchesMsg = writeMsg.writeMatchesMsg;
 
 const constants = require('./utils/constants');
 const hashCode = require('./utils/hashCode').hashCode;
@@ -111,6 +112,21 @@ module.exports = {
       client.getStore(true)
         .then(info => resolve(writeStoreMsg(info)))
         .catch(err => reject(handleError(err, 'store')));
+    });
+  },
+
+  // Get matches
+  getMatchesData: (user, platform) => {
+    return new Promise((resolve, reject) => {
+      getFortniteInfo(user, platform, false)
+        .then(info => {
+          client.getMatches(info.accountId, true)
+            .then(matchInfo => {
+              return resolve(writeMatchesMsg(matchInfo, info.epicUserHandle, info.platformNameLong));
+            })
+            .catch(err => reject(handleError(err, user + ' ' + info.accountId)));
+        })
+        .catch(err => reject(handleError(err, user)));
     });
   },
 
