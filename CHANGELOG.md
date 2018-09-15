@@ -1,10 +1,18 @@
 # Changelog for Fortnite Bot
 
+## [TODO]
+### To Add
+- /season4 statistics using match history data
+
 ## [Unreleased]
 ### Added
 - /matches for match history
 - /store for current store
 - /challenges for current active challenges
+
+### Fixed
+- Platform flags not being taken into account
+- Commands list being out of date for /start, /info, and /help
 
 ## [5.0.2] - 2018-08-18
 ### Added
