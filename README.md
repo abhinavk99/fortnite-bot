@@ -106,7 +106,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 
 #### Optional Platform Flags
 
-You can end any command (except `/set`, `/pc`, `/xbox`, `/ps4`, `/compare`) with `pc`, `xbox`, or `ps4` to specify the platform
+You can end any command (except `/set`, `/pc`, `/xbox`, `/ps4`, `/compare`, `/leaderboards`, `/challenges`, and `/store`) with `pc`, `xbox`, or `ps4` to specify the platform
 to search for the user.
 
 ```

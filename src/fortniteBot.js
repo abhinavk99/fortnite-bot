@@ -64,7 +64,7 @@ async function parseCommand(text, msg, isTelegram = true) {
 
   if (text.match(/^\/(info|help)$/)) {
     sendMessage(msg, constants.START_MSG, isTelegram);
-  } else if (text.match(/^\/user(\s.+)?$/)) {
+  } else if (text.match(/^\/user(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get global stats on a user
 
     // Get username, exit if not found
@@ -111,7 +111,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       }).then(res => sendMessage(msg, res, isTelegram))
         .catch(err => sendMessage(msg, err, isTelegram));
     }
-  } else if (text.match(/^\/recent(\s.+)?$/)) {
+  } else if (text.match(/^\/recent(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get recent matches on a user
 
     // Get username, exit if not found
@@ -130,7 +130,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendRecentCalls(user, msg, isTelegram);
     }
-  } else if (text.match(/^\/rold(\s.+)?$/)) {
+  } else if (text.match(/^\/rold(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get recent matches on a user (old format)
 
     // Get username, exit if not found
@@ -169,7 +169,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     user = text.substring(5);
     setIdCache(user, id, isTelegram);
     sendMessage(msg, `Wrote ${user} to database.`, isTelegram);
-  } else if (text.match(/^\/rating(\s.+)?$/)) {
+  } else if (text.match(/^\/rating(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get TRN ratings on a user
 
     // Get username, exit if not found
@@ -184,7 +184,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Rating', user, msg, isTelegram);
     }
-  } else if (text.match(/^\/kd(\s.+)?$/)) {
+  } else if (text.match(/^\/kd(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get KD stats on a user
 
     user = await getUser(tokens, id, isTelegram);
@@ -211,13 +211,13 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
-  } else if (text.match(/^\/(winrate|wr)(\s.+)?$/)) {
+  } else if (text.match(/^\/(winrate|wr)(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get win rate stats on a user
 
     user = await getUser(tokens, id, isTelegram);
     if (!user)
       return;
-    platform = tokens[0].substring(8);
+    platform = tokens[0].substring(tokens[0].startsWith('winrate') ? 8 : 3);
     if (platform) {
       getData('Winrate', user, constants[platform.toUpperCase()])
         .then(res => sendMessage(msg, res, isTelegram))
@@ -253,7 +253,7 @@ async function parseCommand(text, msg, isTelegram = true) {
         if (err)
           sendMessage(msg, e, isTelegram);
       });
-  } else if (text.match(/^\/matches(\s.+)?$/)) {
+  } else if (text.match(/^\/matches(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get match history on a user
 
     user = await getUser(tokens, id, isTelegram);
