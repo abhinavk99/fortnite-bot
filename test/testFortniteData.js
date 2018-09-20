@@ -90,6 +90,14 @@ describe('#Fortnite Data', () => {
     }
   });
 
+  it('should handle error for matches with invalid username', async () => {
+    try {
+      await fortniteData.getMatchesData(user1, platform);
+    } catch (err) {
+      expect(err).to.equal(NOT_FOUND_ERROR);
+    }
+  });
+
   it('should get global data', async () => {
     const user = 'ninja';
     const res = await fortniteData.getData('Global', user, platform);
@@ -157,17 +165,17 @@ describe('#Fortnite Data', () => {
     for (let mode of res[1][0].slice(1)) {
       expect(mode).to.match(/^(Solo|Duo|Squad)$/);
     }
-    for (let mode of res[1][1].slice(1)) {
-      expect(mode).to.match(/^\d+ match(es)?$/);
+    for (let match of res[1][1].slice(1)) {
+      expect(match).to.match(/^\d+ match(es)?$/);
     }
-    for (let mode of res[1][2].slice(1)) {
-      expect(mode).to.match(/^\d+ win(s)?$/);
+    for (let win of res[1][2].slice(1)) {
+      expect(win).to.match(/^\d+ win(s)?$/);
     }
-    for (let mode of res[1][3].slice(1)) {
-      expect(mode).to.match(/^\d+ kill(s)?$/);
+    for (let kill of res[1][3].slice(1)) {
+      expect(kill).to.match(/^\d+ kill(s)?$/);
     }
-    for (let mode of res[1][4].slice(1)) {
-      expect(mode).to.match(/^.+ ago$/);
+    for (let time of res[1][4].slice(1)) {
+      expect(time).to.match(/^.+ ago$/);
     }
   });
 
@@ -286,6 +294,64 @@ https://fortnitetracker.com/profile/pc/TSM_Myth`);
     ]);
     expect(res[1][1]).to.have.a.lengthOf(22);
     expect(res[1][2]).to.have.a.lengthOf(22);
+  });
+
+  it('should get store data', async () => {
+    const res = await fortniteData.getStoreData();
+    expect(res.length).to.equal(2);
+    expect(res[0]).to.equal('Current Store Items');
+    expect(res[1].length).to.equal(4);
+    for (let name of res[1][0].slice(1)) {
+      expect(name).to.match(/^.+$/);
+    }
+    for (let rarity of res[1][1].slice(1)) {
+      expect(rarity).to.match(/^(Sturdy|Quality|Handmade|Fine)$/);
+    }
+    for (let cost of res[1][2].slice(1)) {
+      expect(cost).to.match(/^\d+ vBucks?$/);
+    }
+    for (let category of res[1][3].slice(1)) {
+      expect(category).to.match(/^(Daily|Weekly)$/);
+    }
+  });
+
+  it('should get challenges data', async () => {
+    const res = await fortniteData.getChallengesData();
+    expect(res.length).to.equal(2);
+    expect(res[0]).to.equal('Current Weekly Challenges');
+    expect(res[1].length).to.equal(3);
+    for (let name of res[1][0].slice(1)) {
+      expect(name).to.match(/^.+$/);
+    }
+    for (let total of res[1][1].slice(1)) {
+      expect(total).to.match(/^\d+$/);
+    }
+    for (let reward of res[1][2].slice(1)) {
+      expect(reward).to.match(/^\d+ stars?$/);
+    }
+  });
+
+  it('should get matches data', async () => {
+    const user = 'ninja';
+    const res = await fortniteData.getMatchesData(user, platform);
+    expect(res.length).to.equal(2);
+    expect(res[0]).to.equal('Match history for Ninja:\nPlatform: PC');
+    expect(res[1].length).to.equal(5);
+    for (let mode of res[1][0].slice(1)) {
+      expect(mode).to.match(/^(Solo|Duo|Squad)$/);
+    }
+    for (let match of res[1][1].slice(1)) {
+      expect(match).to.match(/^\d+ match(es)?$/);
+    }
+    for (let win of res[1][2].slice(1)) {
+      expect(win).to.match(/^\d+ win(s)?$/);
+    }
+    for (let kill of res[1][3].slice(1)) {
+      expect(kill).to.match(/^\d+ kill(s)?$/);
+    }
+    for (let time of res[1][4].slice(1)) {
+      expect(time).to.match(/^.+ ago$/);
+    }
   });
 
 });
