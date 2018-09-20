@@ -407,7 +407,8 @@ module.exports = {
       // Total
       table[1].push(challenge[3].value);
       // Number of battle stars
-      let s = challenge[5].value === 1 ? 'star': 'stars';
+
+      let s = challenge[5].value == 1 ? 'star': 'stars';
       table[2].push(`${challenge[5].value} ${s}`);
     }
 
