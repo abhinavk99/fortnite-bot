@@ -4,7 +4,7 @@
 ### To Add
 - /season4 statistics using match history data
 
-## [Unreleased]
+## [5.1.0] - 2018-09-25
 ### Added
 - /matches for match history
 - /store for current store
