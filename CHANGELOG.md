@@ -3,6 +3,14 @@
 ## [TODO]
 ### To Add
 - /season4 statistics using match history data
+- /season5 statistics using match history data
+
+## [6.0.0] - 2018-09-27
+### Added
+- Season 6 support for commands
+
+### Deprecated
+- Season 5 support because of Fortnite Tracker not providing the data anymore
 
 ## [5.1.0] - 2018-09-25
 ### Added
