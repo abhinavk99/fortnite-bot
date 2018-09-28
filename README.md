@@ -65,7 +65,7 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /pc | Get global stats for a PC player | /pc `<username>` |
 | /xbox | Get global stats for an XBOX player | /xbox `<username>` |
 | /ps4 | Get global stats for a PS4 player | /ps4 `<username>` |
-| /season5 or /s5 | Get all season 3 stats for a player | /season5 `<username>` |
+| /season6 or /s6 | Get all season 6 stats for a player | /season6 `<username>` |
 
 ### Modes Commands
 | Command | Description | Usage |
@@ -73,9 +73,9 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /solo | Get lifetime solo stats for a player | /solo `<username>` |
 | /duo | Get lifetime duo stats for a player | /duo `<username>` |
 | /squad | Get lifetime squad stats for a player | /squad `<username>` |
-| /solos5 | Get season 5 solo stats for a player | /solos5 `<username>` |
-| /duos5 | Get season 5 duo stats for a player | /duos5 `<username>` |
-| /squads5 | Get season 5 squad stats for a player | /squads5 `<username>` |
+| /solos6 | Get season 6 solo stats for a player | /solos6 `<username>` |
+| /duos6 | Get season 6 duo stats for a player | /duos6 `<username>` |
+| /squads6 | Get season 6 squad stats for a player | /squads6 `<username>` |
 
 ### Other Commands
 | Command | Description | Usage |
@@ -103,6 +103,10 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /solos4 | Get season 4 solo stats for a player | /solos4 `<username>` |
 | /duos4 | Get season 4 duo stats for a player | /duos4 `<username>` |
 | /squads4 | Get season 4 squad stats for a player | /squads4 `<username>` |
+| /season5 or /s5 | Get all season 5 stats for a player | /season5 `<username>` |
+| /solos5 | Get season 5 solo stats for a player | /solos5 `<username>` |
+| /duos5 | Get season 5 duo stats for a player | /duos5 `<username>` |
+| /squads5 | Get season 5 squad stats for a player | /squads5 `<username>` |
 
 #### Optional Platform Flags
 
