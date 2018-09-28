@@ -85,7 +85,7 @@ async function parseCommand(text, msg, isTelegram = true) {
       return;
     platform = tokens[0].substring(1); // Platform
     sendPlatformsCalls(user, platform, msg, isTelegram);
-  } else if (text.match(/^\/(solo|duo|squad)(s[3-5])?(pc|xbox|ps4)?(\s.+)?$/)) {
+  } else if (text.match(/^\/(solo|duo|squad)(s[3-6])?(pc|xbox|ps4)?(\s.+)?$/)) {
     // Get solo, duo, or squad stats for lifetime or season
 
     let mode = tokens[0].substring(1); // Mode
@@ -93,7 +93,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     mode = mode[0].toUpperCase() + mode.substr(1).toLowerCase();
     // Get platform by stripping the mode of the mode info
     platform = mode.replace(/(solo|duo|squad)/i, '');
-    platform = platform.replace(/s[3-5]/i, '');
+    platform = platform.replace(/s[3-6]/i, '');
     // Strip mode of the platform info
     mode = mode.replace(/(pc|xbox|ps4)/i, '');
     // Get username, exit if not found
@@ -145,7 +145,7 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMethodCalls('Rold', user, msg, isTelegram);
     }
-  } else if (text.match(/^\/(season|s)[3-5](pc|xbox|ps4)?(\s.+)?$/)) {
+  } else if (text.match(/^\/(season|s)[3-6](pc|xbox|ps4)?(\s.+)?$/)) {
     // Get all season stats on a user 
 
     // Get season and platform by stripping data from the command text
@@ -457,7 +457,7 @@ function getModeInfo(mode) {
   const lastChar = mode.substr(-1);
   // Season is the season's number if the mode is a season based command
   // Otherwise it's an empty string
-  const season = ['3', '4', '5'].includes(lastChar) ? lastChar : '';
+  const season = ['3', '4', '5', '6'].includes(lastChar) ? lastChar : '';
   // Each mode has a different way of storing times a player made it to top x
   const top = modes[mode.toUpperCase()].top;
   return [season, top];
