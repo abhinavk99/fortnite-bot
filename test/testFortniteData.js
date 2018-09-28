@@ -35,7 +35,7 @@ describe('#Fortnite Data', () => {
       await fortniteData.getData('Modes', user1, platform, {
         mode: 'Solos5',
         top: [10, 25],
-        season: '5'
+        season: '6'
       });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
@@ -60,7 +60,7 @@ describe('#Fortnite Data', () => {
 
   it('should handle error for season with invalid username', async () => {
     try {
-      await fortniteData.getData('Season', user1, platform, { season: '5' });
+      await fortniteData.getData('Season', user1, platform, { season: '6' });
     } catch (err) {
       expect(err).to.equal(NOT_FOUND_ERROR);
     }
@@ -129,18 +129,18 @@ describe('#Fortnite Data', () => {
     expect(lines[24]).to.match(/^Squad kills: \d+$/);
   });
 
-  it('should get solo season 5 data', async () => {
+  it('should get solo season 6 data', async () => {
     const user = 'ninja';
-    const mode = 'Solos5';
-    const top = modes.SOLOS5.top;
-    const season = '5';
+    const mode = 'Solos6';
+    const top = modes.SOLOS6.top;
+    const season = '6';
     const res = await fortniteData.getData('Modes', user, platform, {
       mode: mode,
       top: top,
       season: season
     });
     const lines = res.split('\n');
-    expect(lines[0]).to.equal('Season 5 Solo stats for Ninja:');
+    expect(lines[0]).to.equal('Season 6 Solo stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
 
     expect(lines[3]).to.match(/^Matches played: \d+$/);
@@ -193,12 +193,12 @@ describe('#Fortnite Data', () => {
     }
   });
 
-  it('should get season 5 data', async () => {
+  it('should get season 6 data', async () => {
     const user = 'ninja';
-    const season = '5';
+    const season = '6';
     const res = await fortniteData.getData('Season', user, platform, { season: season });
     const lines = res.split('\n');
-    expect(lines[0]).to.equal('Season 5 stats for Ninja:');
+    expect(lines[0]).to.equal('Season 6 stats for Ninja:');
     expect(lines[1]).to.equal('Platform: PC');
 
     expect(lines[3]).to.match(/^Matches played: \d+$/);
@@ -214,13 +214,13 @@ describe('#Fortnite Data', () => {
     expect(lines[13]).to.match(/^Solo wins: \d+$/);
     expect(lines[14]).to.match(/^Solo kills: \d+$/);
 
-    expect(lines[16]).to.match(/^Duo matches played: \d+$/);
-    expect(lines[17]).to.match(/^Duo wins: \d+$/);
-    expect(lines[18]).to.match(/^Duo kills: \d+$/);
+    // expect(lines[16]).to.match(/^Duo matches played: \d+$/);
+    // expect(lines[17]).to.match(/^Duo wins: \d+$/);
+    // expect(lines[18]).to.match(/^Duo kills: \d+$/);
 
-    expect(lines[20]).to.match(/^Squad matches played: \d+$/);
-    expect(lines[21]).to.match(/^Squad wins: \d+$/);
-    expect(lines[22]).to.match(/^Squad kills: \d+$/);
+    expect(lines[16]).to.match(/^Squad matches played: \d+$/);
+    expect(lines[17]).to.match(/^Squad wins: \d+$/);
+    expect(lines[18]).to.match(/^Squad kills: \d+$/);
   });
 
   it('should get TRN rating data', async () => {
@@ -234,9 +234,9 @@ describe('#Fortnite Data', () => {
     expect(lines[4]).to.match(/^Duo TRN Rating: .+$/);
     expect(lines[5]).to.match(/^Squad TRN Rating: .+$/);
 
-    expect(lines[7]).to.match(/^Season 5 Solo TRN Rating: .+$/);
-    expect(lines[8]).to.match(/^Season 5 Duo TRN Rating: .+$/);
-    expect(lines[9]).to.match(/^Season 5 Squad TRN Rating: .+$/);
+    expect(lines[7]).to.match(/^Season 6 Solo TRN Rating: .+$/);
+    // expect(lines[8]).to.match(/^Season 6 Duo TRN Rating: .+$/);
+    expect(lines[8]).to.match(/^Season 6 Squad TRN Rating: .+$/);
   });
 
   it('should get K/D data', async () => {
@@ -251,10 +251,10 @@ describe('#Fortnite Data', () => {
     expect(lines[5]).to.match(/^Squad K\/D Ratio: .+$/);
     expect(lines[6]).to.match(/^Lifetime K\/D Ratio: .+$/);
 
-    expect(lines[8]).to.match(/^Season 5 Solo K\/D Ratio: .+$/);
-    expect(lines[9]).to.match(/^Season 5 Duo K\/D Ratio: .+$/);
-    expect(lines[10]).to.match(/^Season 5 Squad K\/D Ratio: .+$/);
-    expect(lines[11]).to.match(/^Season 5 K\/D Ratio: .+$/);
+    expect(lines[8]).to.match(/^Season 6 Solo K\/D Ratio: .+$/);
+    // expect(lines[9]).to.match(/^Season 6 Duo K\/D Ratio: .+$/);
+    expect(lines[9]).to.match(/^Season 6 Squad K\/D Ratio: .+$/);
+    expect(lines[10]).to.match(/^Season 6 K\/D Ratio: .+$/);
   });
 
   it('should get comparing data', async () => {
