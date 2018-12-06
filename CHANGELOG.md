@@ -5,6 +5,10 @@
 - /season4 statistics using match history data
 - /season5 statistics using match history data
 
+## [7.0.1] - 2018-12-06
+### Changed
+- Updated dependencies
+
 ## [7.0.0] - 2018-12-06
 ### Added
 - Season 7 support for commands
