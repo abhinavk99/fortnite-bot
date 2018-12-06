@@ -48,19 +48,19 @@ module.exports = {
   //   id: 'prior_p9',
   //   name: 'Season 4 Squad'
   // },
-  SOLOS6: {
+  SOLOS7: {
     top: [10, 25],
     id: 'curr_p2',
-    name: 'Season 6 Solo'
+    name: 'Season 7 Solo'
   },
-  DUOS6: {
+  DUOS7: {
     top: [5, 12],
     id: 'curr_p10',
-    name: 'Season 6 Duo'
+    name: 'Season 7 Duo'
   },
-  SQUADS6: {
+  SQUADS7: {
     top: [3, 6],
     id: 'curr_p9',
-    name: 'Season 6 Squad'
+    name: 'Season 7 Squad'
   }
 };

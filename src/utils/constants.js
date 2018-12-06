@@ -9,13 +9,13 @@ module.exports = Object.freeze({
 /pc <username> for information on the player on PC platform
 /xbox <username> for information on the player on XBOX platform
 /ps4 <username> for information on the player on PS4 platform
-/season6 or /s6 <username> for all season 6 information on the player
+/season7 or /s7 <username> for all season 7 information on the player
 /solo <username> for player's lifetime solo stats
 /duo <username> for player's lifetime duo stats
 /squad <username> for player's lifetime squad stats
-/solos6 <username> for player's season 6 solo stats
-/duos6 <username> for player's season 6 duo stats
-/squads6 <username> for player's season 6 squad stats
+/solos7 <username> for player's season 7 solo stats
+/duos7 <username> for player's season 7 duo stats
+/squads7 <username> for player's season 7 squad stats
 /recent or /rold <username> for player's recent match information
 /compare <username1>, <username2> to compare two players
 /rating <username> for player's TRN rating stats
