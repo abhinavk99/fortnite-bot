@@ -87,7 +87,7 @@ module.exports = {
               // Username
               table[1].push(row[1].children[1].children[0].data);
               // Wins
-              table[2].push(parseInt(row[2].children[0].data).toLocaleString());
+              table[2].push(row[2].children[0].data);
               // Games
               table[3].push(parseInt(row[3].children[0].data).toLocaleString());
             }
