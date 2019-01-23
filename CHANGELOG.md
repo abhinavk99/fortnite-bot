@@ -1,9 +1,15 @@
 # Changelog for Fortnite Bot
 
-## [TODO]
-### To Add
-- /season4 statistics using match history data
-- /season5 statistics using match history data
+## [7.0.3] - 2018-01-22
+### Added
+- Nodemon as dev dependency
+
+### Fixed
+- 404 Not Found Error when a username ending with a period is given
+
+## [7.0.2] - 2018-01-07
+### Fixed
+- Bug with wins in /leaderboards
 
 ## [7.0.1] - 2018-12-06
 ### Changed
