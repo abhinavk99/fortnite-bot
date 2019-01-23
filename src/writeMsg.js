@@ -22,7 +22,7 @@ module.exports = {
     res += `Platform: ${info.platformNameLong}\n`;
 
     const platform = info.platformName;
-    const user = encodeURIComponent(info.epicUserHandle);
+    const user = encodeURIComponent(info.epicUserHandle) + '/';
     res += `${constants.BASE_URL}/${platform}/${user}\n\n`;
 
     res += `Matches played: ${stats[7].value}\n`;
