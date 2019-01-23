@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [7.0.4] - 2018-01-22
+### Changed
+- Modified link in /user response to have a / at the end
+
 ## [7.0.3] - 2018-01-22
 ### Added
 - Nodemon as dev dependency
