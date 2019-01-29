@@ -194,7 +194,8 @@ module.exports = {
         sumPlaces2 += modeStats.top6.valueInt + modeStats.top12.valueInt
           + modeStats.top25.valueInt;
         kills += modeStats.kills.valueInt;
-        deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
+        if (modeStats.kd.valueDec != 0)
+          deaths += modeStats.kills.valueInt / modeStats.kd.valueDec;
 
         // Gets some mode data to display
         modeRes += `\n${mode} matches played: ${modeStats.matches.value}\n`;
