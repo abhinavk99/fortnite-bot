@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [7.0.5] - 2018-01-29
+### Fixed
+- NaN K/D ratio when doing /s7 if the user has 0 kills in one of the modes
+
 ## [7.0.4] - 2018-01-22
 ### Changed
 - Modified link in /user response to have a / at the end
