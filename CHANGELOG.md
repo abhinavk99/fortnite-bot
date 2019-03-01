@@ -1,5 +1,12 @@
 # Changelog for Fortnite Bot
 
+## [8.0.0] - 2019-02-28
+### Added
+- Season 8 support for commands
+
+### Deprecated
+- Season 7 support because of Fortnite Tracker not providing the data anymore
+
 ## [7.0.5] - 2018-01-29
 ### Fixed
 - NaN K/D ratio when doing /s7 if the user has 0 kills in one of the modes
