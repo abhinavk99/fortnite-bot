@@ -204,23 +204,23 @@ describe('#Fortnite Data', () => {
 
     expect(lines[3]).to.match(/^Matches played: \d+$/);
     expect(lines[4]).to.match(/^Wins: \d+$/);
-    expect(lines[5]).to.match(/^Top 3\/5\/10 Rate: \d+%$/);
-    // expect(lines[5]).to.match(/^Top 3\/5\/10 Rate: \d+\.\d+%$/);
-    expect(lines[6]).to.match(/^Top 6\/12\/25 Rate: \d+%$/);
-    // expect(lines[6]).to.match(/^Top 6\/12\/25 Rate: \d+\.\d+%$/);
+    // expect(lines[5]).to.match(/^Top 3\/5\/10 Rate: \d+%$/);
+    expect(lines[5]).to.match(/^Top 3\/5\/10 Rate: \d+\.\d+%$/);
+    // expect(lines[6]).to.match(/^Top 6\/12\/25 Rate: \d+%$/);
+    expect(lines[6]).to.match(/^Top 6\/12\/25 Rate: \d+\.\d+%$/);
     expect(lines[7]).to.match(/^Win Rate: .+%$/);
     expect(lines[8]).to.match(/^Kills: \d+$/);
     expect(lines[9]).to.match(/^K\/D Ratio: \d+\.\d+$/);
-    expect(lines[10]).to.match(/^Kills\/Game: \d+$/);
+    // expect(lines[10]).to.match(/^Kills\/Game: \d+$/);
     expect(lines[10]).to.match(/^Kills\/Game: \d+\.\d+$/);
 
     expect(lines[12]).to.match(/^Solo matches played: \d+$/);
     expect(lines[13]).to.match(/^Solo wins: \d+$/);
     expect(lines[14]).to.match(/^Solo kills: \d+$/);
 
-    expect(lines[16]).to.match(/^Duo matches played: \d+$/);
-    expect(lines[17]).to.match(/^Duo wins: \d+$/);
-    expect(lines[18]).to.match(/^Duo kills: \d+$/);
+    // expect(lines[16]).to.match(/^Duo matches played: \d+$/);
+    // expect(lines[17]).to.match(/^Duo wins: \d+$/);
+    // expect(lines[18]).to.match(/^Duo kills: \d+$/);
 
     expect(lines[16]).to.match(/^Squad matches played: \d+$/);
     expect(lines[17]).to.match(/^Squad wins: \d+$/);
@@ -239,7 +239,7 @@ describe('#Fortnite Data', () => {
     expect(lines[5]).to.match(/^Squad TRN Rating: .+$/);
 
     expect(lines[7]).to.match(/^Season 8 Solo TRN Rating: .+$/);
-    expect(lines[8]).to.match(/^Season 8 Duo TRN Rating: .+$/);
+    // expect(lines[8]).to.match(/^Season 8 Duo TRN Rating: .+$/);
     expect(lines[8]).to.match(/^Season 8 Squad TRN Rating: .+$/);
   });
 
@@ -256,10 +256,9 @@ describe('#Fortnite Data', () => {
     expect(lines[6]).to.match(/^Lifetime K\/D Ratio: .+$/);
 
     expect(lines[8]).to.match(/^Season 8 Solo K\/D Ratio: .+$/);
-    expect(lines[9]).to.match(/^Season 8 Duo K\/D Ratio: .+$/);
+    // expect(lines[9]).to.match(/^Season 8 Duo K\/D Ratio: .+$/);
     expect(lines[9]).to.match(/^Season 8 Squad K\/D Ratio: .+$/);
     expect(lines[10]).to.match(/^Season 8 K\/D Ratio: .+$/);
-    expect(lines[8]).to.match(/^Season 8 K\/D Ratio: .+$/);
   });
 
   it('should get comparing data', async () => {
