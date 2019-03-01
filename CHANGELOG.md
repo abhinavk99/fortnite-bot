@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [8.0.1] - 2019-03-01
+### Fixed
+- Help message to adhere to season 8 update
+
 ## [8.0.0] - 2019-02-28
 ### Added
 - Season 8 support for commands
