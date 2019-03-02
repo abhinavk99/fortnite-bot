@@ -156,6 +156,12 @@ module.exports = {
       nickname: nickname,
       username: user
     });
+  },
+
+  // Delete mapping from nickname to Fortnite username
+  deleteNickname: (nickname, id, isTelegram = true) => {
+    let path = isTelegram ? 'telegram/' : 'discord/';
+    database.ref(path + id + '/nicknames/' + hashCode(nickname)).remove();
   }
 };
 

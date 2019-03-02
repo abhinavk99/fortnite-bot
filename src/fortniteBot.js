@@ -18,6 +18,7 @@ const getChallengesData = fortniteData.getChallengesData;
 const getStoreData = fortniteData.getStoreData;
 const getMatchesData = fortniteData.getMatchesData;
 const setNickname = fortniteData.setNickname;
+const deleteNickname = fortniteData.deleteNickname;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
@@ -283,6 +284,12 @@ async function parseCommand(text, msg, isTelegram = true) {
     user = text.substring(index + 2);
     setNickname(nickname, user, id, isTelegram);
     sendMessage(msg, `Set nickname ${nickname} for ${user}.`, isTelegram);
+  } else if (text.match(/^\/deletenick\s.+$/)) {
+    // Delete nickname from database
+
+    let nickname = text.substring(12);
+    deleteNickname(nickname, id, isTelegram);
+    sendMessage(msg, `Deleted nickname ${nickname} if present.`, isTelegram);
   }
 }
 
