@@ -17,9 +17,12 @@ const getLeaderboardsData = fortniteData.getLeaderboardsData;
 const getChallengesData = fortniteData.getChallengesData;
 const getStoreData = fortniteData.getStoreData;
 const getMatchesData = fortniteData.getMatchesData;
+const setNickname = fortniteData.setNickname;
+const deleteNickname = fortniteData.deleteNickname;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
+const hashCode = require('./utils/hashCode').hashCode;
 
 const errors = require('./utils/errors');
 const getNoRecentMatchesError = errors.getNoRecentMatchesError;
@@ -273,6 +276,20 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMatchesCalls(user, msg, isTelegram);
     }
+  } else if (text.match(/^\/nick\s.+,\s.+$/)) {
+    // Write username to database
+
+    let index = text.indexOf(',');
+    let nickname = text.substring(6, index);
+    user = text.substring(index + 2);
+    setNickname(nickname, user, id, isTelegram);
+    sendMessage(msg, `Set nickname ${nickname} for ${user}.`, isTelegram);
+  } else if (text.match(/^\/deletenick\s.+$/)) {
+    // Delete nickname from database
+
+    let nickname = text.substring(12);
+    deleteNickname(nickname, id, isTelegram);
+    sendMessage(msg, `Deleted nickname ${nickname} if present.`, isTelegram);
   }
 }
 
@@ -283,19 +300,24 @@ async function parseCommand(text, msg, isTelegram = true) {
  * @param {boolean=} isTelegram true if message is from Telegram, false if from Discord
  */
 async function getUser(tokens, id, isTelegram = true) {
+  let response = await getIdCache(id, isTelegram);
   let user;
   // Tokens is of length 1 if no user was passed in as an argument
   if (tokens.length === 1) {
-    try {
-      // Check cache for the username associated with the messaging ID
-      user = await getIdCache(id, isTelegram);
-    } catch (err) {
-      // Exit if no user found
+    // Check cache for the username associated with the messaging ID and exit if none found
+    if ('username' in response)
+      user = response.username;
+    else
       return;
-    }
   } else {
     // Get the username if it was passed in as an argument
     user = tokens.slice(1).join(' ');
+    // Check if username is actually a nickname
+    if ('nicknames' in response) {
+      let encodedUser = hashCode(user);
+      if (encodedUser in response.nicknames)
+        user = response.nicknames[encodedUser].username;
+    }
   }
   return user;
 }
@@ -312,7 +334,8 @@ async function getTwoUsers(tokens, id, isTelegram = true) {
   if (subtokens.length === 1) {
     try {
       // Check cache for first user
-      user1 = await getIdCache(id, isTelegram);
+      let response = await getIdCache(id, isTelegram);
+      user1 = response.username;
     } catch (err) {
       // Exit if no user found
       return;

@@ -80,7 +80,7 @@ module.exports = {
           let $ = Cheerio.load(html);
           let res = 'Leaderboards';
           let table = [['Rank'], ['Username'], ['Wins'], ['Games']];
-          $('tr').each(function(i, elem) {
+          $('tr').each(function (i, elem) {
             if (i > 0 && i < 11) {
               table[0].push(i);
               const row = $(this).children();
@@ -143,9 +143,25 @@ module.exports = {
       database.ref(path + id).once('value').then(snapshot => {
         if (!snapshot.val())
           return reject(errors.NOT_MAPPED_ERROR);
-        return resolve(snapshot.val().username);
+        return resolve(snapshot.val());
       });
     });
+  },
+
+  // Set mapping from nickname to Fortnite username
+  setNickname: (nickname, user, id, isTelegram = true) => {
+    let path = isTelegram ? 'telegram/' : 'discord/';
+    // Encode the nickname because Firebase keys disallow some special characters
+    database.ref(path + id + '/nicknames/' + hashCode(nickname)).set({
+      nickname: nickname,
+      username: user
+    });
+  },
+
+  // Delete mapping from nickname to Fortnite username
+  deleteNickname: (nickname, id, isTelegram = true) => {
+    let path = isTelegram ? 'telegram/' : 'discord/';
+    database.ref(path + id + '/nicknames/' + hashCode(nickname)).remove();
   }
 };
 
