@@ -25,6 +25,9 @@ module.exports = Object.freeze({
 /challenges for current weekly challenges
 /store for current store items
 /matches for match history
+/set <username> to save username and not specify username for other commands
+/nick <nickname>, <username> to set a nickname for a username when searching
+/deletenick <nickname> to delete a nickname that was set
 
 You can end any command (except /set, /pc, /xbox, /ps4, /compare) with pc, xbox, or ps4 to specify the platform to search for the user.`
 });

@@ -91,6 +91,8 @@ Do `/start`, `/help`, or `/info` to get a list of commands from the bot.
 | /challenges | Get current weekly challenges | /challenges |
 | /store | Get current store items | /store |
 | /matches | Get match history | /matches `<username>` |
+| /nick | Set nickname for a username | /nick `<nickname>, <username>` |
+| /deletenick | Delete a nickname that was set | /deletenick `<nickname>` |
 
 ### Deprecated Commands
 | Command | Description | Usage |
