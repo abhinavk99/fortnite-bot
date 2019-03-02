@@ -17,6 +17,7 @@ const getLeaderboardsData = fortniteData.getLeaderboardsData;
 const getChallengesData = fortniteData.getChallengesData;
 const getStoreData = fortniteData.getStoreData;
 const getMatchesData = fortniteData.getMatchesData;
+const setNickname = fortniteData.setNickname;
 
 const constants = require('./utils/constants');
 const modes = require('./utils/modes');
@@ -273,6 +274,14 @@ async function parseCommand(text, msg, isTelegram = true) {
     } else {
       sendMatchesCalls(user, msg, isTelegram);
     }
+  } else if (text.match(/^\/nick\s.+,\s.+$/)) {
+    // Write username to database
+
+    let index = text.indexOf(',');
+    let nickname = text.substring(6, index);
+    user = text.substring(index + 2);
+    setNickname(nickname, user, id, isTelegram);
+    sendMessage(msg, `Set nickname ${nickname} for ${user}.`, isTelegram);
   }
 }
 

@@ -146,6 +146,16 @@ module.exports = {
         return resolve(snapshot.val().username);
       });
     });
+  },
+
+  // Set mapping from nickname to Fortnite username
+  setNickname: (nickname, user, id, isTelegram = true) => {
+    let path = isTelegram ? 'telegram/' : 'discord/';
+    // Encode the nickname because Firebase keys disallow some special characters
+    database.ref(path + id + '/nicknames/' + hashCode(nickname)).set({
+      nickname: nickname,
+      username: user
+    });
   }
 };
 
