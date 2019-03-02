@@ -1,5 +1,9 @@
 # Changelog for Fortnite Bot
 
+## [8.1.0] - 2019-03-01
+### Added
+- Nickname support with /nick and /deletenick
+
 ## [8.0.1] - 2019-03-01
 ### Fixed
 - Help message to adhere to season 8 update
