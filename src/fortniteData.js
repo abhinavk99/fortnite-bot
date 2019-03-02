@@ -80,7 +80,7 @@ module.exports = {
           let $ = Cheerio.load(html);
           let res = 'Leaderboards';
           let table = [['Rank'], ['Username'], ['Wins'], ['Games']];
-          $('tr').each(function(i, elem) {
+          $('tr').each(function (i, elem) {
             if (i > 0 && i < 11) {
               table[0].push(i);
               const row = $(this).children();
@@ -143,7 +143,7 @@ module.exports = {
       database.ref(path + id).once('value').then(snapshot => {
         if (!snapshot.val())
           return reject(errors.NOT_MAPPED_ERROR);
-        return resolve(snapshot.val().username);
+        return resolve(snapshot.val());
       });
     });
   },
