@@ -477,8 +477,8 @@ function populateStatsList(stats, modesStats, user) {
   list.push(stats[7].value); // Matches played
   list.push(stats[8].value); // Wins
 
-  const sumPlaces1 = parseInt(stats[0].value) + parseInt(stats[1].value)
-    + parseInt(stats[2].value); // Adds up times in top 3, 5, 10
+  const sumPlaces1 = parseInt(stats[1].value) + parseInt(stats[0].value)
+    + parseInt(stats[3].value); // Adds up times in top 3, 5, 10
   let rate1;
   if (parseInt(stats[7].value) === 0)
     rate1 = 0;
@@ -486,7 +486,7 @@ function populateStatsList(stats, modesStats, user) {
     rate1 = (sumPlaces1 / stats[7].value * 100).toFixed(2);
   list.push(`${rate1}%`); // Top 3/5/10
 
-  const sumPlaces2 = parseInt(stats[3].value) + parseInt(stats[4].value)
+  const sumPlaces2 = parseInt(stats[2].value) + parseInt(stats[4].value)
     + parseInt(stats[5].value); // Adds up times in top 6, 12, 25
   let rate2;
   if (parseInt(stats[7].value) === 0)
