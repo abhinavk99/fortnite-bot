@@ -1,4 +1,7 @@
+const CURR_SEASON = 9;
+
 module.exports = Object.freeze({
+  CURR_SEASON: CURR_SEASON,
   PC: 'pc',
   XBOX: 'xbl',
   PS4: 'psn',
@@ -9,13 +12,13 @@ module.exports = Object.freeze({
 /pc <username> for information on the player on PC platform
 /xbox <username> for information on the player on XBOX platform
 /ps4 <username> for information on the player on PS4 platform
-/season8 or /s8 <username> for all season 8 information on the player
+/season${CURR_SEASON} or /s${CURR_SEASON} <username> for all season ${CURR_SEASON} information on the player
 /solo <username> for player's lifetime solo stats
 /duo <username> for player's lifetime duo stats
 /squad <username> for player's lifetime squad stats
-/solos8 <username> for player's season 8 solo stats
-/duos8 <username> for player's season 8 duo stats
-/squads8 <username> for player's season 8 squad stats
+/solos${CURR_SEASON} <username> for player's season ${CURR_SEASON} solo stats
+/duos${CURR_SEASON} <username> for player's season ${CURR_SEASON} duo stats
+/squads${CURR_SEASON} <username> for player's season ${CURR_SEASON} squad stats
 /recent or /rold <username> for player's recent match information
 /compare <username1>, <username2> to compare two players
 /rating <username> for player's TRN rating stats

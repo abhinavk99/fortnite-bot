@@ -35,6 +35,8 @@ const hashCode = require('./utils/hashCode').hashCode;
 const errors = require('./utils/errors');
 const getUserNotFoundError = errors.getUserNotFoundError;
 
+const range = require('./utils/range').range;
+
 // Temporary cache
 const tempCache = {};
 resetCache();
@@ -43,7 +45,7 @@ module.exports = {
   // Get stats for the given type of data (i.e. Global, Season, etc.)
   getData: (datatype, user, platform, args) => {
     return new Promise((resolve, reject) => {
-      if (args && ['4', '5', '6'].includes(args.season))
+      if (args && range(4, constants.CURR_SEASON).includes(args.season))
         return reject(handleError(errors.DEPRECATED_ERROR, user));
       // Checks Firebase cache for season 3 data if season 3 data is desired
       let checkFbCache = args && args.season === '3';

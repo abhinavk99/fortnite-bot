@@ -2,6 +2,8 @@
  * Modes in Fortnite
  */
 
+const constants = require('./constants');
+
 module.exports = {
   SOLO: {
     top: [10, 25],
@@ -48,19 +50,19 @@ module.exports = {
   //   id: 'prior_p9',
   //   name: 'Season 4 Squad'
   // },
-  SOLOS8: {
+  [`SOLOS${constants.CURR_SEASON}`]: {
     top: [10, 25],
     id: 'curr_p2',
-    name: 'Season 8 Solo'
+    name: `Season ${constants.CURR_SEASON} Solo`
   },
-  DUOS8: {
+  [`DUOS${constants.CURR_SEASON}`]: {
     top: [5, 12],
     id: 'curr_p10',
-    name: 'Season 8 Duo'
+    name: `Season ${constants.CURR_SEASON} Duo`
   },
-  SQUADS8: {
+  [`SQUADS${constants.CURR_SEASON}`]: {
     top: [3, 6],
     id: 'curr_p9',
-    name: 'Season 8 Squad'
+    name: `Season ${constants.CURR_SEASON} Squad`
   }
 };
