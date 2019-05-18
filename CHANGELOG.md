@@ -1,5 +1,15 @@
 # Changelog for Fortnite Bot
 
+## [9.0.0] - 2019-05-18
+### Added
+- Season 9 support for commands
+
+### Fixed
+- Bug where top 3/5/10 and 6/12/25 percentages were wrong in output of /compare
+
+### Deprecated
+- Season 8 support because of Fortnite Tracker not providing the data anymore
+
 ## [8.1.0] - 2019-03-01
 ### Added
 - Nickname support with /nick and /deletenick
