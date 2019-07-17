@@ -1,5 +1,10 @@
 # Changelog for Fortnite Bot
 
+## [9.0.1] - 2019-07-16
+### Fixed
+- Test cases
+- Error handling
+
 ## [9.0.0] - 2019-05-18
 ### Added
 - Season 9 support for commands
