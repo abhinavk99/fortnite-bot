@@ -199,7 +199,7 @@ function handleError(err, user1, user2) {
   console.error(`Username: ${user1} ${user2 ? ` ${user2} ` : ''}-- Error: ${err}`);
   if (err === errors.UNAVAILABLE_ERROR.INPUT)
     return err.UNAVAILABLE_ERROR.OUTPUT;
-  else if (err === errors.NOT_FOUND_ERROR)
+  else if (err.error === errors.NOT_FOUND_ERROR)
     return getUserNotFoundError(user1, user2);
   else
     return err;

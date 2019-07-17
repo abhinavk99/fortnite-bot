@@ -158,10 +158,10 @@ describe('#Fortnite Data', () => {
   });
 
   it('should get recent data', async () => {
-    const user = 'ninja';
+    const user = 'tsm_myth';
     const res = await fortniteData.getData('Recent', user, platform);
     expect(res.length).to.equal(2);
-    expect(res[0]).to.equal('Recent matches for Ninja:\nPlatform: PC');
+    expect(res[0]).to.equal('Recent matches for TSM_Myth:\nPlatform: PC');
     expect(res[1].length).to.equal(5);
     for (let mode of res[1][0].slice(1)) {
       expect(mode).to.match(/^(Solo|Duo|Squad)$/);
@@ -181,10 +181,10 @@ describe('#Fortnite Data', () => {
   });
 
   it('should get recent data in old format', async () => {
-    const user = 'ninja';
+    const user = 'tsm_myth';
     const res = await fortniteData.getData('Rold', user, platform);
     let lines = res.substring(0, res.length - 1).split('\n');
-    expect(lines[0]).to.equal('Recent matches for Ninja:');
+    expect(lines[0]).to.equal('Recent matches for TSM_Myth:');
     expect(lines[1]).to.equal('Platform: PC');
     lines = lines.slice(3);
     for (let line of lines) {
@@ -308,7 +308,7 @@ https://fortnitetracker.com/profile/pc/TSM_Myth`);
       expect(name).to.match(/^.+$/);
     }
     for (let rarity of res[1][1].slice(1)) {
-      expect(rarity).to.match(/^(Sturdy|Quality|Handmade|Fine|Legendary)$/);
+      expect(rarity).to.match(/^(Sturdy|Quality|Handmade|Fine|Rare|Epic|Legendary)$/);
     }
     for (let cost of res[1][2].slice(1)) {
       expect(cost).to.match(/^\d+ vBucks?$/);

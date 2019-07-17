@@ -3,7 +3,7 @@
  */
 
 module.exports = {
-  NOT_FOUND_ERROR: 'HTTP Player Not Found',
+  NOT_FOUND_ERROR: 'Player Not Found',
   NOT_MAPPED_ERROR: 'No user mapped to your messaging account. Use /set to map a Fortnite username.',
   DEPRECATED_ERROR: 'Deprecated command.',
   UNAVAILABLE_ERROR: {
